@@ -8,6 +8,11 @@ Sekmeler
   1 · Toplu test   : N örnek üzerinde aynı hat; model başına toplu metrikler, tespit doğruluğu, boru hattının
                      kayıtlı sonuçlarıyla yeniden-üretim karşılaştırması, CSV/JSON.
   2–7              : girdi yükleme, 61 ön işleme işlemi (aşamalı pipeline), U-Net, ResNet-18, yeşil işaretçi, sonuçlar.
+  8 · SHAP         : tahmin → SHAP (Partition / Gradient; authentic / blur / inpaint referansı) → model karşılaştırması;
+                     xai/ paketi (docs/XAI.md).
+  9 · Katman filtreleri : SHAP'tan bağımsız XAI — ilk conv katmanlarının checkpoint'teki gerçek kernel'leri, görüntüye
+                     uygulanmış aktivasyon haritaları (conv / BN / aktivasyon), orijinalle karşılaştırma; xai_filters.py
+                     (docs/XAI_FILTERS.md).
 
 Çalıştırma
   Yerel (proje kökü):   python app/app.py                        → http://127.0.0.1:7860
@@ -951,19 +956,41 @@ def _windows(H, W, win, stride):
     return [(y, x) for y in ys for x in xs]
 
 
-def _predict_unet(name, rgb_u8, win=512, stride=448, max_side=4096, batch=8):
-    """infer_fullimage.py protokolü: 512 pencere, 448 adım, örtüşme ortalaması; uzun kenar > 4096 ise küçült → harita geri büyüt."""
-    model, in_ch, _ = get_model(name)
+def _unet_prepare(rgb_u8, win=512, max_side=4096):
+    """U-Net girdi hazırlığı: uzun kenar > max_side ise INTER_AREA ile küçült; kısa kenar < win ise sağ/alttan replicate
+    dolgu. Dönüş: (görüntü, (h, w) dolgusuz boyut, ölçek). _predict_unet ve XAI adaptörü aynı fonksiyonu kullanır."""
     H0, W0 = rgb_u8.shape[:2]
-    resized = max(H0, W0) > max_side
+    s = 1.0
     img = rgb_u8
-    if resized:
+    if max(H0, W0) > max_side:
         s = max_side / max(H0, W0)
         img = cv2.resize(img, (max(1, int(round(W0 * s))), max(1, int(round(H0 * s)))), interpolation=cv2.INTER_AREA)
     h, w = img.shape[:2]
     ph, pw = max(0, win - h), max(0, win - w)
     if ph or pw:
         img = cv2.copyMakeBorder(img, 0, ph, 0, pw, cv2.BORDER_REPLICATE)
+    return img, (h, w), s
+
+
+def _unet_window_forward(model, in_ch, xb, amp=True):
+    """Pencere toplu ileri geçişi → (N, h, w) olasılık. 5 kanallı modelde frekans kanalları pencere başına
+    standartlaştırılır (projedeki tanım). amp=False: fp32 (XAI gradyan açıklaması). Tek doğruluk kaynağı."""
+    if in_ch == 5:  # projede frekans kanalları pencere başına standartlaştırılır
+        fc = xb[:, 3:]
+        mu = fc.mean(dim=(2, 3), keepdim=True); sd = fc.std(dim=(2, 3), keepdim=True) + 1e-6
+        xb = torch.cat([xb[:, :3], (fc - mu) / sd], 1)
+    if amp:
+        with _autocast():
+            return torch.sigmoid(model(xb).float())[:, 0]
+    return torch.sigmoid(model(xb.float()).float())[:, 0]
+
+
+def _predict_unet(name, rgb_u8, win=512, stride=448, max_side=4096, batch=8):
+    """infer_fullimage.py protokolü: 512 pencere, 448 adım, örtüşme ortalaması; uzun kenar > 4096 ise küçült → harita geri büyüt."""
+    model, in_ch, _ = get_model(name)
+    H0, W0 = rgb_u8.shape[:2]
+    img, (h, w), _s = _unet_prepare(rgb_u8, win, max_side)
+    resized = _s != 1.0
     H, W = img.shape[:2]
     x = torch.from_numpy(norm_chw(img))
     if in_ch == 5:
@@ -976,12 +1003,7 @@ def _predict_unet(name, rgb_u8, win=512, stride=448, max_side=4096, batch=8):
         for i in range(0, len(wins), batch):
             chunk = wins[i:i + batch]
             xb = torch.stack([x[:, y:y + win, xx:xx + win] for (y, xx) in chunk])
-            if in_ch == 5:  # projede frekans kanalları pencere başına standartlaştırılır
-                fc = xb[:, 3:]
-                mu = fc.mean(dim=(2, 3), keepdim=True); sd = fc.std(dim=(2, 3), keepdim=True) + 1e-6
-                xb = torch.cat([xb[:, :3], (fc - mu) / sd], 1)
-            with _autocast():
-                out = torch.sigmoid(model(xb).float())[:, 0]
+            out = _unet_window_forward(model, in_ch, xb)
             for j, (y, xx) in enumerate(chunk):
                 acc[y:y + win, xx:xx + win] += out[j]; cnt[y:y + win, xx:xx + win] += 1
     p = (acc / cnt).cpu().numpy()[:h, :w]
@@ -1868,7 +1890,7 @@ def run_green(cur, mask, auth):
 def results_markdown():
     parts = []
     if RESULTS_MD.exists():
-        parts.append("## Küçük-veri (smoke) baseline sonuçları — `baselines/results/results_tables.md`\n")
+        parts.append("## Küçük-veri (smoke) baseline sonuçları\n")
         parts.append(RESULTS_MD.read_text(encoding="utf-8"))
     if P2_SUMMARY.exists():
         df = pd.read_csv(P2_SUMMARY)
@@ -1920,14 +1942,451 @@ def sim_to_tabs(state):
     return img, img, mask, auth, [], meta_md(meta, img, mask, auth), img, img, mask, auth, steps_md([])
 
 
+
+
+# ================================================================== XAI · SHAP AÇIKLAMALARI (sekme 8)
+# Ayrı paket: app/xai (registry · targets · adapters · manager · viz · compare · service). Ayrıntı: docs/XAI.md
+try:
+    sys.path.insert(0, str(APP_DIR))
+    import xai as XAI
+    XAI_OK, _XAI_ERR = True, ""
+except Exception as _e:  # xai yoksa diğer sekmeler etkilenmez
+    XAI, XAI_OK, _XAI_ERR = None, False, str(_e)
+try:
+    import shap as _shap  # noqa: F401
+    SHAP_OK, _SHAP_ERR = True, ""
+except Exception as _e:
+    SHAP_OK, _SHAP_ERR = False, str(_e)
+
+XAI_SOURCES = ["Girdi sekmesi (orijinal)", "Ön işleme pipeline çıktısı", "Son simülasyon girdisi", "Yeni yükleme"]
+XAI_TARGETS = ["Karar hedefi (model başına)", "Tespitler (ilk k bölge / patch)", "GT kutusu", "Ortak pencere (karşılaştırma)"]
+XAI_METHODS = ["Partition (önerilen)", "Gradient (ince doku)"]
+XAI_REFS = ["Otomatik (authentic eş varsa o, yoksa blur)", "authentic eş", "blur(32,32)", "inpaint_telea"]
+_XAI_REF_KEY = {XAI_REFS[0]: "auto", XAI_REFS[1]: "authentic", XAI_REFS[2]: "blur", XAI_REFS[3]: "inpaint"}
+XAI_DEPS = None
+XAI_SPECS: dict = {}
+XAI_MGR = None
+
+
+def xai_setup():
+    """Modeller yüklendikten sonra çağrılır: bağımlılık enjeksiyonu + model kaydı + yönetici."""
+    global XAI_DEPS, XAI_SPECS, XAI_MGR
+    if not (XAI_OK and TORCH_OK):
+        return
+    XAI_DEPS = XAI.Deps(get_model=get_model, norm_chw=norm_chw, project_freq_channels=project_freq_channels,
+                        windows=_windows, autocast=_autocast, device=DEVICE, unet_window_forward=_unet_window_forward,
+                        unet_prepare=_unet_prepare, image_score=image_score, q_u8=q_u8, postprocess=postprocess,
+                        default_tau=default_tau, image_threshold=image_threshold, friendly=friendly,
+                        list_unet=list_unet_ckpts, list_resnet=list_resnet_ckpts, green_marker_mask=green_marker_mask)
+    XAI_SPECS = XAI.build_registry(XAI_DEPS, _REG)
+    XAI_MGR = XAI.XAIManager(lambda: XAI_SPECS, gpu_explain)
+
+
+def _xai_job_cost(t, cfg):
+    sp = XAI_SPECS.get(t.model)
+    if sp is None:
+        return 1.0
+    if cfg.method == "gradient":
+        per = 0.03 if sp.family == "unet" else 0.01 * max(1, len(t.patches or [1]))
+        return 2 + cfg.grad_nsamples * per
+    if sp.family == "resnet":
+        per = 0.004 * (len(t.patches) if t.kind == "window_max_patch" else 1)
+    else:
+        per = 0.012 + (0.05 if sp.in_ch == 5 else 0.0)
+    return 2 + cfg.max_evals * (per + 0.002)
+
+
+def _dur_explain(rgb, auth, jobs, cfg):
+    return int(min(120, max(30, 15 + sum(_xai_job_cost(t, cfg) for t in jobs))))
+
+
+@gpu(duration=_dur_explain)
+def _gpu_explain(rgb, auth, jobs, cfg):
+    """SHAP açıklayıcıları bu fonksiyonun İÇİNDE kurulur (ZeroGPU); dönüş yalnız numpy (float16) + meta veri."""
+    return XAI.run_jobs(jobs, rgb, auth, XAI_DEPS, XAI_SPECS, cfg)
+
+
+def gpu_explain(rgb, auth, jobs, cfg):
+    """İşleri ZeroGPU süre sınırına (≤120 s) sığacak parçalara bölerek çalıştırır."""
+    out, chunk, est = [], [], 0.0
+    for t in jobs:
+        c = _xai_job_cost(t, cfg)
+        if chunk and est + c > 100:
+            out += _gpu_explain(rgb, auth, chunk, cfg); chunk, est = [], 0.0
+        chunk.append(t); est += c
+    if chunk:
+        out += _gpu_explain(rgb, auth, chunk, cfg)
+    return out
+
+
+def xai_unsupported_md():
+    if not XAI_OK:
+        return f"⚠️ XAI paketi yüklenemedi: `{_XAI_ERR}`"
+    lines = ["**SHAP üretilmeyen modeller:**"]
+    for sp in XAI.UNSUPPORTED_MODELS:
+        lines.append(f"- {sp.label} — *{sp.status}*: {sp.reason}")
+    for n, sp in XAI_SPECS.items():
+        if sp.status != "OK":
+            lines.append(f"- {sp.label} — *{sp.status}*: {sp.reason}")
+    if not SHAP_OK:
+        lines.append(f"- ⚠️ `shap` paketi yok: {_SHAP_ERR}")
+    return "\n".join(lines)
+
+
+def _xai_source(src, orig, cur, mask, auth, sim, up_img, up_auth, up_gt):
+    note = []
+    if src == XAI_SOURCES[0]:
+        rgb, a, g, desc = orig, auth, mask, "Girdi sekmesi (orijinal)"
+    elif src == XAI_SOURCES[1]:
+        rgb, a, g, desc = cur, auth, mask, "Ön işleme pipeline çıktısı"
+        if cur is not None and orig is not None and cur is not orig:
+            note.append("referans authentic eş işlenmemiş haliyle kullanılır")
+    elif src == XAI_SOURCES[2]:
+        if not sim:
+            raise gr.Error("Henüz simülasyon çalıştırılmadı (sekme 0).")
+        rgb, a, g, desc = sim.get("inp"), sim.get("auth"), sim.get("mask"), f"Son simülasyon girdisi ({sim.get('key')})"
+    else:
+        rgb, a, g, desc = up_img, up_auth, up_gt, "Yeni yükleme"
+    if rgb is None:
+        raise gr.Error("Görüntü yok: Girdi sekmesinden yükleyin, Simülasyon'dan aktarın ya da 'Yeni yükleme' ile ekleyin.")
+    rgb = np.ascontiguousarray(to_rgb(rgb).astype(np.uint8))
+    if a is not None:
+        a = np.ascontiguousarray(to_rgb(a).astype(np.uint8))
+        if a.shape != rgb.shape:
+            note.append("authentic eş farklı boyutta → kullanılmadı"); a = None
+        elif np.array_equal(a, rgb):
+            note.append("girdi authentic eşin kendisi → referans olarak kullanılmadı"); a = None
+    if g is not None:
+        g = to_gray(g) if g.ndim == 3 else g
+        if g.shape != rgb.shape[:2]:
+            note.append("GT maskesi farklı boyutta → kullanılmadı"); g = None
+    return rgb, a, g, desc + (" · " + "; ".join(note) if note else "")
+
+
+def xai_predict(src, unets, resnets, orig, cur, mask, auth, sim, up_img, up_auth, up_gt):
+    """① Tahmin: mevcut gpu_infer DEĞİŞTİRİLMEDEN çağrılır; skor, eşik, karar ve tespit listesi."""
+    if not (XAI_OK and TORCH_OK):
+        raise gr.Error(f"XAI kullanılamıyor: {_XAI_ERR or _TORCH_ERR}")
+    unets, resnets = list(unets or []), list(resnets or [])
+    if not unets and not resnets:
+        raise gr.Error("En az bir model seçin.")
+    rgb, a, g, desc = _xai_source(src, orig, cur, mask, auth, sim, up_img, up_auth, up_gt)
+    t0 = time.time()
+    res = gpu_infer(unets, resnets, [rgb], 112)[0]
+    preds, rows = {}, []
+    for n in resnets:
+        hm, info = res[n]
+        preds[n] = (hm, info)
+        smax = max(s for s, _, _ in info["scores"])
+        rows.append({"Model": friendly(n), "Aile": "ResNet-18", "Görüntü skoru": smax, "Eşik": 0.5,
+                     "Karar": "SAHTE" if smax >= 0.5 else "GERÇEK", "Patch sayısı": len(info["scores"])})
+    for n in unets:
+        prob, info = res[n]
+        preds[n] = (prob, info)
+        sc = image_score(prob); it, cal = image_threshold(n)
+        sp = XAI_SPECS.get(n)
+        tau = default_tau(n, (sp.train_gt if sp else "") or "bbox")
+        nreg = len(XAI.targets.unet_regions(prob, tau, XAI_DEPS))
+        rows.append({"Model": friendly(n), "Aile": "U-Net", "Görüntü skoru": sc, "Eşik": it,
+                     "Karar": "SAHTE" if sc >= it else "GERÇEK", "Patch sayısı": None,
+                     "Tespit bölgesi (τ*)": f"{nreg} (τ={tau:.2f})" + ("" if cal else " · eşik kalibre değil")})
+    st = dict(rgb=rgb, auth=a, gt=g, preds=preds, desc=desc, models=resnets + unets)
+    md = (f"**Kaynak:** {desc} · {rgb.shape[1]}×{rgb.shape[0]} px · GT {'var' if g is not None else 'yok'} · "
+          f"authentic eş {'var' if a is not None else 'yok'} · tahmin {time.time() - t0:.1f} s. "
+          "Şimdi **② SHAP analizini başlat** ile açıklayın (tahminler tekrar hesaplanmaz).")
+    return pd.DataFrame(rows), md, st
+
+
+def _xai_cfg(method, ref, evals):
+    return XAI.ExplainConfig(method="gradient" if str(method).startswith("Gradient") else "partition",
+                             reference=_XAI_REF_KEY.get(ref, "auto"), max_evals=int(evals),
+                             batch_size=16, grad_nsamples=64)
+
+
+def _xai_jobs(st, mode, k):
+    shape = st["rgb"].shape
+    preds = st["preds"]
+    if mode == XAI_TARGETS[1]:
+        jobs = XAI.detection_targets(preds, XAI_SPECS, shape, XAI_DEPS, k=int(k))
+    elif mode == XAI_TARGETS[2]:
+        if st["gt"] is None:
+            raise gr.Error("Bu görüntüde GT maskesi yok; başka bir hedef seçin.")
+        jobs = XAI.gt_targets(st["models"], XAI_SPECS, shape, st["gt"], XAI_DEPS)
+    elif mode == XAI_TARGETS[3]:
+        jobs = XAI.common_window_targets(st["models"], preds, XAI_SPECS, shape, st["gt"], XAI_DEPS)
+    else:
+        jobs = XAI.decision_targets(preds, XAI_SPECS, shape, XAI_DEPS)
+    if not jobs:
+        raise gr.Error("Açıklanacak hedef bulunamadı (ör. eşik üstü tespit bölgesi yok). Başka bir hedef türü deneyin.")
+    return jobs
+
+
+def _xai_window_views(st, t):
+    img = XAI.prepare_for(t.prep, st["rgb"], XAI_DEPS)[0][t.y:t.y + t.h, t.x:t.x + t.w]
+    gt_w = XAI.window_mask(st["gt"], t, XAI_DEPS) if st["gt"] is not None else None
+    gm = green_marker_mask(st["rgb"])
+    if st["auth"] is not None:
+        gm &= ~green_marker_mask(st["auth"])
+    mk_w = XAI.window_mask(gm, t, XAI_DEPS)
+    return img, gt_w, mk_w
+
+
+def _xai_app_score(st, model):
+    """Uygulamanın tahmin tablosundaki görüntü skoru (U-Net: tam görüntü top-%1; ResNet: maks patch)."""
+    pr = st["preds"].get(model)
+    if pr is None:
+        return None
+    m, info = pr
+    if "scores" in info:
+        return max(s_ for s_, _, _ in info["scores"])
+    return image_score(m)
+
+
+def _xai_label(i, r):
+    return f"{i + 1} · {r.label} · {r.target.get('label', '')}"[:150]
+
+
+def _xai_render(st, results, jobs):
+    """Tüm sonuçlar için paneller, bölge kütleleri ve dışa aktarım dosyaları."""
+    panels, masses, gal, sums = {}, {}, [], {}
+    for i, (r, t) in enumerate(zip(results, jobs)):
+        lab = _xai_label(i, r)
+        if not r.ok:
+            sums[lab] = f"**{r.label}** — {r.status}: {r.message}"
+            continue
+        img, gt_w, mk_w = _xai_window_views(st, t)
+        pn = XAI.viz.panels(r, img, gt_w, mk_w, t.region if t.kind in ("region_mean", "gt_bbox_mean") else None)
+        pn["Özet şekil"] = XAI.viz.summary_figure(r, img, gt_w, mk_w)
+        panels[lab] = pn
+        masses[f"{i + 1} · {r.label}"] = XAI.viz.region_masses(r.shap_map(), gt_w, mk_w)
+        for pname, im in pn.items():
+            if pname != "Özet şekil":
+                gal.append((im, f"{i + 1} · {r.label} — {pname}"))
+        g = "".join(f" · {k_} {v:+.4f}" for k_, v in r.groups.items()) if r.groups else ""
+        app_sc = _xai_app_score(st, r.model)
+        cmp_note = ""
+        if app_sc is not None and t.kind == "window_image_score":
+            cmp_note = (f"  \nUygulamanın tam görüntü skoru (448 px adımlı pencerelerin örtüşme ortalaması): {app_sc:.4f}"
+                        + (" — açıklanan pencere tek başına çok daha yüksek skor veriyor; örtüşme ortalaması sinyali seyreltiyor."
+                           if r.fx - app_sc > 0.25 else ""))
+        sums[lab] = (f"**{r.label}** · hedef: {r.target.get('label', '')}  \n"
+                     f"f(x) = **{r.fx:.4f}** · E[f] (referans: {r.reference}) = {r.base:.4f} · ΣSHAP = {r.sum_shap:+.4f} · "
+                     f"toplamsallık hatası {r.add_err:.2e} · {r.n_evals} değerlendirme · {r.seconds:.1f} s"
+                     + (f" · tepe {r.peak_mem_mb:.0f} MB" if r.peak_mem_mb else "") + g
+                     + cmp_note
+                     + ("  \n_" + "; ".join(r.notes) + "_" if r.notes else "")
+                     + ("  \n(önbellekten)" if r.cached else ""))
+    mass_img = XAI.viz.mass_chart(masses)
+    loc = XAI.viz.location_image(st["rgb"], [r for r in results])
+    return panels, masses, gal, sums, mass_img, loc
+
+
+def _xai_export(st, results, panels, mass_img, loc, cfg, cmp=None, cmp_img=None, tag="shap"):
+    outdir = Path(tempfile.mkdtemp(prefix=f"ai515_{tag}_"))
+    meta = dict(title=st["desc"], image=f"{st['rgb'].shape[1]}×{st['rgb'].shape[0]}", source=st["desc"],
+                config=dict(method=cfg.method, reference=cfg.reference, max_evals=cfg.max_evals, grad_nsamples=cfg.grad_nsamples),
+                device=str(DEVICE), zero_gpu=ZERO_GPU)
+    extra = {"konum.png": loc, "bolge_kutlesi.png": mass_img}
+    if cmp_img is not None:
+        extra["karsilastirma.png"] = cmp_img
+    return XAI.export_results(results, outdir, meta, panels, cmp, extra)
+
+
+_XAI_PANEL_NAMES = ["Orijinal (açıklanan pencere)", "SHAP ısı haritası (kırmızı: SAHTE yönü · mavi: GERÇEK yönü)", "Bindirme",
+                    "Pozitif katkı (SAHTE'yi artıran)", "Negatif katkı (GERÇEK'e iten)", "Sınıf panelleri: SAHTE | GERÇEK (= −SAHTE)"]
+
+
+def _xai_show_outputs(view, choice):
+    if not view or choice not in view.get("panels", {}):
+        md = view.get("sums", {}).get(choice, " ") if view else " "
+        return [md] + [None] * len(_XAI_PANEL_NAMES)
+    pn = view["panels"][choice]
+    return [view["sums"].get(choice, " ")] + [pn.get(n) for n in _XAI_PANEL_NAMES]
+
+
+def xai_run(st, mode, k, method, ref, evals):
+    """② SHAP: tahminden bağımsız; önbellekte olan (model, hedef, yöntem, referans, bütçe) yeniden hesaplanmaz."""
+    if not st:
+        raise gr.Error("Önce ① Tahmin yap.")
+    if not SHAP_OK:
+        raise gr.Error(f"shap paketi yüklü değil: {_SHAP_ERR}")
+    cfg = _xai_cfg(method, ref, evals)
+    jobs = _xai_jobs(st, mode, k)
+    t0 = time.time()
+    results = XAI_MGR.explain(st["rgb"], st["auth"], jobs, cfg)
+    panels, masses, gal, sums, mass_img, loc = _xai_render(st, results, jobs)
+    files = _xai_export(st, results, panels, mass_img, loc, cfg)
+    df = pd.DataFrame(XAI.service.result_table_rows(results))
+    if len(df):
+        df.insert(5, "Uygulama skoru", [_xai_app_score(st, r.model) for r in results])
+    choices = list(sums)
+    view = dict(panels=panels, sums=sums)
+    n_ok = sum(r.ok for r in results)
+    status = (f"**SHAP tamam:** {n_ok}/{len(results)} açıklama · {time.time() - t0:.1f} s · önbellek isabeti "
+              f"{sum(r.cached for r in results)} · hedef: {mode} · yöntem: {cfg.method} · bütçe: "
+              f"{cfg.max_evals if cfg.method == 'partition' else cfg.grad_nsamples}")
+    first = choices[0] if choices else None
+    return [status, df, loc, gr.update(choices=choices, value=first), view, mass_img, gal, files] + _xai_show_outputs(view, first)
+
+
+def xai_compare(st, method, ref, evals):
+    """③ Karşılaştırma: tüm modeller AYNI pencereyi açıklar (önbellek kullanılır); IoU/Dice, Spearman, ortak/özgü bölge."""
+    if not st:
+        raise gr.Error("Önce ① Tahmin yap.")
+    if not SHAP_OK:
+        raise gr.Error(f"shap paketi yüklü değil: {_SHAP_ERR}")
+    cfg = _xai_cfg(method, ref, evals)
+    jobs = _xai_jobs(st, XAI_TARGETS[3], 1)
+    results = XAI_MGR.explain(st["rgb"], st["auth"], jobs, cfg)
+    cmp = XAI.compare.compare_results(results, st["rgb"])
+    fig = XAI.compare.comparison_figure(cmp)
+    rows = []
+    for i, r in enumerate(results):
+        rows.append({"#": i + 1, "Model": r.label, "Hedef türü": r.target.get("kind"), "f(x)": r.fx, "E[f]": r.base,
+                     "ΣSHAP": r.sum_shap, "max|SHAP| (normalizasyon)": float(np.abs(r.shap_map()).max()) if r.ok else None,
+                     "Durum": r.status + (" (önbellek)" if r.cached else "")})
+    md = "**Ölçek / hedef uyumu:** " + cmp["note"]
+    if "iou" in cmp:
+        n = len(cmp["names"])
+        off = [(i, j) for i in range(n) for j in range(i + 1, n)]
+        if off:
+            md += (f"  \nOrtalama top-%5 IoU {np.nanmean([cmp['iou'][i, j] for i, j in off]):.3f} · ortalama Spearman ρ "
+                   f"{np.nanmean([cmp['spearman'][i, j] for i, j in off]):.3f} · tüm modellerde ortak bölge payı "
+                   f"%{100 * cmp['common_frac']:.1f}")
+    panels, masses, gal, sums, mass_img, loc = _xai_render(st, results, jobs)
+    files = _xai_export(st, results, panels, mass_img, loc, cfg, cmp, fig, tag="shap_cmp")
+    return md, fig, pd.DataFrame(rows), files
+
 # ================================================================== ARAYÜZ
 CSS = """
 .small-md p {font-size: 0.9em}
 #verdict {border-left: 4px solid #4C72B0; padding-left: 10px}
 footer {display:none !important}
+#aic-tip {position:fixed; z-index:10000; max-width:340px; padding:8px 11px; border-radius:6px; font-size:13px; line-height:1.45; background:#1f2937; color:#f9fafb; box-shadow:0 4px 14px rgba(0,0,0,.25); pointer-events:none; opacity:0; transition:opacity .12s; left:-9999px; top:0}
+#aic-tip.show {opacity:1}
+#aic-tip b {color:#fde68a}
+#tip-f_split [data-testid="block-info"]::after, #tip-f_source [data-testid="block-info"]::after, #tip-f_tool [data-testid="block-info"]::after, #tip-f_area [data-testid="block-info"]::after, #tip-f_marker [data-testid="block-info"]::after, #tip-f_mp [data-testid="block-info"]::after, #tip-f_pair [data-testid="block-info"]::after, #tip-b_filter [data-testid="block-info"]::after, #tip-b_rand [data-testid="block-info"]::after, #tip-dd_key [data-testid="block-info"]::after, #tip-rd_input [data-testid="block-info"]::after, #tip-dd_deg [data-testid="block-info"]::after, #tip-ck_pipe [data-testid="block-info"]::after, #tip-cg_unet [data-testid="block-info"]::after, #tip-cg_res [data-testid="block-info"]::after, #tip-sl_stride_sim [data-testid="block-info"]::after, #tip-b_sim [data-testid="block-info"]::after, #tip-b_to_tabs [data-testid="block-info"]::after, #tip-t_split [data-testid="block-info"]::after, #tip-t_source [data-testid="block-info"]::after, #tip-t_tool [data-testid="block-info"]::after, #tip-t_area [data-testid="block-info"]::after, #tip-t_marker [data-testid="block-info"]::after, #tip-t_mp [data-testid="block-info"]::after, #tip-t_n [data-testid="block-info"]::after, #tip-t_seed [data-testid="block-info"]::after, #tip-t_mode [data-testid="block-info"]::after, #tip-t_deg [data-testid="block-info"]::after, #tip-t_unet [data-testid="block-info"]::after, #tip-t_res [data-testid="block-info"]::after, #tip-b_batch [data-testid="block-info"]::after, #tip-in_img [data-testid="block-info"]::after, #tip-in_mask [data-testid="block-info"]::after, #tip-in_auth [data-testid="block-info"]::after, #tip-btn_load [data-testid="block-info"]::after, #tip-dd_sample [data-testid="block-info"]::after, #tip-btn_sample [data-testid="block-info"]::after, #tip-dd_cat [data-testid="block-info"]::after, #tip-dd_op [data-testid="block-info"]::after, #tip-sl1 [data-testid="block-info"]::after, #tip-sl2 [data-testid="block-info"]::after, #tip-sl3 [data-testid="block-info"]::after, #tip-dd_mode [data-testid="block-info"]::after, #tip-btn_prev [data-testid="block-info"]::after, #tip-btn_apply [data-testid="block-info"]::after, #tip-btn_undo [data-testid="block-info"]::after, #tip-btn_reset [data-testid="block-info"]::after, #tip-dd_preset [data-testid="block-info"]::after, #tip-btn_preset [data-testid="block-info"]::after, #tip-dd_unet [data-testid="block-info"]::after, #tip-rd_src [data-testid="block-info"]::after, #tip-rd_gt [data-testid="block-info"]::after, #tip-sl_thr [data-testid="block-info"]::after, #tip-ck_otsu [data-testid="block-info"]::after, #tip-sl_morph [data-testid="block-info"]::after, #tip-btn_unet [data-testid="block-info"]::after, #tip-btn_cmp [data-testid="block-info"]::after, #tip-dd_rn [data-testid="block-info"]::after, #tip-rd_src2 [data-testid="block-info"]::after, #tip-sl_stride [data-testid="block-info"]::after, #tip-btn_rn [data-testid="block-info"]::after, #tip-btn_green [data-testid="block-info"]::after, #tip-x_src [data-testid="block-info"]::after, #tip-x_up_img [data-testid="block-info"]::after, #tip-x_up_auth [data-testid="block-info"]::after, #tip-x_up_gt [data-testid="block-info"]::after, #tip-x_unet [data-testid="block-info"]::after, #tip-x_res [data-testid="block-info"]::after, #tip-b_xpred [data-testid="block-info"]::after, #tip-x_target [data-testid="block-info"]::after, #tip-x_k [data-testid="block-info"]::after, #tip-x_method [data-testid="block-info"]::after, #tip-x_ref [data-testid="block-info"]::after, #tip-x_evals [data-testid="block-info"]::after, #tip-b_xshap [data-testid="block-info"]::after, #tip-b_xcmp [data-testid="block-info"]::after, #tip-x_show [data-testid="block-info"]::after {content:" ⓘ"; opacity:.55; font-size:.9em}
 """
 
+
+# ---------------------------------------------------------------- sol panel açıklamaları (fareyle üzerine gelince)
+TIPS = {
+    "tip-f_split": 'Görüntülerin veri setinin hangi bölümünden seçileceği.<br><b>test</b>: modellerin eğitimde hiç görmediği görüntüler (adil değerlendirme).<br><b>eğitim</b>: modellerin öğrendiği görüntüler; sonuçlar iyimser çıkar.<br><b>hepsi</b>: iki bölüm birlikte.',
+    "tip-f_source": 'Sahte belgenin türetildiği orijinal belge koleksiyonu (ör. <b>cord</b> fişleri). Belge türüne ve düzenine göre filtrelemeye yarar.',
+    "tip-f_tool": 'Belgedeki alanı değiştirmek için kullanılan üretken yapay zekâ (inpainting) modeli, ör. <b>Gemini</b>, <b>Ideogram</b>. Her üretici farklı izler bırakır; modellerin bir üreticiden diğerine genelleşmesini incelemek için kullanılır.',
+    "tip-f_area": 'Değiştirilen bölgenin (resmî GT kutusu) görüntü alanına oranı.<br><b>&lt;1%</b>: çok küçük hedef, tespiti en zor rejim.<br><b>1-5%</b>, <b>5-20%</b>, <b>&gt;20%</b>: hedef büyüdükçe lokalizasyon kolaylaşır.',
+    "tip-f_marker": "Bazı sahte görüntülerde (çoğunlukla Gemini) düzenlenen alanın çevresinde ~3 px'lik yeşil çerçeve kalıntısı kalmıştır. Bir model sahteciliği değil bu çerçeveyi öğrenebilir (kısayol).<br><b>var</b> / <b>yok</b> ile bu örnekleri ayırabilirsiniz.",
+    "tip-f_mp": 'Görüntü boyutu üst sınırı (genişlik × yükseklik / 10⁶). Modeller natif çözünürlükte çalıştığı için büyük görüntülerde çıkarım uzar; hızlı denemeler için düşük tutun.',
+    "tip-f_pair": "Yalnızca değiştirilmemiş orijinali (<i>authentic eşi</i>) aynı boyutta bulunan örnekleri listeler. Piksel-değişim GT'si, authentic negatif kontrol ve yeşil işaretçi senaryoları bu eşe ihtiyaç duyar.",
+    "tip-b_filter": 'Yukarıdaki filtreleri uygular ve <b>Örnek</b> listesini günceller.',
+    "tip-b_rand": 'Filtreye uyan örnekler arasından rastgele birini seçer.',
+    "tip-dd_key": 'Çalıştırılacak görüntü. Biçim: <b>bölüm:kimlik</b> · kaynak · üretici · alan oranı · MP (+ <i>eşli</i>, <i>işaretçi</i> etiketleri). Listeden seçebilir ya da kimliği yazarak arayabilirsiniz.',
+    "tip-rd_input": 'Modele hangi görüntünün verileceği:<br><b>Sahte belge</b>: görüntü olduğu gibi (beklenen karar SAHTE).<br><b>Authentic eş</b>: değiştirilmemiş orijinal (beklenen GERÇEK); yanlış alarm kontrolü.<br><b>Sahte, yeşil işaretçi onarılmış</b>: işaretçi pikselleri orijinalden geri kopyalanır, içerik sahte kalır (beklenen SAHTE); model işaretçiye mi dayanıyor?<br><b>Authentic + yalnız yeşil işaretçi</b>: orijinale yalnızca işaretçi eklenir, hiçbir karakter değişmez (beklenen GERÇEK); SAHTE derse model kısayol öğrenmiştir.<br>Son üç senaryo authentic eşi olan örnek gerektirir.',
+    "tip-dd_deg": 'Modelden önce girdiye uygulanan bozulma; gerçek hayattaki işlemlere dayanıklılığı ölçer (modeller ham PNG ile eğitildi).<br><b>JPEG Q75 / Q50</b>: kayıplı sıkıştırma<br><b>0.75× / 0.5×</b>: küçültüp eski boyuta geri büyütme<br><b>Gauss bulanıklık σ=1</b>, <b>Gauss gürültüsü σ=5</b>',
+    "tip-ck_pipe": 'İşaretliyse <b>Ön işleme</b> sekmesinde kurduğunuz işlem zinciri modelden önce girdiye uygulanır; ön işlemenin model başarısına etkisini görmek içindir.',
+    "tip-cg_unet": 'Piksel düzeyinde sahte bölge olasılık haritası üreten segmentasyon modelleri. Adlar hangi GT ile eğitildiğini gösterir (bbox, piksel-değişim, glyph). Tam görüntüde 512 px pencere / 448 px adımla çalışır. Birden fazlasını seçip karşılaştırabilirsiniz.',
+    "tip-cg_res": 'Görüntüyü 224×224 px parçalara (patch) bölüp her parçayı sahte/gerçek olarak sınıflandıran model. Çıktısı kaba bir ısı haritası ve en yüksek patch skoruna dayanan görüntü kararıdır.',
+    "tip-sl_stride_sim": "224 px'lik ResNet penceresinin her adımda kaç piksel kaydırılacağı. Küçük adım daha çok örtüşme ve daha ince ısı haritası verir ama yavaştır (adım yarıya inince patch sayısı ~4 katına çıkar). 224 = örtüşmesiz.",
+    "tip-b_sim": 'Seçilen örnek, senaryo ve modellerle hattı adım adım çalıştırır: GT analizi → yeşil işaretçi taraması → girdi senaryosu ve bozulma → modeller → iki GT (bbox ve piksel-değişim) ile metrikler → görüntü-düzeyi karar.',
+    "tip-b_to_tabs": 'Bu örneği (sahte görüntü, GT maskesi, authentic eş) Girdi, Ön işleme, U-Net ve ResNet-18 sekmelerine yükler.',
+    "tip-t_split": 'Görüntülerin veri setinin hangi bölümünden seçileceği.<br><b>test</b>: modellerin eğitimde hiç görmediği görüntüler (adil değerlendirme).<br><b>eğitim</b>: modellerin öğrendiği görüntüler; sonuçlar iyimser çıkar.<br><b>hepsi</b>: iki bölüm birlikte.',
+    "tip-t_source": 'Sahte belgenin türetildiği orijinal belge koleksiyonu (ör. <b>cord</b> fişleri). Belge türüne ve düzenine göre filtrelemeye yarar.',
+    "tip-t_tool": 'Belgedeki alanı değiştirmek için kullanılan üretken yapay zekâ (inpainting) modeli, ör. <b>Gemini</b>, <b>Ideogram</b>. Her üretici farklı izler bırakır; modellerin bir üreticiden diğerine genelleşmesini incelemek için kullanılır.',
+    "tip-t_area": 'Değiştirilen bölgenin (resmî GT kutusu) görüntü alanına oranı.<br><b>&lt;1%</b>: çok küçük hedef, tespiti en zor rejim.<br><b>1-5%</b>, <b>5-20%</b>, <b>&gt;20%</b>: hedef büyüdükçe lokalizasyon kolaylaşır.',
+    "tip-t_marker": "Bazı sahte görüntülerde (çoğunlukla Gemini) düzenlenen alanın çevresinde ~3 px'lik yeşil çerçeve kalıntısı kalmıştır. Bir model sahteciliği değil bu çerçeveyi öğrenebilir (kısayol).<br><b>var</b> / <b>yok</b> ile bu örnekleri ayırabilirsiniz.",
+    "tip-t_mp": 'Görüntü boyutu üst sınırı (genişlik × yükseklik / 10⁶). Modeller natif çözünürlükte çalıştığı için büyük görüntülerde çıkarım uzar; hızlı denemeler için düşük tutun.',
+    "tip-t_n": 'Filtreye uyan örnekler arasından rastgele kaç tanesinin çalıştırılacağı. Süre N ile doğrusal artar.',
+    "tip-t_seed": 'Rastgele örnek seçiminin tohumu. Aynı tohum ve aynı filtreler aynı örnekleri verir (tekrar üretilebilirlik).',
+    "tip-t_mode": '<b>Yalnız sahte görüntüler</b>: yalnızca lokalizasyon metrikleri (F1, IoU, AP).<br><b>Sahte + authentic eşi</b>: her sahte görüntünün orijinali de çalıştırılır; böylece görüntü-düzeyi tespit (TPR/FPR/AUROC) hesaplanır. Yalnız authentic eşi olan örnekler seçilir.',
+    "tip-t_deg": 'Modelden önce girdiye uygulanan bozulma; gerçek hayattaki işlemlere dayanıklılığı ölçer (modeller ham PNG ile eğitildi).<br><b>JPEG Q75 / Q50</b>: kayıplı sıkıştırma<br><b>0.75× / 0.5×</b>: küçültüp eski boyuta geri büyütme<br><b>Gauss bulanıklık σ=1</b>, <b>Gauss gürültüsü σ=5</b>',
+    "tip-t_unet": 'Piksel düzeyinde sahte bölge olasılık haritası üreten segmentasyon modelleri. Adlar hangi GT ile eğitildiğini gösterir (bbox, piksel-değişim, glyph). Tam görüntüde 512 px pencere / 448 px adımla çalışır. Birden fazlasını seçip karşılaştırabilirsiniz.',
+    "tip-t_res": 'Görüntüyü 224×224 px parçalara (patch) bölüp her parçayı sahte/gerçek olarak sınıflandıran model. Çıktısı kaba bir ısı haritası ve en yüksek patch skoruna dayanan görüntü kararıdır.',
+    "tip-b_batch": 'Filtreye uyan N rastgele örnekte simülasyon hattını koşturur; model başına lokalizasyon (bbox ve piksel-değişim GT), görüntü-düzeyi tespit (TPR/FPR/AUROC) ve boru hattının kayıtlı sonuçlarıyla yeniden-üretim farkı raporlanır.',
+    "tip-in_img": 'İncelenecek belge görüntüsü (PNG/JPG). Kayıpsız PNG önerilir; JPEG sıkıştırması sahtecilik izlerini zayıflatır.',
+    "tip-in_mask": 'Değiştirilen bölgenin ikili maskesi (beyaz 255 = sahte, siyah 0 = gerçek), sahte görüntüyle aynı boyutta. Verilirse model sonuçları bu GT ile ölçülür; verilmezse yalnızca tahmin gösterilir.',
+    "tip-in_auth": "Aynı belgenin değiştirilmemiş hali, aynı boyutta. Verilirse iki görüntünün farkından <b>piksel-değişim GT'si</b> türetilir; yeşil işaretçi analizi de bu eşle yapılır.",
+    "tip-btn_load": "Yüklediğiniz görüntüleri (ve varsa maske ile authentic eşi) diğer sekmelerin girdisi yapar. Ön işleme pipeline'ı sıfırlanır.",
+    "tip-dd_sample": 'Veri setinden doğrudan örnek seçimi (bölüm:kimlik). Filtrelerle daha hızlı seçim için <b>Simülasyon</b> sekmesini kullanıp örneği oradan aktarabilirsiniz.',
+    "tip-btn_sample": "Seçilen örneği (sahte görüntü, GT maskesi ve varsa authentic eşi) yükler. Ön işleme pipeline'ı sıfırlanır.",
+    "tip-dd_cat": 'Ders haftalarına göre gruplanmış ön işleme kategorileri (renk, histogram, eşikleme, gürültü, morfoloji, frekans domeni…).',
+    "tip-dd_op": 'Seçili kategorideki işlem. Seçince parametreleri ve kısa açıklaması altta görünür.',
+    "tip-sl1": 'Seçili işlemin parametresi; anlamı etikette ve işlem açıklamasında yazar. Değiştirip <b>Önizle</b> ile etkisini görün.',
+    "tip-sl2": 'Seçili işlemin parametresi; anlamı etikette ve işlem açıklamasında yazar. Değiştirip <b>Önizle</b> ile etkisini görün.',
+    "tip-sl3": 'Seçili işlemin parametresi; anlamı etikette ve işlem açıklamasında yazar. Değiştirip <b>Önizle</b> ile etkisini görün.',
+    "tip-dd_mode": 'Seçili işlemin çalışma modu (ör. çekirdek şekli, alçak/yüksek geçiren).',
+    "tip-btn_prev": "İşlemi mevcut pipeline çıktısına uygulayıp sonucu <b>Sonra</b> panelinde gösterir; pipeline'a eklemez.",
+    "tip-btn_apply": "İşlemi pipeline'a kalıcı adım olarak ekler; sonraki işlemler bu çıktının üzerine uygulanır. Pipeline çıktısı U-Net, ResNet-18 ve Simülasyon sekmelerinde model girdisi olarak seçilebilir.",
+    "tip-btn_undo": "Pipeline'daki son adımı kaldırır.",
+    "tip-btn_reset": 'Tüm adımları siler ve orijinal görüntüye döner.',
+    "tip-dd_preset": 'Hazır işlem zincirleri (ör. belge ikilileştirme, frekans analizi, kenar haritası).',
+    "tip-btn_preset": "Seçili preseti <b>orijinal</b> görüntüye uygular; mevcut pipeline'ın yerine geçer.",
+    "tip-dd_unet": "Kullanılacak U-Net ağırlığı. Ad; eğitimde kullanılan GT'yi (bbox / piksel-değişim / glyph), giriş kanallarını (RGB ya da RGB + frekans) ve tohumu (s42/43/44) gösterir.",
+    "tip-rd_src": 'Modele <b>orijinal görüntünün</b> mü yoksa <b>Ön işleme</b> sekmesinde kurduğunuz <b>pipeline çıktısının</b> mı verileceği.',
+    "tip-rd_gt": 'Tahminin hangi referansla ölçüleceği.<br><b>resmî bbox</b>: veri setinin dikdörtgen etiketi.<br><b>piksel-değişim</b>: sahte ile authentic eş arasındaki fark eşiklenip (eps 8) morfolojiyle temizlenerek türetilen, yalnız gerçekten değişen pikselleri içeren GT. Authentic eşi gerekir.',
+    "tip-sl_thr": 'Olasılık haritasını ikili maskeye çeviren eşik. Model ya da GT türü değişince, o model için doğrulama kümesinde seçilmiş en iyi eşik (τ*) otomatik gelir; elle değiştirebilirsiniz.',
+    "tip-ck_otsu": 'Sabit eşik yerine, olasılık haritasının histogramından Otsu yöntemiyle otomatik eşik hesaplanır.',
+    "tip-sl_morph": 'İkili maskeye önce açma (küçük gürültüleri siler), sonra kapama (boşlukları doldurur) uygulanır; değer çekirdek boyutudur (px). 0 = kapalı.',
+    "tip-btn_unet": 'Seçili modeli çalıştırır: olasılık haritası, bindirme, ikili maske ve ölçütler (F1, IoU, AP…).',
+    "tip-btn_cmp": "Aynı modeli hem orijinal görüntüde hem pipeline çıktısında çalıştırıp ölçütleri yan yana koyar; ön işlemenin etkisini gösterir. Pipeline'da en az bir adım olmalı.",
+    "tip-dd_rn": "ResNet-18 ağırlığı. <b>ft</b>: ImageNet'ten tam ince ayar · <b>probe</b>: yalnız son katman eğitildi · <b>scratch</b>: sıfırdan eğitim. <b>h4</b> modelleri Faz 2 H4 deneylerine aittir.",
+    "tip-rd_src2": 'Modele <b>orijinal görüntünün</b> mü yoksa <b>Ön işleme</b> sekmesinde kurduğunuz <b>pipeline çıktısının</b> mı verileceği.',
+    "tip-sl_stride": "224 px'lik pencerenin her adımda kaç piksel kaydırılacağı. Küçük adım daha ince ısı haritası verir ama yavaştır (adım yarıya inince patch sayısı ~4 katına çıkar). 224 = örtüşmesiz.",
+    "tip-btn_rn": "Görüntüyü 224 px patch'lerle tarar; patch skoru ısı haritası ve ölçütleri üretir. Görüntü kararı: en yüksek patch skoru ≥ 0.5 ise SAHTE.",
+    "tip-btn_green": 'Mevcut görüntüde yeşil işaretçi piksellerini (G − max(R,B) > 50 ve G > 110) arar ve magenta ile gösterir. Authentic eşi varsa orijinalde de bulunan yeşiller çıkarılır.',
+    "tip-x_src": "Açıklanacak görüntünün kaynağı.<br><b>Girdi sekmesi</b>: yüklenen ya da aktarılan orijinal görüntü.<br><b>Pipeline çıktısı</b>: Ön işleme sekmesindeki zincirin çıktısı.<br><b>Son simülasyon girdisi</b>: sekme 0'da modele verilen görüntü (senaryo + bozulma dahil).<br><b>Yeni yükleme</b>: buradan yeni görüntü (+ isteğe bağlı authentic eş ve GT).",
+    "tip-x_up_img": 'Açıklanacak belge görüntüsü (PNG önerilir).',
+    "tip-x_up_auth": 'Aynı belgenin değiştirilmemiş hali (aynı boyut). Verilirse SHAP referansı olarak kullanılır: ΣSHAP = f(sahte) − f(authentic).',
+    "tip-x_up_gt": 'Değiştirilen bölgenin maskesi (beyaz = sahte). GT kutusu hedefi ve bölge kütlesi grafiği için kullanılır.',
+    "tip-x_unet": 'Açıklanacak U-Net modelleri. Her biri kendi gerçek çıktısından türetilen hedefle ayrı açıklanır.',
+    "tip-x_res": 'Açıklanacak ResNet-18 modelleri (224 px patch sınıflandırıcı).',
+    "tip-b_xpred": 'Seçili modelleri uygulamanın kendi çıkarımıyla (değiştirilmeden) çalıştırır: görüntü skoru, eşik, karar ve tespit bölgeleri. SHAP hedefleri bu tahminlerden türetilir.',
+    "tip-x_target": "Hangi skaler çıktının açıklanacağı:<br><b>Karar hedefi</b>: ResNet → kararı belirleyen maks patch; U-Net → top-%1 merkezli 512 px penceredeki görüntü skoru.<br><b>Tespitler</b>: U-Net eşik (τ*) üstü bağlı bileşenler (güven = ortalama olasılık) ve ResNet'in en yüksek k patch'i; her biri ayrı açıklanır.<br><b>GT kutusu</b>: GT kutusu içindeki ortalama olasılık (ResNet: kutu merkezli penceredeki maks patch).<br><b>Ortak pencere</b>: tüm modeller aynı 512 px pencereyi açıklar (karşılaştırma için).",
+    "tip-x_k": 'Tespitler hedefinde model başına açıklanacak en fazla bölge / patch sayısı.',
+    "tip-x_method": "<b>Partition</b>: modelden bağımsız, hiyerarşik Owen değerleri; referansla maskeleme yapar, toplamsallık kesindir (ΣSHAP = f(x) − f(referans)).<br><b>Gradient</b>: beklenen gradyanlar (fp32); piksel düzeyinde ince doku izi, 5 kanallı U-Net'te RGB / FFT-HP / Laplacian grup katkısı. Toplamsallık yaklaşıktır.",
+    "tip-x_ref": "Gizlenen piksellerin neyle doldurulacağı (SHAP'ın karşı-olgusal referansı).<br><b>authentic eş</b>: orijinal belge — en anlamlı referans; ΣSHAP = f(sahte) − f(orijinal).<br><b>blur(32,32)</b>: görüntünün bulanık hali.<br><b>inpaint_telea</b>: çevreden doldurma (yalnız Partition).",
+    "tip-x_evals": "Partition açıklayıcısının model değerlendirme bütçesi. Yüksek değer daha ince bölümleme ve daha ayrıntılı harita verir ama süre doğrusal artar (ZeroGPU'da çağrı başına ≤ 120 s).",
+    "tip-b_xshap": 'Seçilen hedefleri SHAP ile açıklar. Tahminden bağımsızdır; aynı görüntü, model, hedef, yöntem, referans ve bütçe önbellekteyse yeniden hesaplanmaz. Sonuçlar PNG · JSON · NPZ · MD olarak indirilebilir.',
+    "tip-b_xcmp": 'Tüm seçili modelleri aynı pencerede, aynı referans ve bütçeyle açıklar; top-%5 pozitif bölge IoU/Dice, 16×16 blok Spearman korelasyonu ve ortak / modele özgü bölge haritası üretir. Farklı hedef türleri yalnız normalize ölçütlerle karşılaştırılır.',
+    "tip-x_show": 'Ayrıntılı panelleri gösterilecek açıklama (model · hedef).',
+}
+
+TIP_JS = """
+() => {
+  const tips = """ + json.dumps(TIPS, ensure_ascii=False) + """;
+  if (window.__aicTips) return; window.__aicTips = true;
+  const box = document.createElement('div'); box.id = 'aic-tip'; document.body.appendChild(box);
+  let cur = null;
+  const find = (el) => { while (el && el !== document.body) { if (el.id && tips[el.id]) return el; el = el.parentElement; } return null; };
+  const place = (t) => {
+    const r = t.getBoundingClientRect(), bw = box.offsetWidth, bh = box.offsetHeight, vw = innerWidth, vh = innerHeight;
+    let x = r.right + 12, y = r.top;
+    if (x + bw > vw - 8) { x = Math.max(8, Math.min(r.left, vw - bw - 8)); y = r.bottom + 8; if (y + bh > vh - 8) y = r.top - bh - 8; }
+    y = Math.max(8, Math.min(y, vh - bh - 8));
+    box.style.left = x + 'px'; box.style.top = y + 'px';
+  };
+  document.addEventListener('mouseover', (e) => {
+    const t = find(e.target);
+    if (t === cur) return;
+    cur = t;
+    if (!t) { box.classList.remove('show'); return; }
+    box.innerHTML = tips[t.id]; box.classList.add('show'); place(t);
+  });
+  document.addEventListener('scroll', () => { if (cur) place(cur); }, true);
+  document.addEventListener('mousedown', () => { cur = null; box.classList.remove('show'); });
+}
+"""
+
+# ================================================================== XAI · KATMAN FİLTRELERİ (sekme 9)
+# SHAP'tan bağımsız ikinci XAI özelliği: app/xai_filters.py — ilk conv katmanlarının checkpoint'teki gerçek kernel'leri
+# + modelin kendi forward'ından alınan aktivasyon haritaları (bağımsız F.conv2d ile doğrulanır). Ayrıntı: docs/XAI_FILTERS.md
+try:
+    import xai_filters as XFILT
+    XFILT_OK, _XFILT_ERR = True, ""
+except Exception as _e:  # paket yoksa diğer sekmeler etkilenmez
+    XFILT, XFILT_OK, _XFILT_ERR = None, False, str(_e)
+
 preload_models()
+xai_setup()
 _IDX = dataset_index()
 _UNETS = [n for n in list_unet_ckpts() if n in _REG or not _REG]
 _RESNETS = [n for n in list_resnet_ckpts() if n in _REG or not _REG]
@@ -1938,14 +2397,7 @@ _TOOLS = ["hepsi"] + sorted(x for x in _IDX["tool"].unique() if x)
 _AREAS = ["hepsi"] + [a for a in ("<1%", "1-5%", "5-20%", ">20%") if a in set(_IDX["area_bin"])]
 
 with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
-    gr.Markdown(
-        "# AIC515 Görüntü İşleme · AIForge-Doc — Belge Sahteciliği Tespiti ve Lokalizasyonu\n"
-        "**Simülasyon** sekmesinde veri setinden bir fiş/form seçin; uygulama ground-truth analizini, yeşil işaretçi taramasını, "
-        "seçtiğiniz girdi senaryosunu ve bozulmayı uygulayıp ResNet-18 ve U-Net modellerini adım adım çalıştırır, sonuçları iki farklı "
-        "GT ile ölçer ve görüntü-düzeyi karar verir. **Toplu test** aynı hattı N örnekte koşturur. Diğer sekmeler ders konularını "
-        "(61 ön işleme işlemi) aşamalı olarak uygulamaya yarar."
-        f"  \n<small>Veri seti: {len(_IDX)} sahte görüntü dizinde · model: {len(_REG)} yüklü · cihaz: "
-        f"`{'ZeroGPU (NVIDIA RTX Pro 6000 Blackwell, istek başına)' if ZERO_GPU else DEVICE}` · veri kökü `{DATA_ROOT}`</small>")
+    gr.Markdown("# AIC515 Görüntü İşleme · AIForge-Doc — Belge Sahteciliği Tespiti ve Lokalizasyonu")
 
     st_orig = gr.State(None); st_cur = gr.State(None); st_mask = gr.State(None); st_auth = gr.State(None); st_steps = gr.State([])
     st_sim = gr.State(None)
@@ -1956,30 +2408,30 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
             with gr.Column(scale=1, min_width=340):
                 gr.Markdown("#### 1) Örnek seçimi")
                 with gr.Row():
-                    f_split = gr.Dropdown(["hepsi", "eğitim (training)", "test (testing)"], value="test (testing)", label="Bölüm")
-                    f_source = gr.Dropdown(_SOURCES, value="hepsi", label="Kaynak veri seti")
+                    f_split = gr.Dropdown(["hepsi", "eğitim (training)", "test (testing)"], value="test (testing)", label="Bölüm", elem_id="tip-f_split")
+                    f_source = gr.Dropdown(_SOURCES, value="hepsi", label="Kaynak veri seti", elem_id="tip-f_source")
                 with gr.Row():
-                    f_tool = gr.Dropdown(_TOOLS, value="hepsi", label="Inpainting üreticisi")
-                    f_area = gr.Dropdown(_AREAS, value="hepsi", label="Kurcalanan alan oranı")
+                    f_tool = gr.Dropdown(_TOOLS, value="hepsi", label="Inpainting üreticisi", elem_id="tip-f_tool")
+                    f_area = gr.Dropdown(_AREAS, value="hepsi", label="Kurcalanan alan oranı", elem_id="tip-f_area")
                 with gr.Row():
-                    f_marker = gr.Dropdown(["hepsi", "var", "yok"], value="hepsi", label="Yeşil işaretçi kalıntısı")
-                    f_mp = gr.Slider(0.1, 40, value=12, step=0.1, label="En fazla megapiksel")
-                f_pair = gr.Checkbox(False, label="Yalnız authentic eşi olanlar (piksel-GT ve işaretçi senaryoları için gerekli)")
+                    f_marker = gr.Dropdown(["hepsi", "var", "yok"], value="hepsi", label="Yeşil işaretçi kalıntısı", elem_id="tip-f_marker")
+                    f_mp = gr.Slider(0.1, 40, value=12, step=0.1, label="En fazla megapiksel", elem_id="tip-f_mp")
+                f_pair = gr.Checkbox(False, label="Yalnız authentic eşi olanlar (piksel-GT ve işaretçi senaryoları için gerekli)", elem_id="tip-f_pair")
                 with gr.Row():
-                    b_filter = gr.Button("Filtrele")
-                    b_rand = gr.Button("🎲 Rastgele seç", variant="secondary")
+                    b_filter = gr.Button("Filtrele", elem_id="tip-b_filter")
+                    b_rand = gr.Button("🎲 Rastgele seç", variant="secondary", elem_id="tip-b_rand")
                 f_count = gr.Markdown(" ", elem_classes="small-md")
-                dd_key = gr.Dropdown(choices=sample_choices(filter_index("test (testing)", max_mp=12)), label="Örnek (bölüm:kimlik) — listeden seçin ya da yazın", filterable=True, allow_custom_value=True)
+                dd_key = gr.Dropdown(choices=sample_choices(filter_index("test (testing)", max_mp=12)), label="Örnek (bölüm:kimlik)", filterable=True, allow_custom_value=True, elem_id="tip-dd_key")
                 gr.Markdown("#### 2) Senaryo")
-                rd_input = gr.Radio(INPUT_TYPES, value=INPUT_TYPES[0], label="Girdi senaryosu")
-                dd_deg = gr.Dropdown(DEGRADATIONS, value=DEGRADATIONS[0], label="Test-zamanı bozulma")
-                ck_pipe = gr.Checkbox(False, label="Ön işleme sekmesindeki pipeline'ı da uygula")
+                rd_input = gr.Radio(INPUT_TYPES, value=INPUT_TYPES[0], label="Girdi senaryosu", elem_id="tip-rd_input")
+                dd_deg = gr.Dropdown(DEGRADATIONS, value=DEGRADATIONS[0], label="Test-zamanı bozulma", elem_id="tip-dd_deg")
+                ck_pipe = gr.Checkbox(False, label="Ön işleme sekmesindeki pipeline'ı da uygula", elem_id="tip-ck_pipe")
                 gr.Markdown("#### 3) Modeller")
-                cg_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS, label="U-Net (piksel lokalizasyonu)")
-                cg_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET, label="ResNet-18 (patch sınıflandırma)")
-                sl_stride_sim = gr.Slider(56, 224, value=112, step=8, label="ResNet kayan pencere adımı (px)")
-                b_sim = gr.Button("▶ Simülasyonu başlat", variant="primary", size="lg")
-                b_to_tabs = gr.Button("Bu örneği ön işleme / model sekmelerine aktar")
+                cg_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS, label="U-Net (piksel lokalizasyonu)", elem_id="tip-cg_unet")
+                cg_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET, label="ResNet-18 (patch sınıflandırma)", elem_id="tip-cg_res")
+                sl_stride_sim = gr.Slider(56, 224, value=112, step=8, label="ResNet kayan pencere adımı (px)", elem_id="tip-sl_stride_sim")
+                b_sim = gr.Button("▶ Simülasyonu başlat", variant="primary", size="lg", elem_id="tip-b_sim")
+                b_to_tabs = gr.Button("Bu örneği ön işleme / model sekmelerine aktar", elem_id="tip-b_to_tabs")
             with gr.Column(scale=2):
                 with gr.Row():
                     pv_img = gr.Image(label="Seçilen örnek", type="numpy", height=300, interactive=False)
@@ -1994,27 +2446,25 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
 
     # ---------------------------------------------------------------- 1 · TOPLU TEST
     with gr.Tab("1 · Toplu test"):
-        gr.Markdown("Filtreye uyan **N rastgele örnek** üzerinde simülasyon hattını koşturur; model başına lokalizasyon (bbox ve piksel-değişim GT), "
-                    "görüntü-düzeyi tespit (TPR/FPR/AUROC) ve **boru hattının kayıtlı sonuçlarıyla yeniden-üretim farkı** raporlanır.")
         with gr.Row():
             with gr.Column(scale=1, min_width=320):
                 with gr.Row():
-                    t_split = gr.Dropdown(["hepsi", "eğitim (training)", "test (testing)"], value="test (testing)", label="Bölüm")
-                    t_source = gr.Dropdown(_SOURCES, value="hepsi", label="Kaynak")
+                    t_split = gr.Dropdown(["hepsi", "eğitim (training)", "test (testing)"], value="test (testing)", label="Bölüm", elem_id="tip-t_split")
+                    t_source = gr.Dropdown(_SOURCES, value="hepsi", label="Kaynak", elem_id="tip-t_source")
                 with gr.Row():
-                    t_tool = gr.Dropdown(_TOOLS, value="hepsi", label="Üretici")
-                    t_area = gr.Dropdown(_AREAS, value="hepsi", label="Alan")
+                    t_tool = gr.Dropdown(_TOOLS, value="hepsi", label="Üretici", elem_id="tip-t_tool")
+                    t_area = gr.Dropdown(_AREAS, value="hepsi", label="Alan", elem_id="tip-t_area")
                 with gr.Row():
-                    t_marker = gr.Dropdown(["hepsi", "var", "yok"], value="hepsi", label="İşaretçi")
-                    t_mp = gr.Slider(0.1, 40, value=6, step=0.1, label="En fazla MP")
+                    t_marker = gr.Dropdown(["hepsi", "var", "yok"], value="hepsi", label="İşaretçi", elem_id="tip-t_marker")
+                    t_mp = gr.Slider(0.1, 40, value=6, step=0.1, label="En fazla MP", elem_id="tip-t_mp")
                 with gr.Row():
-                    t_n = gr.Slider(1, 100, value=16, step=1, label="Örnek sayısı N")
-                    t_seed = gr.Number(42, label="Tohum", precision=0)
-                t_mode = gr.Radio(BATCH_MODES, value=BATCH_MODES[1], label="Mod")
-                t_deg = gr.Dropdown(DEGRADATIONS, value=DEGRADATIONS[0], label="Bozulma")
-                t_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS[:2], label="U-Net")
-                t_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=[], label="ResNet-18")
-                b_batch = gr.Button("▶ Toplu testi başlat", variant="primary", size="lg")
+                    t_n = gr.Slider(1, 100, value=16, step=1, label="Örnek sayısı N", elem_id="tip-t_n")
+                    t_seed = gr.Number(42, label="Tohum", precision=0, elem_id="tip-t_seed")
+                t_mode = gr.Radio(BATCH_MODES, value=BATCH_MODES[1], label="Mod", elem_id="tip-t_mode")
+                t_deg = gr.Dropdown(DEGRADATIONS, value=DEGRADATIONS[0], label="Bozulma", elem_id="tip-t_deg")
+                t_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS[:2], label="U-Net", elem_id="tip-t_unet")
+                t_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=[], label="ResNet-18", elem_id="tip-t_res")
+                b_batch = gr.Button("▶ Toplu testi başlat", variant="primary", size="lg", elem_id="tip-b_batch")
             with gr.Column(scale=2):
                 t_prog = gr.Markdown(" ")
                 t_agg = gr.Dataframe(label="Model bazında özet", wrap=True, interactive=False)
@@ -2026,13 +2476,12 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
     with gr.Tab("2 · Girdi"):
         with gr.Row():
             with gr.Column(scale=1):
-                in_img = gr.Image(label="Sahte (forged) görüntü — PNG/JPG", type="numpy", height=320)
-                in_mask = gr.Image(label="GT maskesi (isteğe bağlı, 0/255)", type="numpy", height=160, image_mode="L")
-                in_auth = gr.Image(label="Authentic eş (isteğe bağlı; piksel-değişim GT için)", type="numpy", height=160)
-                btn_load = gr.Button("Yüklenenleri kullan", variant="primary")
-                gr.Markdown("**veya veri setinden örnek** (Simülasyon sekmesindeki filtreler daha hızlıdır)", elem_classes="small-md")
-                dd_sample = gr.Dropdown(choices=sample_choices(), label="örnek (bölüm:kimlik)", filterable=True, allow_custom_value=True)
-                btn_sample = gr.Button("Örneği yükle")
+                in_img = gr.Image(label="Sahte (forged) görüntü — PNG/JPG", type="numpy", height=320, elem_id="tip-in_img")
+                in_mask = gr.Image(label="GT maskesi (isteğe bağlı, 0/255)", type="numpy", height=160, image_mode="L", elem_id="tip-in_mask")
+                in_auth = gr.Image(label="Authentic eş (isteğe bağlı; piksel-değişim GT için)", type="numpy", height=160, elem_id="tip-in_auth")
+                btn_load = gr.Button("Yüklenenleri kullan", variant="primary", elem_id="tip-btn_load")
+                dd_sample = gr.Dropdown(choices=sample_choices(), label="örnek (bölüm:kimlik)", filterable=True, allow_custom_value=True, elem_id="tip-dd_sample")
+                btn_sample = gr.Button("Örneği yükle", elem_id="tip-btn_sample")
             with gr.Column(scale=1):
                 info_md = gr.Markdown("Görüntü yükleyin ya da örnek seçin.")
                 view_orig = gr.Image(label="Orijinal", type="numpy", height=360, interactive=False)
@@ -2043,18 +2492,18 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
     with gr.Tab("3 · Ön işleme (aşamalı pipeline)"):
         with gr.Row():
             with gr.Column(scale=1):
-                dd_cat = gr.Dropdown(choices=CATEGORIES, value=CATEGORIES[0], label="Kategori (ders haftası)")
+                dd_cat = gr.Dropdown(choices=CATEGORIES, value=CATEGORIES[0], label="Kategori (ders haftası)", elem_id="tip-dd_cat")
                 first_ops = list(OPS[CATEGORIES[0]].keys())
-                dd_op = gr.Dropdown(choices=first_ops, value=first_ops[0], label="İşlem")
-                sl1 = gr.Slider(visible=False); sl2 = gr.Slider(visible=False); sl3 = gr.Slider(visible=False)
-                dd_mode = gr.Dropdown(choices=[], visible=False, label="mod")
+                dd_op = gr.Dropdown(choices=first_ops, value=first_ops[0], label="İşlem", elem_id="tip-dd_op")
+                sl1 = gr.Slider(visible=False, elem_id="tip-sl1"); sl2 = gr.Slider(visible=False, elem_id="tip-sl2"); sl3 = gr.Slider(visible=False, elem_id="tip-sl3")
+                dd_mode = gr.Dropdown(choices=[], visible=False, label="mod", elem_id="tip-dd_mode")
                 op_doc = gr.Markdown(" ", elem_classes="small-md")
                 with gr.Row():
-                    btn_prev = gr.Button("Önizle"); btn_apply = gr.Button("Pipeline'a ekle (uygula)", variant="primary")
+                    btn_prev = gr.Button("Önizle", elem_id="tip-btn_prev"); btn_apply = gr.Button("Pipeline'a ekle (uygula)", variant="primary", elem_id="tip-btn_apply")
                 with gr.Row():
-                    btn_undo = gr.Button("Geri al"); btn_reset = gr.Button("Sıfırla")
-                dd_preset = gr.Dropdown(choices=list(PRESETS), value="— seçiniz —", label="Hazır pipeline (preset)")
-                btn_preset = gr.Button("Preseti uygula")
+                    btn_undo = gr.Button("Geri al", elem_id="tip-btn_undo"); btn_reset = gr.Button("Sıfırla", elem_id="tip-btn_reset")
+                dd_preset = gr.Dropdown(choices=list(PRESETS), value="— seçiniz —", label="Hazır pipeline (preset)", elem_id="tip-dd_preset")
+                btn_preset = gr.Button("Preseti uygula", elem_id="tip-btn_preset")
                 steps_box = gr.Markdown(steps_md([]))
             with gr.Column(scale=2):
                 with gr.Row():
@@ -2070,14 +2519,14 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
     with gr.Tab("4 · U-Net lokalizasyonu"):
         with gr.Row():
             with gr.Column(scale=1):
-                dd_unet = gr.Dropdown(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS[0] if _DEF_UNETS else None, label="U-Net checkpoint")
-                rd_src = gr.Radio(["Orijinal görüntü", "Pipeline çıktısı"], value="Orijinal görüntü", label="Model girdisi")
-                rd_gt = gr.Radio(["resmî bbox maskesi", "piksel-değişim (authentic'ten türet, eps8_morph)"], value="resmî bbox maskesi", label="Değerlendirme GT'si")
-                sl_thr = gr.Slider(0.05, 0.95, value=default_tau(_DEF_UNETS[0], "bbox") if _DEF_UNETS else 0.5, step=0.05, label="eşik τ (tau.json'dan otomatik)")
-                ck_otsu = gr.Checkbox(False, label="Eşik yerine Otsu (olasılık haritası üzerinde)")
-                sl_morph = gr.Slider(0, 15, value=0, step=1, label="Son-işleme morfoloji (açma+kapama) çekirdeği; 0 = kapalı")
-                btn_unet = gr.Button("U-Net çalıştır", variant="primary")
-                btn_cmp = gr.Button("Karşılaştır: orijinal vs pipeline çıktısı")
+                dd_unet = gr.Dropdown(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS[0] if _DEF_UNETS else None, label="U-Net checkpoint", elem_id="tip-dd_unet")
+                rd_src = gr.Radio(["Orijinal görüntü", "Pipeline çıktısı"], value="Orijinal görüntü", label="Model girdisi", elem_id="tip-rd_src")
+                rd_gt = gr.Radio(["resmî bbox maskesi", "piksel-değişim (authentic'ten türet, eps8_morph)"], value="resmî bbox maskesi", label="Değerlendirme GT'si", elem_id="tip-rd_gt")
+                sl_thr = gr.Slider(0.05, 0.95, value=default_tau(_DEF_UNETS[0], "bbox") if _DEF_UNETS else 0.5, step=0.05, label="eşik τ", elem_id="tip-sl_thr")
+                ck_otsu = gr.Checkbox(False, label="Eşik yerine Otsu (olasılık haritası üzerinde)", elem_id="tip-ck_otsu")
+                sl_morph = gr.Slider(0, 15, value=0, step=1, label="Son-işleme morfoloji (açma+kapama) çekirdeği; 0 = kapalı", elem_id="tip-sl_morph")
+                btn_unet = gr.Button("U-Net çalıştır", variant="primary", elem_id="tip-btn_unet")
+                btn_cmp = gr.Button("Karşılaştır: orijinal vs pipeline çıktısı", elem_id="tip-btn_cmp")
                 unet_df = gr.Dataframe(label="ölçütler", wrap=True)
                 unet_note = gr.Markdown(" ")
             with gr.Column(scale=2):
@@ -2097,10 +2546,10 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
     with gr.Tab("5 · ResNet-18 patch sınıflandırma"):
         with gr.Row():
             with gr.Column(scale=1):
-                dd_rn = gr.Dropdown(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET[0] if _DEF_RESNET else (_RESNETS[0] if _RESNETS else None), label="ResNet-18 checkpoint")
-                rd_src2 = gr.Radio(["Orijinal görüntü", "Pipeline çıktısı"], value="Orijinal görüntü", label="Model girdisi")
-                sl_stride = gr.Slider(32, 224, value=112, step=16, label="kayan pencere adımı (patch 224, natif çözünürlük)")
-                btn_rn = gr.Button("ResNet-18 çalıştır", variant="primary")
+                dd_rn = gr.Dropdown(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET[0] if _DEF_RESNET else (_RESNETS[0] if _RESNETS else None), label="ResNet-18 checkpoint", elem_id="tip-dd_rn")
+                rd_src2 = gr.Radio(["Orijinal görüntü", "Pipeline çıktısı"], value="Orijinal görüntü", label="Model girdisi", elem_id="tip-rd_src2")
+                sl_stride = gr.Slider(32, 224, value=112, step=16, label="kayan pencere adımı (patch 224, natif çözünürlük)", elem_id="tip-sl_stride")
+                btn_rn = gr.Button("ResNet-18 çalıştır", variant="primary", elem_id="tip-btn_rn")
                 rn_df = gr.Dataframe(label="ölçütler", wrap=True)
             with gr.Column(scale=2):
                 rn_ov = gr.Image(label="Patch skor ısı haritası (mavi: GT bbox)", type="numpy", height=480, interactive=False)
@@ -2110,7 +2559,7 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
         gr.Markdown("Veri seti üretim hattının bıraktığı **yeşil işaretçi kalıntısı** (PHASE 2 Ek-C): G − max(R,B) > 50 ve G > 110. "
                     "Sahtelerin %75,4'ünde bbox iç kenarında görülür ve tüm modellerin kullandığı bir kısayoldur. "
                     "Simülasyondaki 'işaretçi onarılmış' ve 'yalnız işaretçi' senaryoları bu etkiyi ölçer.")
-        btn_green = gr.Button("Mevcut görüntüde işaretçiyi ara", variant="primary")
+        btn_green = gr.Button("Mevcut görüntüde işaretçiyi ara", variant="primary", elem_id="tip-btn_green")
         with gr.Row():
             green_ov = gr.Image(label="İşaretçi pikselleri (magenta)", type="numpy", height=420, interactive=False)
             green_md = gr.Markdown(" ")
@@ -2124,7 +2573,74 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
             "- Tam görüntü çıkarımı 512 px pencere / 448 px adım / örtüşme ortalaması; uzun kenar > 4096 px ise 4096'ya küçültülür.\n"
             "- Metrikler boru hattıyla aynı tanımla hesaplanır: 8-bit nicemlenmiş olasılık, 256 kutulu histogram, tüm pikseller (alt-örnekleme yok).\n"
             "- Görüntü-düzeyi skor = olasılık haritasının en yüksek %1 piksel ortalaması; eşik val'de Youden-J ile seçildi.\n"
-            "- Veri seti: AIForge-Doc v1 (Scam.AI, CC BY-NC-SA 4.0, kapılı) — ham veri yalnız özel bucket'ta tutulur, yeniden dağıtılmaz.")
+            "- Veri seti: AIForge-Doc v1 (Scam.AI, CC BY-NC-SA 4.0, kapılı).")
+
+    # ---------------------------------------------------------------- 8 · SHAP AÇIKLAMALARI
+    with gr.Tab("8 · SHAP açıklamaları"):
+        st_xpred = gr.State(None); st_xview = gr.State(None)
+        with gr.Row():
+            with gr.Column(scale=1, min_width=340):
+                gr.Markdown("#### 1) Görüntü ve modeller")
+                x_src = gr.Radio(XAI_SOURCES, value=XAI_SOURCES[0], label="Görüntü kaynağı", elem_id="tip-x_src")
+                with gr.Group(visible=False) as x_up_grp:
+                    x_up_img = gr.Image(label="Görüntü", type="numpy", height=200, elem_id="tip-x_up_img")
+                    with gr.Row():
+                        x_up_auth = gr.Image(label="Authentic eş (isteğe bağlı)", type="numpy", height=120, elem_id="tip-x_up_auth")
+                        x_up_gt = gr.Image(label="GT maskesi (isteğe bağlı)", type="numpy", height=120, image_mode="L", elem_id="tip-x_up_gt")
+                x_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS, label="U-Net", elem_id="tip-x_unet")
+                x_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET, label="ResNet-18", elem_id="tip-x_res")
+                gr.Markdown(xai_unsupported_md(), elem_classes="small-md")
+                b_xpred = gr.Button("① Tahmin yap", variant="primary", elem_id="tip-b_xpred")
+                gr.Markdown("#### 2) SHAP")
+                x_target = gr.Radio(XAI_TARGETS, value=XAI_TARGETS[0], label="Açıklanacak hedef", elem_id="tip-x_target")
+                x_k = gr.Slider(1, 3, value=3, step=1, label="Tespit sayısı k", elem_id="tip-x_k")
+                x_method = gr.Radio(XAI_METHODS, value=XAI_METHODS[0], label="Yöntem", elem_id="tip-x_method")
+                x_ref = gr.Dropdown(XAI_REFS, value=XAI_REFS[0], label="Referans (arka plan)", elem_id="tip-x_ref")
+                x_evals = gr.Slider(300, 3000, value=1000, step=100, label="max_evals (Partition bütçesi)", elem_id="tip-x_evals")
+                b_xshap = gr.Button("② SHAP analizini başlat", variant="primary", elem_id="tip-b_xshap")
+                b_xcmp = gr.Button("③ Modelleri karşılaştır", elem_id="tip-b_xcmp")
+            with gr.Column(scale=2):
+                x_status = gr.Markdown("① ile tahmin yapın, ② ile seçilen hedefleri SHAP ile açıklayın, ③ ile modelleri aynı pencerede karşılaştırın.")
+                x_pred_df = gr.Dataframe(label="Tahminler (uygulamanın kendi çıkarımı)", wrap=True, interactive=False)
+                x_res_df = gr.Dataframe(label="SHAP sonuçları", wrap=True, interactive=False)
+                x_loc = gr.Image(label="Açıklanan pencerelerin konumu (numara = sonuç sırası)", type="numpy", height=300, interactive=False)
+                x_show = gr.Dropdown(choices=[], label="Gösterilecek açıklama", elem_id="tip-x_show")
+                x_sum = gr.Markdown(" ")
+                with gr.Row():
+                    x_p0 = gr.Image(label="Orijinal pencere (mavi: GT · magenta: işaretçi · yeşil: hedef bölge)", type="numpy", height=260, interactive=False)
+                    x_p1 = gr.Image(label="SHAP ısı haritası (kırmızı: SAHTE · mavi: GERÇEK)", type="numpy", height=260, interactive=False)
+                    x_p2 = gr.Image(label="Bindirme", type="numpy", height=260, interactive=False)
+                with gr.Row():
+                    x_p3 = gr.Image(label="Pozitif katkı (SAHTE'yi artıran)", type="numpy", height=260, interactive=False)
+                    x_p4 = gr.Image(label="Negatif katkı (GERÇEK'e iten)", type="numpy", height=260, interactive=False)
+                x_p5 = gr.Image(label="Sınıf panelleri: SAHTE | GERÇEK (= −SAHTE)", type="numpy", height=280, interactive=False)
+                x_mass = gr.Image(label="Pozitif SHAP kütlesinin bölgelere dağılımı (GT kutusu / kenar halkası / işaretçi / geri kalan)", type="numpy", interactive=False)
+                with gr.Accordion("Tüm paneller (galeri)", open=False):
+                    x_gal = gr.Gallery(columns=3, height=520, object_fit="contain", preview=False, format="png")
+                with gr.Accordion("Model karşılaştırması (③)", open=True):
+                    x_cmp_md = gr.Markdown(" ")
+                    x_cmp_img = gr.Image(label="IoU · Spearman · ortak/özgü bölge", type="numpy", interactive=False)
+                    x_cmp_df = gr.Dataframe(label="Karşılaştırılan açıklamalar", wrap=True, interactive=False)
+                x_files = gr.File(label="Dışa aktarım (PNG paneller · JSON · NPZ · MD rapor)", file_count="multiple")
+
+    # ---------------------------------------------------------------- 9 · XAI · KATMAN FİLTRELERİ (Filter Visualization)
+    with gr.Tab("9 · Katman filtreleri (Filter Visualization)"):
+        gr.Markdown("**XAI Analysis · Filter Visualization** — SHAP sekmesinden bağımsızdır. Eğitilmiş modelin ilk konvolüsyon "
+                    "katmanlarındaki **gerçek kernel ağırlıkları** (B) ile bunların modelin kendi ön işlemesinden geçen görüntüye "
+                    "uygulanmasıyla oluşan **aktivasyon haritaları** (C) ayrı ayrı gösterilir; D'de orijinal görüntüyle karşılaştırılır. "
+                    "Filtre eğitilmez/üretilmez, ağırlıklar ve mimari değiştirilmez, derin katmanlara ilerlenmez.", elem_classes="small-md")
+        if XFILT_OK and TORCH_OK:
+            def _xf_sample(key):
+                try:
+                    return load_dataset_sample(key)
+                except Exception as e:
+                    raise gr.Error(f"Örnek yüklenemedi: {e}")
+            XFILT.build_tab(gr, models_dir=MODELS, yolo_runs_dir=ROOT / "phase3_yolo" / "runs", gpu=gpu,
+                            freq_fn=project_freq_channels, load_sample=_xf_sample,
+                            sample_choices=sample_choices(filter_index("test (testing)", max_mp=12)),
+                            image_states=(st_orig, st_mask), default_key="PHASE2/unet_bbox_s42", store_fp16=True if ZERO_GPU else None)
+        else:
+            gr.Markdown(f"⚠️ Katman filtreleri kullanılamıyor: `{_XFILT_ERR or _TORCH_ERR}`")
 
     # ---------------------------------------------------------------- olaylar
     filt_in = [f_split, f_source, f_tool, f_area, f_pair, f_marker, f_mp]
@@ -2164,6 +2680,19 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
 
     btn_rn.click(run_resnet, [st_orig, st_cur, st_mask, dd_rn, rd_src2, sl_stride], [rn_ov, rn_df])
     btn_green.click(run_green, [st_cur, st_mask, st_auth], [green_ov, green_md])
+
+
+    # ---------------------------------------------------------------- 8 · SHAP olayları
+    x_src.change(lambda v: gr.update(visible=v == XAI_SOURCES[3]), [x_src], [x_up_grp])
+    b_xpred.click(xai_predict, [x_src, x_unet, x_res, st_orig, st_cur, st_mask, st_auth, st_sim, x_up_img, x_up_auth, x_up_gt],
+                  [x_pred_df, x_status, st_xpred])
+    _x_panels = [x_sum, x_p0, x_p1, x_p2, x_p3, x_p4, x_p5]
+    b_xshap.click(xai_run, [st_xpred, x_target, x_k, x_method, x_ref, x_evals],
+                  [x_status, x_res_df, x_loc, x_show, st_xview, x_mass, x_gal, x_files] + _x_panels)
+    x_show.change(_xai_show_outputs, [st_xview, x_show], _x_panels)
+    b_xcmp.click(xai_compare, [st_xpred, x_method, x_ref, x_evals], [x_cmp_md, x_cmp_img, x_cmp_df, x_files])
+
+    demo.load(None, None, None, js=TIP_JS)  # sol panel açıklamaları
 
 demo.queue(default_concurrency_limit=2)
 

@@ -11,3 +11,4 @@ pandas
 tabulate
 matplotlib
 Pillow
+shap==0.54.1

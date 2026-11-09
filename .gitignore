@@ -27,3 +27,8 @@ phase2/gt/verification_grid.pdf
 **/train_batch*.jpg
 **/val_batch*.jpg
 **/labels.jpg
+
+# XAI katman filtreleri: veri setinden türetilmiş aktivasyon/karşılaştırma görselleri yeniden dağıtılmaz (yalnız kernel ağırlık görselleri)
+reports/xai_filters/figs/*
+!reports/xai_filters/figs/*__1_kernel_grid.png
+!reports/xai_filters/figs/*__4_kernel_detay_*.png

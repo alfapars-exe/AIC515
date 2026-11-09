@@ -1,0 +1,7912 @@
+{
+ "models": [
+  {
+   "key": "PHASE2/dlv3p_bbox_s42",
+   "label": "DeepLabV3+ · bbox-GT (s42) [PHASE2]",
+   "file": "dlv3p_bbox_s42.pt",
+   "ok": true,
+   "arch": "smp.DeepLabV3Plus(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "dlv3p",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.1767029293822099e-06,
+     "max_abs": 1.1444091796875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.123640078709296e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.601018532613524e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.761300560594805e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.1767029293822099e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.115794010635e-07,
+   "sec": 0.69,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "9425801afcbe6980c7a935878d92c14c9128fc29c25c71ba044f97b23fafbe7c"
+  },
+  {
+   "key": "PHASE2/dlv3p_glyph_v2_s42",
+   "label": "DeepLabV3+ · glif-GT (s42) [PHASE2]",
+   "file": "dlv3p_glyph_v2_s42.pt",
+   "ok": true,
+   "arch": "smp.DeepLabV3Plus(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "dlv3p",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.157368783796257e-06,
+     "max_abs": 1.1444091796875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.247685102506685e-07,
+     "max_abs": 1.430511474609375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 7.885693834902897e-07,
+     "max_abs": 6.198883056640625e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.602368151573649e-07,
+     "max_abs": 1.3113021850585938e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.157368783796257e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.685900591994141e-07,
+   "sec": 0.42,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "c691f9bac8afd3c9f7e66460663c34f0f7c3cdd886ac4292cf720d8996ccec71"
+  },
+  {
+   "key": "PHASE2/dlv3p_pixel_eps8_morph_s42",
+   "label": "DeepLabV3+ · piksel-GT (s42) [PHASE2]",
+   "file": "dlv3p_pixel_eps8_morph_s42.pt",
+   "ok": true,
+   "arch": "smp.DeepLabV3Plus(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "dlv3p",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.1225179342648216e-06,
+     "max_abs": 1.049041748046875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.069715650372741e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.634483125394197e-07,
+     "max_abs": 7.152557373046875e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.2287799557502856e-07,
+     "max_abs": 9.5367431640625e-07
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.1225179342648216e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.142080681252992e-07,
+   "sec": 0.41,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "e4143c0c7fa8fd8511ade94c1e93886f8f7c63a157fd7a782475a7107807f98f"
+  },
+  {
+   "key": "PHASE2/h4_resnet18",
+   "label": "ResNet-18 · H4 global-iz sondası [PHASE2]",
+   "file": "h4_resnet18.pt",
+   "ok": true,
+   "arch": "torchvision.resnet18 (fc → 1)",
+   "family": "resnet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "bn1 (BatchNorm2d)",
+      "act": "relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn1 (BatchNorm2d)",
+      "act": "layer1.0.relu (ReLU)"
+     },
+     "rel": 9.535961062762835e-07,
+     "max_abs": 9.5367431640625e-06
+    },
+    {
+     "name": "layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.57190082982102e-07,
+     "max_abs": 1.430511474609375e-06
+    },
+    {
+     "name": "layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn1 (BatchNorm2d)",
+      "act": "layer1.1.relu (ReLU)"
+     },
+     "rel": 8.842660023722423e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.996333362072741e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.535961062762835e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.274796197023534e-07,
+   "sec": 0.4,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "a40972d0fab31208a5ed8c88a9e9d88bce1ec5f9256f07f5e97ae33b2f07def2"
+  },
+  {
+   "key": "PHASE2/h4_resnet18_poscontrol",
+   "label": "ResNet-18 · H4 global-iz sondası (poz. kontrol) [PHASE2]",
+   "file": "h4_resnet18_poscontrol.pt",
+   "ok": true,
+   "arch": "torchvision.resnet18 (fc → 1)",
+   "family": "resnet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "bn1 (BatchNorm2d)",
+      "act": "relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn1 (BatchNorm2d)",
+      "act": "layer1.0.relu (ReLU)"
+     },
+     "rel": 9.94594709286482e-07,
+     "max_abs": 8.58306884765625e-06
+    },
+    {
+     "name": "layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 8.115082230551475e-07,
+     "max_abs": 1.6987323760986328e-06
+    },
+    {
+     "name": "layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn1 (BatchNorm2d)",
+      "act": "layer1.1.relu (ReLU)"
+     },
+     "rel": 9.251961101846487e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 7.87087641206628e-07,
+     "max_abs": 1.3113021850585938e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.94594709286482e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.115765588925569e-07,
+   "sec": 0.38,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "c0090c8498b48d50cbda83ac68b798d0bd37d4ede90f77f3ee0728e3cb16295b"
+  },
+  {
+   "key": "PHASE2/unet_bbox_geminionly_s42",
+   "label": "U-Net · bbox-GT · yalnız Gemini (s42) [PHASE2]",
+   "file": "unet_bbox_geminionly_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.3202116865137184e-06,
+     "max_abs": 1.33514404296875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.75133891169623e-07,
+     "max_abs": 1.3709068298339844e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 6.841704843378875e-07,
+     "max_abs": 5.7220458984375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.86911988345026e-07,
+     "max_abs": 9.5367431640625e-07
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.3202116865137184e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.953640425104822e-07,
+   "sec": 0.48,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "0174c0cd7ac079460fea3b84655ea0f88d949b2ec50db65369e19bc737784e23"
+  },
+  {
+   "key": "PHASE2/unet_bbox_geminionly_s43",
+   "label": "U-Net · bbox-GT · yalnız Gemini (s43) [PHASE2]",
+   "file": "unet_bbox_geminionly_s43.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 8.127846143122783e-07,
+     "max_abs": 7.62939453125e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.358490517505602e-07,
+     "max_abs": 1.1920928955078125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 1.0649106248699958e-06,
+     "max_abs": 8.106231689453125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.767848111613894e-07,
+     "max_abs": 9.5367431640625e-07
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.0649106248699958e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.7150268756013247e-07,
+   "sec": 0.48,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "3db3b27cdd1309222ee2a7de83be589f2fa5c8d5df353ba1b5b1e3e738b58294"
+  },
+  {
+   "key": "PHASE2/unet_bbox_geminionly_s44",
+   "label": "U-Net · bbox-GT · yalnız Gemini (s44) [PHASE2]",
+   "file": "unet_bbox_geminionly_s44.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 9.000205204677723e-07,
+     "max_abs": 8.58306884765625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.300200125854223e-07,
+     "max_abs": 1.430511474609375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.109712829275078e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.939994978767273e-07,
+     "max_abs": 1.0728836059570312e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.000205204677723e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.130787030793726e-07,
+   "sec": 0.53,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "0536a33f04b9d9df278a90010de2abadc6b0a046fcb2fe492bca4e2753e891a0"
+  },
+  {
+   "key": "PHASE2/unet_bbox_mr_s42",
+   "label": "U-Net · bbox-GT · işaretçi-onarımlı (s42) [PHASE2]",
+   "file": "unet_bbox_mr_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 9.815583829452827e-07,
+     "max_abs": 9.5367431640625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.591424095848573e-07,
+     "max_abs": 1.430511474609375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.181291954677516e-07,
+     "max_abs": 7.152557373046875e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.909324488568673e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.815583829452827e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.3385495018810616e-07,
+   "sec": 0.47,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "ef42e787ed68e684f550b226fd85d2e9a0967f5cff4fe202eb483c96672cbe26"
+  },
+  {
+   "key": "PHASE2/unet_bbox_s42",
+   "label": "U-Net · bbox-GT (s42) [PHASE2]",
+   "file": "unet_bbox_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 8.914931053408128e-07,
+     "max_abs": 8.58306884765625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.256624541264153e-07,
+     "max_abs": 1.3709068298339844e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.71188387456939e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.05566317141555e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 8.914931053408128e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.290881747692765e-07,
+   "sec": 0.43,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "3fb35df4bc5b4bdc98d3c0ace3663420f77e0add3fccf8c4ea10ffb80a0ac1b8"
+  },
+  {
+   "key": "PHASE2/unet_bbox_s42_e20",
+   "label": "U-Net · bbox-GT (s42, 20 epoch) [PHASE2]",
+   "file": "unet_bbox_s42_e20.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.0045244787044273e-06,
+     "max_abs": 9.5367431640625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.80425825326791e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 7.894341166219084e-07,
+     "max_abs": 6.198883056640625e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.234915790288838e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.0045244787044273e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 6.003008365951246e-07,
+   "sec": 0.45,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "6d5260e865f51aa0ef581206aa056a049a0340499ce6ffce0f89ec8cc6f53d7b"
+  },
+  {
+   "key": "PHASE2/unet_bbox_s43",
+   "label": "U-Net · bbox-GT (s43) [PHASE2]",
+   "file": "unet_bbox_s43.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.068389869449448e-06,
+     "max_abs": 1.049041748046875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.341270177367357e-07,
+     "max_abs": 1.3709068298339844e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 7.83743377820518e-07,
+     "max_abs": 6.198883056640625e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 8.096147354859873e-07,
+     "max_abs": 1.5497207641601562e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.068389869449448e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.2750269813041086e-07,
+   "sec": 0.44,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "8521a9ebaec9d7115e4c35c668c3631ed52c4883b4e0be59be89d4b6ac6c6d94"
+  },
+  {
+   "key": "PHASE2/unet_bbox_s44",
+   "label": "U-Net · bbox-GT (s44) [PHASE2]",
+   "file": "unet_bbox_s44.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.0716500776722042e-06,
+     "max_abs": 1.1444091796875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.633253484523339e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.228945804052906e-07,
+     "max_abs": 7.62939453125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.966368682473811e-07,
+     "max_abs": 9.5367431640625e-07
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.0716500776722042e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.086788519292895e-07,
+   "sec": 0.43,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "63f024e66a5074c09be77cbde7e5c74da163a5195114e9dd211d46ba96f3b64d"
+  },
+  {
+   "key": "PHASE2/unet_glyph_v2_geminionly_s42",
+   "label": "U-Net · glif-GT · yalnız Gemini (s42) [PHASE2]",
+   "file": "unet_glyph_v2_geminionly_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 9.964786257145616e-07,
+     "max_abs": 1.049041748046875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.63080761497172e-07,
+     "max_abs": 1.341104507446289e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.946528632251627e-07,
+     "max_abs": 8.106231689453125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.235543982441455e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.964786257145616e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.107474407850532e-07,
+   "sec": 0.45,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "2a17843c97f4c5fc3744f3100b36aaba176067b4d5f06d3a0c35d7e21e4d815c"
+  },
+  {
+   "key": "PHASE2/unet_glyph_v2_geminionly_s43",
+   "label": "U-Net · glif-GT · yalnız Gemini (s43) [PHASE2]",
+   "file": "unet_glyph_v2_geminionly_s43.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 9.926701238057144e-07,
+     "max_abs": 9.5367431640625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.555944055941052e-07,
+     "max_abs": 1.430511474609375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 7.083006580466387e-07,
+     "max_abs": 5.7220458984375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.569330365991749e-07,
+     "max_abs": 1.3113021850585938e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.926701238057144e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.965565605947631e-07,
+   "sec": 0.44,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "b07f75201421924eff09558bfe29cfd0a7f994a46e59e547c807998d92310825"
+  },
+  {
+   "key": "PHASE2/unet_glyph_v2_geminionly_s44",
+   "label": "U-Net · glif-GT · yalnız Gemini (s44) [PHASE2]",
+   "file": "unet_glyph_v2_geminionly_s44.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.1660942489396639e-06,
+     "max_abs": 1.239776611328125e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.408840484244373e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.113831962307251e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.3948522802233565e-07,
+     "max_abs": 1.0728836059570312e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.1660942489396639e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.523131676454796e-07,
+   "sec": 0.43,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "eded29416888a89b1ded5c2c4bc563630687c15911cbbec3daa7d7cd9f6eb540"
+  },
+  {
+   "key": "PHASE2/unet_glyph_v2_nm_mr_s42",
+   "label": "U-Net · glif-GT · işaretçisiz, işaretçi-onarımlı (s42) [PHASE2]",
+   "file": "unet_glyph_v2_nm_mr_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 7.703436194748252e-07,
+     "max_abs": 7.62939453125e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.596866080628303e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.511979516771406e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.458514092024992e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 8.511979516771406e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 3.9008995145195513e-07,
+   "sec": 0.4,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "8a8cddee2e98f514aa477f6890875c816c4a90cfe7ebeb99b4a7690afaad4e6d"
+  },
+  {
+   "key": "PHASE2/unet_glyph_v2_s42",
+   "label": "U-Net · glif-GT (s42) [PHASE2]",
+   "file": "unet_glyph_v2_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 9.680302211289812e-07,
+     "max_abs": 9.5367431640625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.722241530941278e-07,
+     "max_abs": 1.1920928955078125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.293626170949222e-07,
+     "max_abs": 7.152557373046875e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.063987533675898e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.680302211289812e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.130831368660438e-07,
+   "sec": 0.47,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "edf79b2d73364a90f3b87c75868820b176e7ccaead4abad5ac6403aced8cb196"
+  },
+  {
+   "key": "PHASE2/unet_glyph_v2_s42_e20",
+   "label": "U-Net · glif-GT (s42, 20 epoch) [PHASE2]",
+   "file": "unet_glyph_v2_s42_e20.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 8.800124531539135e-07,
+     "max_abs": 8.58306884765625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.964640742094029e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.68692801620421e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.660215454966563e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 8.800124531539135e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.099288955534576e-07,
+   "sec": 0.55,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "4569bf7a332abbbe60f18a1c4dd5482b01a58b143a170d5a8cabd3a9ce7a93f8"
+  },
+  {
+   "key": "PHASE2/unet_glyph_v2_s43",
+   "label": "U-Net · glif-GT (s43) [PHASE2]",
+   "file": "unet_glyph_v2_s43.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 8.785850173529403e-07,
+     "max_abs": 8.58306884765625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.964466096779099e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 7.376851758843372e-07,
+     "max_abs": 5.7220458984375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.798071308473489e-07,
+     "max_abs": 1.3113021850585938e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 8.785850173529403e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 7.678033284719277e-07,
+   "sec": 0.52,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "b4b5574a7ffe8500e1c54fc49f9060c837718d62ea08c5b7fe529b5c8979dfd4"
+  },
+  {
+   "key": "PHASE2/unet_glyph_v2_s44",
+   "label": "U-Net · glif-GT (s44) [PHASE2]",
+   "file": "unet_glyph_v2_s44.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.0525796046816153e-06,
+     "max_abs": 1.049041748046875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.11188275549073e-07,
+     "max_abs": 1.1920928955078125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.543492408836534e-07,
+     "max_abs": 7.62939453125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.19687692641505e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.0525796046816153e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.993519494040811e-07,
+   "sec": 0.51,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "53956bc7a6000ff02463da23901d5b43db93d73fb79ff103a1beade31a8ca6c5"
+  },
+  {
+   "key": "PHASE2/unet_pixel_eps8_morph_geminionly_s42",
+   "label": "U-Net · piksel-GT · yalnız Gemini (s42) [PHASE2]",
+   "file": "unet_pixel_eps8_morph_geminionly_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 8.712562120567036e-07,
+     "max_abs": 8.58306884765625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.203688175333389e-07,
+     "max_abs": 1.430511474609375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 7.316739670167501e-07,
+     "max_abs": 5.9604644775390625e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.959551333188881e-07,
+     "max_abs": 1.430511474609375e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 8.712562120567036e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.2794326304829156e-07,
+   "sec": 0.52,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "8b0249a7cd6388b26900679ab8d413a9c67bb669a939ce8b89eefc9e7372ef39"
+  },
+  {
+   "key": "PHASE2/unet_pixel_eps8_morph_geminionly_s43",
+   "label": "U-Net · piksel-GT · yalnız Gemini (s43) [PHASE2]",
+   "file": "unet_pixel_eps8_morph_geminionly_s43.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.014822987808877e-06,
+     "max_abs": 1.0013580322265625e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.910611162877842e-07,
+     "max_abs": 1.1920928955078125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.042355166658423e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.7007227413424473e-07,
+     "max_abs": 1.0728836059570312e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.014822987808877e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.132664568918699e-07,
+   "sec": 0.44,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "9198eb1f82f2e781059b7c63f37aba498550f3d9c3efe2f7b8b8595e01707bec"
+  },
+  {
+   "key": "PHASE2/unet_pixel_eps8_morph_geminionly_s44",
+   "label": "U-Net · piksel-GT · yalnız Gemini (s44) [PHASE2]",
+   "file": "unet_pixel_eps8_morph_geminionly_s44.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 8.395996753161627e-07,
+     "max_abs": 9.000301361083984e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.41757591648908e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.066197932144162e-07,
+     "max_abs": 7.152557373046875e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.38367546264394e-07,
+     "max_abs": 1.3113021850585938e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.066197932144162e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.124713311488449e-07,
+   "sec": 0.47,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "56fde51880e9d76a8d81fd8abb390c52b9b8128cee78271373647976e85bc490"
+  },
+  {
+   "key": "PHASE2/unet_pixel_eps8_morph_nm_mr_s42",
+   "label": "U-Net · piksel-GT · işaretçisiz, işaretçi-onarımlı (s42) [PHASE2]",
+   "file": "unet_pixel_eps8_morph_nm_mr_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 9.794956302739937e-07,
+     "max_abs": 9.5367431640625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.679891243505424e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.20647038103437e-07,
+     "max_abs": 7.152557373046875e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.587549866086161e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.794956302739937e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.166344294593728e-07,
+   "sec": 0.45,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "5fad7717c1625a339c776b40029835a62a69906fab67faeadeb63eff90c1a39e"
+  },
+  {
+   "key": "PHASE2/unet_pixel_eps8_morph_s42",
+   "label": "U-Net · piksel-GT (s42) [PHASE2]",
+   "file": "unet_pixel_eps8_morph_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 9.914422669286744e-07,
+     "max_abs": 9.5367431640625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.655594219708555e-07,
+     "max_abs": 1.1920928955078125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.21131736817316e-07,
+     "max_abs": 6.198883056640625e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.404423845180262e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.914422669286744e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.480281970449141e-07,
+   "sec": 0.44,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "328bc20999585420e3ede6c1085af69c393b9b05b4f329a69977a1a4404a2a1f"
+  },
+  {
+   "key": "PHASE2/unet_pixel_eps8_morph_s42_e20",
+   "label": "U-Net · piksel-GT (s42, 20 epoch) [PHASE2]",
+   "file": "unet_pixel_eps8_morph_s42_e20.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 8.627749359211061e-07,
+     "max_abs": 8.106231689453125e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.566325777451689e-07,
+     "max_abs": 1.1920928955078125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.784704524265994e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.945394697184669e-07,
+     "max_abs": 1.0132789611816406e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 8.784704524265994e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.272768876489863e-07,
+   "sec": 0.47,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "485e29bd267718c27dbed8def8cea6e15cdbf7cf2236a8057b24c36dac9542f4"
+  },
+  {
+   "key": "PHASE2/unet_pixel_eps8_morph_s43",
+   "label": "U-Net · piksel-GT (s43) [PHASE2]",
+   "file": "unet_pixel_eps8_morph_s43.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.0099887891243338e-06,
+     "max_abs": 9.5367431640625e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.568636566058967e-07,
+     "max_abs": 1.2777745723724365e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.937858707391632e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.7499474603012664e-07,
+     "max_abs": 1.0728836059570312e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.0099887891243338e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.96184179357806e-07,
+   "sec": 0.49,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "e8d4f23643ff880262698fa2c74473be1d933ef03ecf174ce01f7c0e4c2ffd6b"
+  },
+  {
+   "key": "PHASE2/unet_pixel_eps8_morph_s44",
+   "label": "U-Net · piksel-GT (s44) [PHASE2]",
+   "file": "unet_pixel_eps8_morph_s44.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.070175493214589e-06,
+     "max_abs": 1.049041748046875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.404742228924054e-07,
+     "max_abs": 1.1920928955078125e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 7.991870423500478e-07,
+     "max_abs": 6.198883056640625e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 4.589168461029572e-07,
+     "max_abs": 1.0728836059570312e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.070175493214589e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.101526312500937e-07,
+   "sec": 0.48,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "bdc4c3a02fc659896ceb20f7785e9425cdbf6d1a93c1cde86c5bd6b858b450c6"
+  },
+  {
+   "key": "PHASE2/unetjoint_glyph_v2_s42",
+   "label": "U-Net + kutu yardımcı başı · glif-GT (s42) [PHASE2]",
+   "file": "unetjoint_glyph_v2_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=2)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 9.195818864437402e-07,
+     "max_abs": 9.059906005859375e-06
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.491638979651178e-07,
+     "max_abs": 1.3113021850585938e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.979215809165395e-07,
+     "max_abs": 7.152557373046875e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 7.56676036255821e-07,
+     "max_abs": 1.5497207641601562e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.195818864437402e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.2812808942471747e-07,
+   "sec": 0.45,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "a9deb7d0a73583e9fcfbc0b28b0491a8c505c519662a01e3af8d8d3fa061b5d2"
+  },
+  {
+   "key": "PHASE2/unetjoint_pixel_eps8_morph_s42",
+   "label": "U-Net + kutu yardımcı başı · piksel-GT (s42) [PHASE2]",
+   "file": "unetjoint_pixel_eps8_morph_s42.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=2)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.184245975784021e-06,
+     "max_abs": 1.1444091796875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.219312229062029e-07,
+     "max_abs": 1.430511474609375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 8.159945571348683e-07,
+     "max_abs": 6.4373016357421875e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.149157357559821e-07,
+     "max_abs": 1.0728836059570312e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.184245975784021e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.10829181621375e-07,
+   "sec": 0.66,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "3a446801891363a7d559afd6fd628cf9751b22353d1c888eff561ec9a2338805"
+  },
+  {
+   "key": "PHASE1/resnet18_ft_best",
+   "label": "ResNet-18 · tam ince ayar (PHASE1) [PHASE1]",
+   "file": "resnet18_ft_best.pt",
+   "ok": true,
+   "arch": "torchvision.resnet18 (fc → 1)",
+   "family": "resnet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "bn1 (BatchNorm2d)",
+      "act": "relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn1 (BatchNorm2d)",
+      "act": "layer1.0.relu (ReLU)"
+     },
+     "rel": 8.680246120854824e-07,
+     "max_abs": 7.152557373046875e-06
+    },
+    {
+     "name": "layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 7.893888990941862e-07,
+     "max_abs": 1.6689300537109375e-06
+    },
+    {
+     "name": "layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn1 (BatchNorm2d)",
+      "act": "layer1.1.relu (ReLU)"
+     },
+     "rel": 8.091644345527443e-07,
+     "max_abs": 5.7220458984375e-06
+    },
+    {
+     "name": "layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.894757939130033e-07,
+     "max_abs": 9.5367431640625e-07
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 8.680246120854824e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.109246785650612e-07,
+   "sec": 0.42,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "b0ecb250b47ff3c7259fbf781d7ce38370a83cfd0e6bd236da763478cc8db590"
+  },
+  {
+   "key": "PHASE1/resnet18_probe_best",
+   "label": "ResNet-18 · linear probe (PHASE1) [PHASE1]",
+   "file": "resnet18_probe_best.pt",
+   "ok": true,
+   "arch": "torchvision.resnet18 (fc → 1)",
+   "family": "resnet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "bn1 (BatchNorm2d)",
+      "act": "relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn1 (BatchNorm2d)",
+      "act": "layer1.0.relu (ReLU)"
+     },
+     "rel": 8.881162672081691e-07,
+     "max_abs": 9.5367431640625e-06
+    },
+    {
+     "name": "layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 8.22444252067412e-07,
+     "max_abs": 2.0265579223632812e-06
+    },
+    {
+     "name": "layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn1 (BatchNorm2d)",
+      "act": "layer1.1.relu (ReLU)"
+     },
+     "rel": 9.932144755516702e-07,
+     "max_abs": 8.106231689453125e-06
+    },
+    {
+     "name": "layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.292605394030534e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 9.932144755516702e-07,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.507159812623286e-07,
+   "sec": 0.39,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "af2a2da364ee13234400b2e47c5de51e35c2338e59ee53ed775dd7333a35fb71"
+  },
+  {
+   "key": "PHASE1/resnet18_scratch_best",
+   "label": "ResNet-18 · sıfırdan (PHASE1) [PHASE1]",
+   "file": "resnet18_scratch_best.pt",
+   "ok": true,
+   "arch": "torchvision.resnet18 (fc → 1)",
+   "family": "resnet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "bn1 (BatchNorm2d)",
+      "act": "relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn1 (BatchNorm2d)",
+      "act": "layer1.0.relu (ReLU)"
+     },
+     "rel": 1.041844898946968e-06,
+     "max_abs": 1.239776611328125e-05
+    },
+    {
+     "name": "layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.772333122938143e-07,
+     "max_abs": 3.337860107421875e-06
+    },
+    {
+     "name": "layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn1 (BatchNorm2d)",
+      "act": "layer1.1.relu (ReLU)"
+     },
+     "rel": 9.044687215334008e-07,
+     "max_abs": 1.33514404296875e-05
+    },
+    {
+     "name": "layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.447629238966252e-07,
+     "max_abs": 5.7220458984375e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.041844898946968e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.133927629685786e-07,
+   "sec": 0.41,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "09ffb7b606ab4af67bf5e767a9ed72d7ea452a5e43b4578a43d869c3b909bb70"
+  },
+  {
+   "key": "PHASE1/unet_rgb_best",
+   "label": "U-Net · RGB (PHASE1) [PHASE1]",
+   "file": "unet_rgb_best.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=3, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      3,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.1360293996145358e-06,
+     "max_abs": 1.049041748046875e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.382445721285322e-07,
+     "max_abs": 1.430511474609375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 7.386337196632945e-07,
+     "max_abs": 5.7220458984375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 5.585168324869206e-07,
+     "max_abs": 1.0728836059570312e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.1360293996145358e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 5.94270090914506e-07,
+   "sec": 0.49,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "9db95ca15b938881eb33d5190f48b6d545c38617dd571a235c53f1d46bab0297"
+  },
+  {
+   "key": "PHASE1/unet_rgbfreq_best",
+   "label": "U-Net · RGB+FFT+Laplacian, 5 kanal (PHASE1) [PHASE1]",
+   "file": "unet_rgbfreq_best.pt",
+   "ok": true,
+   "arch": "smp.Unet(encoder=resnet18, in_channels=5, classes=1)",
+   "family": "unet",
+   "preprocess": "imagenet+freq",
+   "in_ch": 5,
+   "layers": [
+    {
+     "name": "encoder.conv1",
+     "shape": [
+      64,
+      5,
+      7,
+      7
+     ],
+     "kernel": [
+      7,
+      7
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(3, 3)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.bn1 (BatchNorm2d)",
+      "act": "encoder.relu (ReLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "encoder.layer1.0.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.0.relu (ReLU)"
+     },
+     "rel": 1.1492268399628954e-06,
+     "max_abs": 1.239776611328125e-05
+    },
+    {
+     "name": "encoder.layer1.0.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.0.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.035945261217578e-07,
+     "max_abs": 1.7881393432617188e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv1",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn1 (BatchNorm2d)",
+      "act": "encoder.layer1.1.relu (ReLU)"
+     },
+     "rel": 9.038684861021572e-07,
+     "max_abs": 6.67572021484375e-06
+    },
+    {
+     "name": "encoder.layer1.1.conv2",
+     "shape": [
+      64,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm"
+     ],
+     "ops": {
+      "norm": "encoder.layer1.1.bn2 (BatchNorm2d)"
+     },
+     "rel": 6.363979671409058e-07,
+     "max_abs": 1.1920928955078125e-06
+    }
+   ],
+   "n_maps": 832,
+   "worst_rel": 1.1492268399628954e-06,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 9.401325655744586e-07,
+   "sec": 0.5,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "167965c9857745713436e37fbc45442be896a86b47492917d4c24ea61c36f29b"
+  },
+  {
+   "key": "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42-dryrun",
+   "label": "YOLO11 · aiforge-tiles-yolo11s-img1024-conserv-s42-dryrun [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      32,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      32,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      64,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      64,
+      64,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      16,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      16,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv2.conv",
+     "shape": [
+      32,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv2.conv",
+     "shape": [
+      128,
+      96,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 1008,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 3.9526062778350024e-07,
+   "sec": 0.45,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "56073781f629645067d57a16efcb0eff565845bc7e9725a60175bdab8611b8b8"
+  },
+  {
+   "key": "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42",
+   "label": "YOLO11 · aiforge-tiles-yolo11s-img1024-conserv-s42 [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      32,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      32,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      64,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      64,
+      64,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      16,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      16,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv2.conv",
+     "shape": [
+      32,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv2.conv",
+     "shape": [
+      128,
+      96,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 1008,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 3.7838560729142046e-07,
+   "sec": 0.3,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "8e84f837f7789e0d2d78a9e31452d1536069bf9421b1477b729cd2ececa715ee"
+  },
+  {
+   "key": "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s43",
+   "label": "YOLO11 · aiforge-tiles-yolo11s-img1024-conserv-s43 [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      32,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      32,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      64,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      64,
+      64,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      16,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      16,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv2.conv",
+     "shape": [
+      32,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv2.conv",
+     "shape": [
+      128,
+      96,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 1008,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.436041365352139e-07,
+   "sec": 0.27,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "c41db2eff948a7f2469e6df9e7c38162256c16a1239cd1bb72b63c28750b0b69"
+  },
+  {
+   "key": "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s44",
+   "label": "YOLO11 · aiforge-tiles-yolo11s-img1024-conserv-s44 · eğitim sürüyor (son best.pt) [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      32,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      32,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      64,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      64,
+      64,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      16,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      16,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv2.conv",
+     "shape": [
+      32,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv2.conv",
+     "shape": [
+      128,
+      96,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 1008,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 3.8616548181380494e-07,
+   "sec": 0.37,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "29957f1c362b7b38a021e3aecc2faa461f669c276ae7adc948a6b56b4ced0349"
+  }
+ ],
+ "figures": {
+  "PHASE2/unet_bbox_s42": {
+   "label": "U-Net · bbox-GT (s42) [PHASE2]",
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "best": 58,
+   "files": [
+    "figs/PHASE2_unet_bbox_s42__1_kernel_grid.png",
+    "figs/PHASE2_unet_bbox_s42__2_filtre_harita_ciftleri.png",
+    "figs/PHASE2_unet_bbox_s42__3_aktivasyon_grid.png",
+    "figs/PHASE2_unet_bbox_s42__4_kernel_detay_f58.png",
+    "figs/PHASE2_unet_bbox_s42__5_karsilastirma_f58.png",
+    "figs/PHASE2_unet_bbox_s42__6_en_guclu_filtreler.png",
+    "figs/PHASE2_unet_bbox_s42__7_katman2_ciftler.png"
+   ]
+  },
+  "PHASE1/unet_rgbfreq_best": {
+   "label": "U-Net · RGB+FFT+Laplacian, 5 kanal (PHASE1) [PHASE1]",
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "best": 18,
+   "files": [
+    "figs/PHASE1_unet_rgbfreq_best__1_kernel_grid.png",
+    "figs/PHASE1_unet_rgbfreq_best__2_filtre_harita_ciftleri.png",
+    "figs/PHASE1_unet_rgbfreq_best__3_aktivasyon_grid.png",
+    "figs/PHASE1_unet_rgbfreq_best__4_kernel_detay_f18.png",
+    "figs/PHASE1_unet_rgbfreq_best__5_karsilastirma_f18.png",
+    "figs/PHASE1_unet_rgbfreq_best__6_en_guclu_filtreler.png",
+    "figs/PHASE1_unet_rgbfreq_best__7_katman2_ciftler.png"
+   ]
+  },
+  "PHASE1/resnet18_ft_best": {
+   "label": "ResNet-18 · tam ince ayar (PHASE1) [PHASE1]",
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "best": 3,
+   "files": [
+    "figs/PHASE1_resnet18_ft_best__1_kernel_grid.png",
+    "figs/PHASE1_resnet18_ft_best__2_filtre_harita_ciftleri.png",
+    "figs/PHASE1_resnet18_ft_best__3_aktivasyon_grid.png",
+    "figs/PHASE1_resnet18_ft_best__4_kernel_detay_f3.png",
+    "figs/PHASE1_resnet18_ft_best__5_karsilastirma_f3.png",
+    "figs/PHASE1_resnet18_ft_best__6_en_guclu_filtreler.png",
+    "figs/PHASE1_resnet18_ft_best__7_katman2_ciftler.png"
+   ]
+  },
+  "PHASE2/dlv3p_bbox_s42": {
+   "label": "DeepLabV3+ · bbox-GT (s42) [PHASE2]",
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "best": 54,
+   "files": [
+    "figs/PHASE2_dlv3p_bbox_s42__1_kernel_grid.png",
+    "figs/PHASE2_dlv3p_bbox_s42__2_filtre_harita_ciftleri.png",
+    "figs/PHASE2_dlv3p_bbox_s42__3_aktivasyon_grid.png",
+    "figs/PHASE2_dlv3p_bbox_s42__4_kernel_detay_f54.png",
+    "figs/PHASE2_dlv3p_bbox_s42__5_karsilastirma_f54.png",
+    "figs/PHASE2_dlv3p_bbox_s42__6_en_guclu_filtreler.png",
+    "figs/PHASE2_dlv3p_bbox_s42__7_katman2_ciftler.png"
+   ]
+  },
+  "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42": {
+   "label": "YOLO11 · aiforge-tiles-yolo11s-img1024-conserv-s42 [PHASE3]",
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "best": 19,
+   "files": [
+    "figs/YOLO_aiforge-tiles-yolo11s-img1024-conserv-s42__1_kernel_grid.png",
+    "figs/YOLO_aiforge-tiles-yolo11s-img1024-conserv-s42__2_filtre_harita_ciftleri.png",
+    "figs/YOLO_aiforge-tiles-yolo11s-img1024-conserv-s42__3_aktivasyon_grid.png",
+    "figs/YOLO_aiforge-tiles-yolo11s-img1024-conserv-s42__4_kernel_detay_f19.png",
+    "figs/YOLO_aiforge-tiles-yolo11s-img1024-conserv-s42__5_karsilastirma_f19.png",
+    "figs/YOLO_aiforge-tiles-yolo11s-img1024-conserv-s42__6_en_guclu_filtreler.png",
+    "figs/YOLO_aiforge-tiles-yolo11s-img1024-conserv-s42__7_katman2_ciftler.png"
+   ]
+  }
+ }
+}

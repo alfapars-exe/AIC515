@@ -20,7 +20,7 @@ görüntülerinde sahteciliği **sınıflandırır** (ResNet-18) ve değiştiril
 **Sekmeler:** `0 · Simülasyon` (veri setinden örnek seç → GT analizi → yeşil işaretçi taraması → girdi senaryosu ve bozulma →
 ResNet-18 + U-Net'ler → bbox ve piksel-değişim GT'siyle metrikler, görüntü-düzeyi karar, yakın plan, indirilebilir rapor) ·
 `1 · Toplu test` (N örnekte aynı hat; TPR/FPR/AUROC, boru hattının kayıtlı sonuçlarıyla yeniden-üretim farkı) ·
-`2–7` girdi, 61 ön işleme işlemi (aşamalı pipeline), U-Net, ResNet-18, yeşil işaretçi, sonuçlar.
+`2–7` girdi, 61 ön işleme işlemi (aşamalı pipeline), U-Net, ResNet-18, yeşil işaretçi, sonuçlar · `8 · SHAP açıklamaları` (tahmin → SHAP Partition/Gradient, authentic/blur/inpaint referansı → tespit bölgesi bazında açıklama, bölge kütlesi, modeller arası IoU/Spearman karşılaştırması, PNG/JSON/NPZ/MD dışa aktarım; ayrıntı `docs/XAI.md`).
 
 Donanım: **ZeroGPU** (NVIDIA RTX Pro 6000 Blackwell, istek başına; `@spaces.GPU`).
 
@@ -42,4 +42,4 @@ Ham veri seti lisans gereği yeniden dağıtılmaz; bucket özel tutulmalıdır.
 - Aynı tahminler eşleşen orijinalden türetilen **piksel-değişim GT'si** ile puanlandığında F1 0.45 / AUPRC 0.37 → kutu maskesi skorları şişiriyor (H1).
 - Sahtelerin %75.4'ünde üretim hattının bıraktığı **yeşil işaretçi kalıntısı** var; yalnız işaretçi authentic görüntüye aktarılınca model kutuyu çiziyor (AP 0.906).
 
-Kod: `app.py` (Gradio), `baselines/features_classical.py` (56 klasik öznitelik). Dağıtım: proje deposundaki `hf_space/deploy_hf.py`.
+Kod: `app.py` (Gradio), `xai/` (SHAP açıklanabilirlik paketi), `baselines/features_classical.py` (56 klasik öznitelik). Dağıtım: proje deposundaki `hf_space/deploy_hf.py`.
