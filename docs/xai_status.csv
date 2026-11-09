@@ -1,0 +1,22 @@
+model,name,family,in_ch,status,add_err,n_evals,seconds,note
+ResNet-18 · tam ince ayar,PHASE1/resnet18_ft_best,resnet,3.0,OK,4.954927135258913e-09,100.0,2.481043815612793,
+ResNet-18 · linear probe,PHASE1/resnet18_probe_best,resnet,3.0,OK,1.8953869584947824e-09,100.0,2.4618279933929443,
+ResNet-18 · sıfırdan,PHASE1/resnet18_scratch_best,resnet,3.0,OK,1.1565362001419999e-09,100.0,2.609440565109253,
+ResNet-18 · H4 global-iz sondası,PHASE2/h4_resnet18,resnet,3.0,OK,6.778577699151356e-12,100.0,2.4459304809570312,
+ResNet-18 · H4 global-iz sondası (poz. kontrol),PHASE2/h4_resnet18_poscontrol,resnet,3.0,OK,7.366907084360719e-11,100.0,2.5842232704162598,
+U-Net · bbox-GT · yalnız Gemini (s42),PHASE2/unet_bbox_geminionly_s42,unet,3.0,OK,4.6725270319569745e-09,100.0,29.827760219573975,
+U-Net · bbox-GT (s42),PHASE2/unet_bbox_s42,unet,3.0,OK,7.327108475507771e-09,100.0,28.06573510169983,
+U-Net · bbox-GT (s43),PHASE2/unet_bbox_s43,unet,3.0,OK,4.4710294355709834e-09,100.0,28.811501264572144,
+U-Net · bbox-GT (s44),PHASE2/unet_bbox_s44,unet,3.0,OK,1.3530156550700667e-08,100.0,28.906358242034912,
+U-Net · glif-GT · yalnız Gemini (s42),PHASE2/unet_glyph_v2_geminionly_s42,unet,3.0,OK,5.325852925341934e-09,100.0,28.499849319458008,
+U-Net · glif-GT (s42),PHASE2/unet_glyph_v2_s42,unet,3.0,OK,9.032460224212002e-09,100.0,27.94045925140381,
+U-Net · glif-GT (s43),PHASE2/unet_glyph_v2_s43,unet,3.0,OK,1.3873210635839683e-08,100.0,28.25363779067993,
+U-Net · glif-GT (s44),PHASE2/unet_glyph_v2_s44,unet,3.0,OK,1.8335272189418106e-09,100.0,27.769537925720215,
+U-Net · piksel-GT · yalnız Gemini (s42),PHASE2/unet_pixel_eps8_morph_geminionly_s42,unet,3.0,OK,1.2744712729606533e-08,100.0,28.084371328353882,
+U-Net · piksel-GT (s42),PHASE2/unet_pixel_eps8_morph_s42,unet,3.0,OK,1.2992945386258725e-08,100.0,27.723908185958862,
+"U-Net · RGB (PHASE1, 400 örnek)",PHASE1/unet_rgb_best,unet,3.0,OK,1.0770369041068761e-09,100.0,27.57212471961975,
+U-Net · RGB+FFT+Laplacian (PHASE1),PHASE1/unet_rgbfreq_best,unet,5.0,OK,8.245119142991086e-09,100.0,46.43549561500549,
+Klasik · SVM-RBF (56 öznitelik),CLASSICAL/svm_rbf,classical,,UNSUPPORTED,,,,Model dosyası yok (yalnız results_tables.md'de sonuçları var). Dosya eklenirse KernelExplainer (56 öznitelik).
+Klasik · RandomForest (56 öznitelik),CLASSICAL/random_forest,classical,,UNSUPPORTED,,,,Model dosyası yok (bucket'ta .pkl/.joblib yok). Dosya eklenirse TreeExplainer (56 öznitelik).
+YOLO (nesne tespiti),N/A/yolo,none,,N/A,,,,Bu uygulamada YOLO modeli yok. Tespit gereksinimi U-Net bağlı bileşenleri ve ResNet top-k patch'leriyle karşılanır.
+ViT / EfficientNet,N/A/vit,none,,N/A,,,,Projede bu mimariler yok.

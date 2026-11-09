@@ -1,0 +1,20 @@
+{
+ "run": "unetjoint_pixel_eps8_morph_s42",
+ "arch": "unetjoint",
+ "gt": "pixel_eps8_morph",
+ "seed": 42,
+ "marker_repair": false,
+ "aux_bbox": 0.5,
+ "n_train": 2748,
+ "best_epoch": 8,
+ "best_val_auprc": 0.930227479593564,
+ "epochs_run": 10,
+ "epochs_planned": 10,
+ "train_time_s": 601.2872138023376,
+ "peak_gpu_mem_gib": 4.689572334289551,
+ "n_params": 14328354,
+ "ckpt": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\models\\phase2\\unetjoint_pixel_eps8_morph_s42.pt",
+ "ckpt_mb": 54.76891231536865,
+ "torch": "2.11.0+cu128",
+ "gpu": "NVIDIA GeForce RTX 5080"
+}

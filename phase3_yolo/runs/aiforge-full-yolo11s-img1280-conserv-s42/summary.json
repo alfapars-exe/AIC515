@@ -1,0 +1,18 @@
+{
+  "run": "aiforge-full-yolo11s-img1280-conserv-s42",
+  "data": "full",
+  "model": "yolo11s",
+  "imgsz": 1280,
+  "aug": "conserv",
+  "seed": 42,
+  "epochs": 30,
+  "best_epoch": 27,
+  "best_val_tile_map50": 0.9601,
+  "last_val_tile_map50": 0.9591,
+  "best_val_tile_map5095": 0.8846,
+  "time_min": 33.1,
+  "peak_gib": 7.54,
+  "ckpt_mb": 18.3,
+  "params_M": 9.43,
+  "dry_run": false
+}

@@ -1,1 +1,130 @@
-% results — Faz 3 sonuçları gelince doldurulacak (taslak)
+\section{Results}
+\label{sec:results}
+
+\subsection{H1: the ground truth decides the ranking}
+\label{sec:res-h1}
+Table~\ref{tab:dualgt} scores every model under every ground truth. With the U-Net, the \GTb-trained model reaches a pooled AUPRC of 0.923 under \GTb{} but 0.374 under \GTp{} and 0.257 under \GTg; on the official test set the same predictions give 0.950 under \GTb{} and 0.427 under \GTp{} ($n{=}89$ pairs). Each ground truth ranks the model trained on it first, and the \GTb{} ranking is the reverse of the \GTg{} ranking. DeepLabV3+ reproduces the pattern with nearly identical numbers (0.939 $\rightarrow$ 0.382), so the effect is a property of the supervision, not of the U-Net decoder. Under its own metric the \GTb{} model is the best localizer in the study; under a pixel-change metric it is worse than a model that never saw a box. Most of the 0.92 is therefore earned by labelling unchanged pixels inside the rectangle.
+
+\begin{table}[t]
+\caption{Pooled pixel AUPRC on validation (487 images) for each training mask (rows) scored against each ground truth (columns); mean$\pm$sd over three seeds where available. Bold: best per column within an architecture.}
+\label{tab:dualgt}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Model & Train & \GTb & \GTp & \GTg \\
+\midrule
+\multirow{3}{*}{U-Net (3 seeds)} & \GTb & \textbf{\pmm{0.923}{.015}} & \pmm{0.374}{.008} & \pmm{0.257}{.007} \\
+ & \GTp & \pmm{0.579}{.014} & \textbf{\pmm{0.610}{.012}} & \pmm{0.511}{.010} \\
+ & \GTg & \pmm{0.351}{.015} & \pmm{0.379}{.012} & \textbf{\pmm{0.676}{.019}} \\
+\midrule
+\multirow{3}{*}{DeepLabV3+} & \GTb & \textbf{0.939} & 0.382 & 0.256 \\
+ & \GTp & 0.537 & \textbf{0.583} & 0.432 \\
+ & \GTg & 0.345 & 0.401 & \textbf{0.549} \\
+%YOLO_ROW
+\midrule
+U-Net, marker-repaired & \GTb & 0.916 & 0.389 & 0.266 \\
+ & \GTp$_{\mathrm{nm}}$ & 0.513 & 0.544 & 0.455 \\
+ & \GTg$_{\mathrm{nm}}$ & 0.348 & 0.371 & 0.661 \\
+\midrule
+U-Net + box aux. & \GTp & 0.647 & 0.622 & 0.518 \\
+ & \GTg & 0.370 & 0.391 & 0.636 \\
+\midrule
+U-Net, 20 epochs & \GTb & 0.926 & 0.373 & 0.259 \\
+ & \GTp & 0.568 & 0.594 & 0.488 \\
+ & \GTg & 0.398 & 0.390 & 0.645 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The marker shortcut, and retraining without it}
+\label{sec:res-marker}
+Fig.~\ref{fig:probes} defines the input probes; Table~\ref{tab:marker} reports them on the 380 validation pairs whose forgery carries marker residue (seed 42 for every row). For the standard box U-Net, copying only the residue pixels back from the authentic image lowers per-image AP from 0.988 to 0.764 ($\Delta{=}-0.224$ \ci{-0.261}{-0.190}), and pasting only the residue onto the authentic image makes the model cover 81\,\% of the box at $\tau^*$ (AP 0.895). DeepLabV3+ and the pixel-trained U-Net show the same dependence ($\Delta$ $-0.174$ and $-0.242$). On the official test set the box model's AP is 0.972 on the 627 images with residue and 0.690 on the 185 without (0.722 on the 102 residue-free Gemini images), so the gap is not only a generator gap.
+
+Retraining on marker-repaired images removes the dependence without destroying the benchmark score. The repaired box model loses nothing when the residue is removed at test time ($\Delta{=}+0.019$ \ci{0.002}{0.036}); the residue alone now covers 42\,\% of the box instead of 81\,\% (11\,\% instead of 44\,\% for the pixel model); its test AUPRC is 0.939 (0.950 before), its AP on residue images falls from 0.972 to 0.920 and on residue-free Gemini images rises from 0.722 to 0.756. The marker is thus a shortcut the models take when it is offered, not a prerequisite for high box scores. All repaired results use one seed.
+
+\begin{table}[t]
+\caption{Marker probes on 380 validation pairs with residue (seed 42). AP: per-image AP under \GTb{} with 95\,\% group-bootstrap CI for the repair contrast; Cover: fraction of the box above $\tau^*$; AUROC: forged-type input vs.\ authentic, maximum score.}
+\label{tab:marker}
+\centering\footnotesize
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+ & \multicolumn{2}{c}{forged} & repaired & $\Delta$ AP & \multicolumn{2}{c}{auth.+marker} \\
+\cmidrule(lr){2-3}\cmidrule(lr){6-7}
+Model & AP & Cover & AP & (repair) & Cover & AUROC \\
+\midrule
+U-Net \GTb & 0.988 & 0.96 & 0.764 & $-0.224$ & 0.81 & 0.902 \\
+U-Net \GTp & 0.739 & 0.57 & 0.497 & $-0.242$ & 0.44 & 0.828 \\
+DeepLabV3+ \GTb & 0.982 & 0.92 & 0.807 & $-0.174$ & 0.78 & 0.899 \\
+U-Net+aux \GTp & 0.771 & 0.59 & 0.597 & $-0.174$ & 0.48 & 0.873 \\
+\midrule
+repaired \GTb & 0.939 & 0.89 & 0.958 & $+0.019$ & 0.42 & 0.695 \\
+repaired \GTp$_{\mathrm{nm}}$ & 0.648 & 0.44 & 0.686 & $+0.038$ & 0.11 & 0.592 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig/fig_probe_conditions.png}
+\caption{Input probes on one validation pair (dashed: official box). The forged field carries a 1-px green residue of the generation marker on its top edge; \emph{render-only} keeps the generator's re-rendering but restores the original digits; \emph{content-only} carries the changed digits into the authentic image without the re-rendering or the marker.}
+\label{fig:probes}
+\end{figure}
+
+
+\subsection{Re-rendering versus content}
+\label{sec:res-render}
+Generators re-render the whole field, so inside the box many pixels change by less than the \GTp{} threshold. Separating the two components on all validation pairs (Table~\ref{tab:render}) shows that neither alone reproduces the response to a real forgery. For the standard box U-Net the mean probability inside the box falls from 0.87 (forged) to 0.22 (render-only) and 0.34 (content-only), and forged-vs-authentic AUROC from 0.972 to 0.631 and 0.728: the standard models respond most strongly to the conjunction of re-rendering, changed glyphs and marker. Removing the marker from training shifts the models toward content: content-only AUROC rises to 0.872 for the box model and to 0.834 for the pixel model (0.681 before), while their render-only response stays lower (0.713, 0.638). Content changes, not the generator's texture, become the main cue once the shortcut is gone.
+
+\begin{table}[t]
+\caption{Re-rendering vs.\ content (all validation pairs, seed 42): mean probability inside the box and image-level AUROC against authentic images.}
+\label{tab:render}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+ & \multicolumn{3}{c}{mean $p$ in box} & \multicolumn{3}{c}{AUROC vs.\ authentic} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Model & forged & render & content & forged & render & content \\
+\midrule
+U-Net \GTb & 0.87 & 0.22 & 0.34 & 0.972 & 0.631 & 0.728 \\
+U-Net \GTp & 0.43 & 0.06 & 0.17 & 0.925 & 0.558 & 0.681 \\
+DeepLabV3+ \GTb & 0.87 & 0.28 & 0.42 & 0.972 & 0.644 & 0.755 \\
+repaired \GTb & 0.83 & 0.36 & 0.59 & 0.947 & 0.713 & 0.872 \\
+repaired \GTp$_{\mathrm{nm}}$ & 0.34 & 0.10 & 0.29 & 0.869 & 0.638 & 0.834 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Held-out generator (H3), now with three seeds}
+\label{sec:res-heldout}
+Training on Gemini only and testing on the Ideogram edits of validation and test ($n{=}126$ under \GTb, 41 pairs under \GTp) confirms the Phase-2 decision with three seeds (Table~\ref{tab:heldout}). Every Gemini-only model collapses on Ideogram; the \GTb{} model falls from 0.909 to 0.412 per-image AP and the \GTp{} model from 0.567 to 0.264 (both scored under \GTb). The relative drop is smaller for pixel supervision, but its absolute Ideogram score is lower, and under its own ground truth the pixel model is no better on Ideogram than the box model (0.279 vs.\ 0.259). Pixel-change supervision does not, by itself, buy generator transfer. Because Ideogram edits almost never carry the marker (2.1\,\% vs.\ 85.9\,\%), part of this gap is a marker gap; the marker-repaired models in Sec.~\ref{sec:res-marker} bound that part.
+
+\begin{table}[t]
+\caption{Held-out generator: per-image AP with 95\,\% group-bootstrap CI, Ideogram vs.\ source-matched Gemini (val+test, mean over three seeds).}
+\label{tab:heldout}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llcc@{}}
+\toprule
+Training & Scored & Ideogram & Gemini (matched) \\
+\midrule
+All tools, \GTb & \GTb & 0.629 \ci{0.569}{0.692} & 0.912 \ci{0.896}{0.928} \\
+Gemini only, \GTb & \GTb & 0.412 \ci{0.341}{0.481} & 0.909 \ci{0.892}{0.927} \\
+Gemini only, \GTp & \GTb & 0.264 \ci{0.213}{0.313} & 0.567 \ci{0.550}{0.583} \\
+Gemini only, \GTb & \GTp & 0.259 \ci{0.168}{0.350} & 0.349 \ci{0.322}{0.377} \\
+Gemini only, \GTp & \GTp & 0.279 \ci{0.182}{0.382} & 0.577 \ci{0.546}{0.608} \\
+Gemini only, \GTg & \GTp & 0.182 \ci{0.121}{0.246} & 0.388 \ci{0.363}{0.413} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Supervision variants, training length and robustness}
+\label{sec:res-variants}
+\emph{Joint supervision} (pixel mask plus an auxiliary box channel, seed 42) is the only variant that improves the pixel model on every axis we measured: validation AUPRC under \GTp{} rises from 0.610 to 0.622 and under \GTb{} from 0.579 to 0.647, test \GTb{} AUPRC from 0.638 to 0.682, and the blur penalty shrinks from $-59$\,\% to $-43$\,\% (Table~\ref{tab:dualgt}). Image-level discrimination against authentic images is unchanged (0.897 vs.\ 0.892). With one seed these gains are suggestive, not established.
+\emph{Twenty epochs} do not change the picture: \GTb{} 0.926 (vs.\ 0.923), \GTp{} 0.594 (vs.\ 0.610), \GTg{} 0.645 (vs.\ 0.676); the Phase-2 concern that ten epochs were too few is not supported.
+\emph{Test-time preprocessing.} Converting the input to grayscale is the most damaging operation we tested, costing 47--67\,\% of the AUPRC of every model including the marker-repaired ones, so colour carries evidence beyond the green line. CLAHE changes AUPRC by at most 3\,\%. JPEG Q75, $0.75\times$ rescaling and $\sigma{=}1$ blur hurt pixel and glyph models more than box models (e.g.\ blur $-59$\,\% vs.\ $-21$\,\% for the U-Net), and the marker-repaired models are less robust to JPEG ($-32$ to $-50$\,\%) than their standard counterparts.
+
+%YOLO_SECTION

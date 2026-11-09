@@ -1,5 +1,14 @@
 # PHASE 2 — Metodoloji, Deneysel Protokol, Sonuçlar ve Yayın Planı
 
+> **ERRATA (9 Kasım 2026, Faz 3 incelemesi — bu belge tarihsel kayıttır; güncel ve bağlayıcı metin `paper/` altındaki IEEE bildirisi ve `phase3/results/tables_p3.md`'dir):**
+> 1. **Faz 1 Pixel-AUPRC şişkin:** crop başına ≤20k negatif alt-örneklemeyle hesaplanmıştı (0.947 / 0.939). Tüm piksellerle kesin değer **0.805 / 0.792** (`phase3/results/phase1_exact_auprc.csv`). Faz 2 sayıları zaten kesindir.
+> 2. **Tek tohum etiketleri:** "box modeli authentic val görüntülerinin %44'ünü işaretler" değeri yalnız s44'e aittir; 3 tohum ortalaması **%26** (>0.1 % piksel @0.5). Görüntü-düzeyi AUROC'lar (0.892 / 0.892 / 0.799) 3 tohum ortalamasıdır ve doğrudur. Tablo 9d'deki değerler 3 tohum ortalamasıyla değiştirilmelidir.
+> 3. **GenD (Yermakov ve ark., WACV 2026):** iddianın yönü ters aktarılmıştı; 56.8 → 90.0 sayıları kaynağa yer gösterilerek doğrulanamadığı için kullanılmamalıdır.
+> 4. **"İnsan doğrulaması":** GT denetimi VLM destekli tutarlılık denetimidir; insan doğrulaması **yapılmamıştır**.
+> 5. **Kaynakça:** doğrulanmış güncel liste `literature/references_v3.bib` (77 kayıt; Helali 2026, DocDet, Shang ve ark. 2026 ve klasik kaynaklar eklendi; 5 kayıt düzeltildi).
+> 6. **İşaretçi atfı:** AIForge-Doc v1 makalesi §3.4 (Gemini: 3 px parlak yeşil dikdörtgen) — doğrulandı.
+
+
 **Proje:** AIC515 Görüntü İşleme — AI-Generated Financial Document Forgery Localization (AIForge-Doc v1)
 **Araştırma yönü (PHASE 1 §H):** *What Do Document Forgery Localizers Learn from Box Masks? Pixel-Change Ground Truth and Shortcut Audits for AI-Inpainted Financial Documents*
 **Tarih:** 20 Ekim 2026 · **Donanım:** RTX 5080 16 GB, yerel · **Toplam GPU eğitim süresi:** 124 dk (12 U-Net) + ~2 dk (H4 ResNet-18)

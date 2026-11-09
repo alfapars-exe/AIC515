@@ -8,11 +8,11 @@ $SRC = "C:\Users\PARS\Desktop\PROJELER\AI 515\Vize Proje"
 $DST = "C:\Users\PARS\Desktop\PROJELER\AI 515\AIC515_repo"
 $XD = @("data", "models", "TESLIM_PAKETI", "_to_delete", ".archify", "__pycache__", ".git",
         "preds", "preds_boxes", "hists", "cache", "marker_repaired", "yolo_data", "weights",
-        "TruFor", "ADCD-Net", "adcd", "seed_sources", "TEKMER",
+        "TruFor", "ADCD-Net", "adcd", "seed_sources", "TEKMER", "vlm_verification", "xfer",
         "benign_pasteback", "fullimage_resample", "reencode_png",
         "pixel_eps4", "pixel_eps8", "pixel_eps16", "pixel_eps8_morph", "pixel_eps8_morph_nm", "glyph", "glyph_v2", "glyph_v2_nm", "bbox_and_eps8")
 $XF = @("*.pt", "*.pth", "*.ckpt", "*.onnx", "*.npz", "*.npy", "*.zip", "*.tar", "*.gz", "*.parquet", "*.log", "*.done",
-        "*.pdf.part", "token*", "*.env", ".env")
+        "*.pdf.part", "token*", "*.env", ".env", "train_batch*.jpg", "val_batch*.jpg", "labels.jpg", "verification_grid.pdf")
 robocopy $SRC $DST /E /XD $XD /XF $XF /NFL /NDL /NJH /NP /R:1 /W:1 | Out-Null
 # literatür PDF'leri (telif) ve büyük dosya kontrolü
 Get-ChildItem "$DST\literature" -Recurse -Filter *.pdf -ErrorAction SilentlyContinue | Remove-Item -Force

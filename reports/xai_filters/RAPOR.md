@@ -1,8 +1,5 @@
 # XAI · Katman Filtreleri (Filter Visualization) — model raporu
 
-> Not: Veri setinden türetilen görseller (filtre↔harita çiftleri, aktivasyon grid'leri, karşılaştırmalar) AIForge-Doc lisansı
-> gereği depoda tutulmaz; yalnız kernel ağırlık görselleri vardır. Tümü `python tools\xai_filter_report.py` ile yerelde üretilir.
-
 Tarih: 09.11.2026 19:00 · test görüntüsü `000000001.png` (TestingSet, GT kutusu merkezli 512 px natif kırpma) · cihaz CPU (GPU eğitimde) · test: **55 kontrol / 0 hata** (67.6 s)
 
 Kernel'ler checkpoint dosyalarından okunur; yeni filtre eğitilmez/üretilmez. Ara çıktılar modelin kendi forward'ından kancalarla alınır; her conv katmanı checkpoint kernel'iyle bağımsız `F.conv2d` ile yeniden hesaplanıp modelin çıktısıyla karşılaştırılır. İlk katman kuralı: yürütme sırasındaki Conv2d'ler, çıkış çözünürlüğü ≥ girdinin 1/4'ü olduğu sürece (en fazla 6); forward bu noktada durdurulur.

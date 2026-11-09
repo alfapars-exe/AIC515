@@ -1,4 +1,15 @@
 family,variant,train_gt,seeds,AUPRC_box_812,AUPRC_box_740,F1tau_box,IoUtau_box,AUPRC_pix_89
+DeepLabV3+,main,box,1,0.952,0.952,0.833,0.765,0.408
+DeepLabV3+,main,glyph,1,0.368,0.365,0.494,0.353,0.389
+DeepLabV3+,main,pix,1,0.585,0.583,0.590,0.457,0.667
+U-Net,20ep,box,1,0.945,0.946,0.858,0.799,0.422
+U-Net,20ep,glyph,1,0.480,0.475,0.403,0.265,0.477
+U-Net,20ep,pix,1,0.609,0.606,0.602,0.466,0.638
 U-Net,main,box,3,0.950 ± 0.011,0.949 ± 0.012,0.846 ± 0.015,0.789 ± 0.018,0.427 ± 0.002
 U-Net,main,glyph,3,0.403 ± 0.011,0.403 ± 0.010,0.405 ± 0.007,0.266 ± 0.006,0.410 ± 0.017
 U-Net,main,pix,3,0.638 ± 0.015,0.640 ± 0.014,0.616 ± 0.013,0.480 ± 0.015,0.654 ± 0.016
+U-Net,marker-repaired,box,1,0.939,0.939,0.797,0.726,0.425
+U-Net,marker-repaired+nm-GT,glyph,1,0.402,0.404,0.405,0.266,0.354
+U-Net,marker-repaired+nm-GT,pix,1,0.564,0.562,0.537,0.405,0.570
+U-Net+box-aux,main,glyph,1,0.432,0.433,0.448,0.304,0.460
+U-Net+box-aux,main,pix,1,0.682,0.680,0.654,0.522,0.650
