@@ -1,10 +1,11 @@
 # XAI · Katman Filtreleri (Filter Visualization)
 
-Uygulamanın **9 · Katman filtreleri** sekmesi. SHAP sekmesinden (8, `app/xai/`) **bağımsız** ikinci açıklanabilirlik
+Uygulamanın **8 · XAI Analysis** sekmesindeki **Filter Visualization / Katman Filtreleri** alt sekmesi. Aynı sekmedeki
+**SHAP Analysis** alt sekmesinden (`app/xai/`) **bağımsız** ikinci açıklanabilirlik
 özelliği: eğitilmiş modellerin **ilk konvolüsyon katmanlarındaki gerçek filtre ağırlıklarını** (kernel) ve bu filtrelerin
 görüntüye uygulanmasıyla oluşan **aktivasyon (öznitelik) haritalarını** gösterir.
 
-| | SHAP Analysis (sekme 8) | Filter Visualization (sekme 9) |
+| | SHAP Analysis (8 › alt sekme 1) | Filter Visualization (8 › alt sekme 2) |
 |---|---|---|
 | Soru | Hangi görüntü bölgeleri modelin **kararını** ne yöne itti? | Model ilk katmanlarda görüntüden **hangi düşük seviyeli özellikleri** (kenar, çizgi, doku, renk) çıkarıyor? |
 | Girdi | tahmin + referans (authentic / blur / inpaint) | yalnız görüntü + kayıtlı ağırlıklar |

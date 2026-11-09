@@ -32,7 +32,8 @@ Ortam değişkenleri (isteğe bağlı): `VIZE_ROOT` proje kökü (varsayılan: `
 | **5 · ResNet-18 patch sınıflandırma** | 224 px kayan pencere → patch ısı haritası, görüntü skoru, GT ile kesişen/temiz patch skorları. |
 | **6 · Yeşil işaretçi sondası** | G − max(R,B) > 50 ve G > 110 dedektörü (PHASE 2 Ek-C). |
 | **7 · Sonuçlar ve model kartı** | Özet tablolar, görüntü-düzeyi eşikler, ölçüt tanımları. |
-| **9 · Katman filtreleri (Filter Visualization)** | SHAP'tan bağımsız XAI (`xai_filters.py`, `docs/XAI_FILTERS.md`). Seçilen modelin (U-Net, DeepLabV3+, ResNet-18, YOLO11) mimarisi checkpoint'ten tespit edilir; ilk conv katmanlarının (çıkış ≥ girdinin 1/4'ü) **gerçek kernel ağırlıkları** (B), görüntüye uygulanmış **aktivasyon haritaları** — conv / BN / ReLU-SiLU aşamaları, filtre↔harita çiftleri (C) — ve orijinalle karşılaştırma, kanal katkıları, en güçlü filtreler (D). Her katmanda bağımsız `F.conv2d` = modelin conv çıktısı doğrulaması; ham değerler NPZ/CSV/JSON. Test: `python tests\test_xai_filters.py` (55 kontrol); rapor: `reports/xai_filters/RAPOR.md`. |
+| **8 · XAI Analysis › SHAP Analysis** | Tahmin → SHAP (Partition / Gradient; authentic / blur / inpaint referansı) → model karşılaştırması; `xai/` paketi (`docs/XAI.md`). |
+| **8 · XAI Analysis › Filter Visualization / Katman Filtreleri** | SHAP Analysis alt sekmesinden bağımsız XAI (`xai_filters.py`, `docs/XAI_FILTERS.md`). Seçilen modelin (U-Net, DeepLabV3+, ResNet-18, YOLO11) mimarisi checkpoint'ten tespit edilir; ilk conv katmanlarının (çıkış ≥ girdinin 1/4'ü) **gerçek kernel ağırlıkları** (B), görüntüye uygulanmış **aktivasyon haritaları** — conv / BN / ReLU-SiLU aşamaları, filtre↔harita çiftleri (C) — ve orijinalle karşılaştırma, kanal katkıları, en güçlü filtreler (D). Her katmanda bağımsız `F.conv2d` = modelin conv çıktısı doğrulaması; ham değerler NPZ/CSV/JSON. Test: `python tests\test_xai_filters.py` (61 kontrol); rapor: `reports/xai_filters/RAPOR.md`. |
 
 ## Ölçütler (boru hattıyla birebir)
 - Olasılıklar 8-bit'e nicemlenir; AP 256 kutulu histogramla tüm pikseller üzerinden kesin hesaplanır; F1@τ: `u8 >= ceil(255·τ)`.
@@ -41,7 +42,7 @@ Ortam değişkenleri (isteğe bağlı): `VIZE_ROOT` proje kökü (varsayılan: `
 
 ## Testler
 ```powershell
-python tests\test_app.py        # 281 kontrol (işlemler, senaryolar, bozulmalar, hatalı girdiler, yeniden üretim)
+$env:AI515_TEST_N=35; python tests\test_app.py   # ~283 kontrol (N verilmezse yerelde mevcut tüm örnekler) (işlemler, senaryolar, bozulmalar, hatalı girdiler, yeniden üretim)
 python tests\ui_test.py http://127.0.0.1:7860/ tests\ui   # Playwright tarayıcı testi + ekran görüntüleri
 python hf_space\live_test.py --n 24                        # canlı Space: 4 senaryo + 24 çift toplu test → reports\canli_test.json
 ```

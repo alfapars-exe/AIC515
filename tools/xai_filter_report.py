@@ -77,7 +77,7 @@ def main():
           "> Not: Veri setinden türetilen görseller (filtre↔harita çiftleri, aktivasyon grid'leri, karşılaştırmalar) AIForge-Doc lisansı",
           "> gereği depoda tutulmaz; yalnız kernel ağırlık görselleri vardır. Tümü `python tools\\xai_filter_report.py` ile yerelde üretilir.", "",
           f"Tarih: {time.strftime('%d.%m.%Y %H:%M')} · test görüntüsü `{tr.get('image', Path(p).name)}` (TestingSet, GT kutusu merkezli 512 px natif kırpma) · "
-          f"cihaz CPU (GPU eğitimde) · test: **{tr.get('n_checks', '?')} kontrol / {tr.get('n_fail', '?')} hata** ({tr.get('sec', '?')} s)", "",
+          f"rapor görselleri CPU'da (GPU doğrulaması test T5'te) · test: **{tr.get('n_checks', '?')} kontrol / {tr.get('n_fail', '?')} hata** ({tr.get('sec', '?')} s)", "",
           "Kernel'ler checkpoint dosyalarından okunur; yeni filtre eğitilmez/üretilmez. Ara çıktılar modelin kendi forward'ından "
           "kancalarla alınır; her conv katmanı checkpoint kernel'iyle bağımsız `F.conv2d` ile yeniden hesaplanıp modelin çıktısıyla "
           "karşılaştırılır. İlk katman kuralı: yürütme sırasındaki Conv2d'ler, çıkış çözünürlüğü ≥ girdinin 1/4'ü olduğu sürece "

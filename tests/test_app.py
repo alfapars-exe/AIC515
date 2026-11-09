@@ -2,6 +2,9 @@
 import os, sys, time, json, math, traceback
 os.environ.setdefault("VIZE_ROOT", "/home/claude/t2")
 sys.path.insert(0, "/home/claude/app")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app"))  # yerel (Windows) çalıştırma
+OUT_DIR = os.path.dirname(os.path.abspath(__file__))
+N_MAX = int(os.environ.get("AI515_TEST_N", "0"))  # 0 = yerelde mevcut tüm örnekler (tam veri setinde saatler sürer)
 import numpy as np, pandas as pd
 import gradio as gr
 t0 = time.time()
@@ -28,12 +31,13 @@ def run_sim(key, inp=A.INPUT_TYPES[0], deg=A.DEGRADATIONS[0], pipe=False, steps=
 idx = A.dataset_index()
 keys = [k for k in idx.index if A.sample_exists(k)]
 print(f"dizin {len(idx)} · yerelde mevcut {len(keys)}")
+keys_loop = keys[:N_MAX] if N_MAX else keys
 check(len(idx) == 4061, "dizin 4061 satır olmalı")
 check(len(keys) >= 30, "en az 30 yerel örnek")
 
 # 1) her örnek: sahte senaryo, 3 U-Net + ResNet
 repro = []
-for i, k in enumerate(keys, 1):
+for i, k in enumerate(keys_loop, 1):
     t = time.time()
     try:
         out, n = run_sim(k)
@@ -50,7 +54,7 @@ for i, k in enumerate(keys, 1):
             if "s42" in r["Model"] and pd.notna(r.get("Ref F1@0.5 (boru hattı)")) and pd.notna(r.get("Uyg. F1@0.5")):
                 repro.append(dict(key=k, model=r["Model"], ref=r["Ref F1@0.5 (boru hattı)"], app=r["Uyg. F1@0.5"]))
         has_auth = state["auth"] is not None
-        print(f"[{i:02d}/{len(keys)}] {k} ok {time.time() - t:.1f}s · auth={has_auth} · " +
+        print(f"[{i:02d}/{len(keys_loop)}] {k} ok {time.time() - t:.1f}s · auth={has_auth} · " +
               " | ".join(f"{r['Model'][:22]}: {r['Karar']} {r['Doğru']}" for _, r in df.iterrows()))
     except Exception as e:
         RES["errors"].append(f"{k}: {e!r}"); traceback.print_exc()
@@ -61,7 +65,7 @@ if len(rp):
     print("\nYENİDEN ÜRETİM (F1@0.5, uygulama vs boru hattı kayıtlı):")
     print(rp.groupby("model")["abs"].agg(["count", "mean", "max"]).round(4).to_string())
     check(rp["abs"].mean() < 0.02, f"ortalama |ΔF1@0.5| < 0.02 olmalı ({rp['abs'].mean():.4f})")
-    rp.to_csv("/home/claude/tests/repro_f1.csv", index=False)
+    rp.to_csv(os.path.join(OUT_DIR, "repro_f1.csv"), index=False)
 
 # 2) eşli bir örnekte tüm senaryolar + bozulmalar + pipeline
 paired = [k for k in keys if idx.loc[k, "has_pair"] and idx.loc[k, "has_marker"]] or [k for k in keys if idx.loc[k, "has_pair"]]
@@ -96,11 +100,11 @@ for bad, msg in ((lambda: run_sim(""), "boş anahtar"), (lambda: run_sim(unpaire
         bad(); check(False, f"hata beklenirdi: {msg}")
     except gr.Error:
         RES["checks"] += 1
-missing = [k for k in idx.index if not A.sample_exists(k)][0]
+missing = next((k for k in idx.index if not A.sample_exists(k)), "testing:999999999")  # tam veri setinde eksik yoksa olmayan kimlik
 try:
     run_sim(missing); check(False, "eksik dosya hatası beklenirdi")
 except Exception as e:
-    check("bulunamadı" in str(e), f"eksik dosya mesajı: {e}")
+    check("bulunamadı" in str(e) or "veri setinde yok" in str(e), f"eksik dosya mesajı: {e}")
 
 # 4) toplu test
 print("\nToplu test (dengeli, test bölümü, tüm eşli):")
@@ -146,5 +150,5 @@ check(len(A.results_markdown()) > 500, "sonuçlar sekmesi")
 print(f"\n==== {RES['checks']} kontrol, {len(RES['errors'])} hata, {time.time() - t0:.0f}s ====")
 for e in RES["errors"]:
     print(" HATA:", e)
-json.dump(RES, open("/home/claude/tests/test_result.json", "w"), ensure_ascii=False, indent=1)
+json.dump(RES, open(os.path.join(OUT_DIR, "test_result.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 sys.exit(1 if RES["errors"] else 0)

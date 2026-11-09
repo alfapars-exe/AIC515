@@ -8,9 +8,10 @@ Sekmeler
   1 · Toplu test   : N örnek üzerinde aynı hat; model başına toplu metrikler, tespit doğruluğu, boru hattının
                      kayıtlı sonuçlarıyla yeniden-üretim karşılaştırması, CSV/JSON.
   2–7              : girdi yükleme, 61 ön işleme işlemi (aşamalı pipeline), U-Net, ResNet-18, yeşil işaretçi, sonuçlar.
-  8 · SHAP         : tahmin → SHAP (Partition / Gradient; authentic / blur / inpaint referansı) → model karşılaştırması;
+  8 · XAI Analysis : iki bağımsız alt sekme —
+      SHAP Analysis : tahmin → SHAP (Partition / Gradient; authentic / blur / inpaint referansı) → model karşılaştırması;
                      xai/ paketi (docs/XAI.md).
-  9 · Katman filtreleri : SHAP'tan bağımsız XAI — ilk conv katmanlarının checkpoint'teki gerçek kernel'leri, görüntüye
+      Filter Visualization / Katman Filtreleri : SHAP'tan bağımsız — ilk conv katmanlarının checkpoint'teki gerçek kernel'leri, görüntüye
                      uygulanmış aktivasyon haritaları (conv / BN / aktivasyon), orijinalle karşılaştırma; xai_filters.py
                      (docs/XAI_FILTERS.md).
 
@@ -1944,7 +1945,7 @@ def sim_to_tabs(state):
 
 
 
-# ================================================================== XAI · SHAP AÇIKLAMALARI (sekme 8)
+# ================================================================== XAI · SHAP AÇIKLAMALARI (sekme 8 › SHAP Analysis)
 # Ayrı paket: app/xai (registry · targets · adapters · manager · viz · compare · service). Ayrıntı: docs/XAI.md
 try:
     sys.path.insert(0, str(APP_DIR))
@@ -2376,7 +2377,7 @@ TIP_JS = """
 }
 """
 
-# ================================================================== XAI · KATMAN FİLTRELERİ (sekme 9)
+# ================================================================== XAI · KATMAN FİLTRELERİ (sekme 8 › Filter Visualization)
 # SHAP'tan bağımsız ikinci XAI özelliği: app/xai_filters.py — ilk conv katmanlarının checkpoint'teki gerçek kernel'leri
 # + modelin kendi forward'ından alınan aktivasyon haritaları (bağımsız F.conv2d ile doğrulanır). Ayrıntı: docs/XAI_FILTERS.md
 try:
@@ -2575,72 +2576,76 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
             "- Görüntü-düzeyi skor = olasılık haritasının en yüksek %1 piksel ortalaması; eşik val'de Youden-J ile seçildi.\n"
             "- Veri seti: AIForge-Doc v1 (Scam.AI, CC BY-NC-SA 4.0, kapılı).")
 
-    # ---------------------------------------------------------------- 8 · SHAP AÇIKLAMALARI
-    with gr.Tab("8 · SHAP açıklamaları"):
-        st_xpred = gr.State(None); st_xview = gr.State(None)
-        with gr.Row():
-            with gr.Column(scale=1, min_width=340):
-                gr.Markdown("#### 1) Görüntü ve modeller")
-                x_src = gr.Radio(XAI_SOURCES, value=XAI_SOURCES[0], label="Görüntü kaynağı", elem_id="tip-x_src")
-                with gr.Group(visible=False) as x_up_grp:
-                    x_up_img = gr.Image(label="Görüntü", type="numpy", height=200, elem_id="tip-x_up_img")
-                    with gr.Row():
-                        x_up_auth = gr.Image(label="Authentic eş (isteğe bağlı)", type="numpy", height=120, elem_id="tip-x_up_auth")
-                        x_up_gt = gr.Image(label="GT maskesi (isteğe bağlı)", type="numpy", height=120, image_mode="L", elem_id="tip-x_up_gt")
-                x_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS, label="U-Net", elem_id="tip-x_unet")
-                x_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET, label="ResNet-18", elem_id="tip-x_res")
-                gr.Markdown(xai_unsupported_md(), elem_classes="small-md")
-                b_xpred = gr.Button("① Tahmin yap", variant="primary", elem_id="tip-b_xpred")
-                gr.Markdown("#### 2) SHAP")
-                x_target = gr.Radio(XAI_TARGETS, value=XAI_TARGETS[0], label="Açıklanacak hedef", elem_id="tip-x_target")
-                x_k = gr.Slider(1, 3, value=3, step=1, label="Tespit sayısı k", elem_id="tip-x_k")
-                x_method = gr.Radio(XAI_METHODS, value=XAI_METHODS[0], label="Yöntem", elem_id="tip-x_method")
-                x_ref = gr.Dropdown(XAI_REFS, value=XAI_REFS[0], label="Referans (arka plan)", elem_id="tip-x_ref")
-                x_evals = gr.Slider(300, 3000, value=1000, step=100, label="max_evals (Partition bütçesi)", elem_id="tip-x_evals")
-                b_xshap = gr.Button("② SHAP analizini başlat", variant="primary", elem_id="tip-b_xshap")
-                b_xcmp = gr.Button("③ Modelleri karşılaştır", elem_id="tip-b_xcmp")
-            with gr.Column(scale=2):
-                x_status = gr.Markdown("① ile tahmin yapın, ② ile seçilen hedefleri SHAP ile açıklayın, ③ ile modelleri aynı pencerede karşılaştırın.")
-                x_pred_df = gr.Dataframe(label="Tahminler (uygulamanın kendi çıkarımı)", wrap=True, interactive=False)
-                x_res_df = gr.Dataframe(label="SHAP sonuçları", wrap=True, interactive=False)
-                x_loc = gr.Image(label="Açıklanan pencerelerin konumu (numara = sonuç sırası)", type="numpy", height=300, interactive=False)
-                x_show = gr.Dropdown(choices=[], label="Gösterilecek açıklama", elem_id="tip-x_show")
-                x_sum = gr.Markdown(" ")
+    # ---------------------------------------------------------------- 8 · XAI ANALYSIS (SHAP + Filter Visualization)
+    with gr.Tab("8 · XAI Analysis"):
+        gr.Markdown("**XAI Analysis** — birbirinden bağımsız iki açıklanabilirlik özelliği: **SHAP Analysis** modelin tahmin "
+                    "kararına görüntü bölgelerinin katkısını açıklar (`xai/`); **Filter Visualization** eğitilmiş modelin ilk "
+                    "konvolüsyon katmanlarındaki gerçek filtre ağırlıklarını ve bunların görüntüye uygulanmasıyla oluşan aktivasyon "
+                    "haritalarını gösterir (`xai_filters.py`; filtre eğitilmez/üretilmez, ağırlıklar ve mimari değişmez).", elem_classes="small-md")
+        with gr.Tabs():
+            # ------------------------------------------------ 8a · SHAP Analysis
+            with gr.Tab("SHAP Analysis"):
+                st_xpred = gr.State(None); st_xview = gr.State(None)
                 with gr.Row():
-                    x_p0 = gr.Image(label="Orijinal pencere (mavi: GT · magenta: işaretçi · yeşil: hedef bölge)", type="numpy", height=260, interactive=False)
-                    x_p1 = gr.Image(label="SHAP ısı haritası (kırmızı: SAHTE · mavi: GERÇEK)", type="numpy", height=260, interactive=False)
-                    x_p2 = gr.Image(label="Bindirme", type="numpy", height=260, interactive=False)
-                with gr.Row():
-                    x_p3 = gr.Image(label="Pozitif katkı (SAHTE'yi artıran)", type="numpy", height=260, interactive=False)
-                    x_p4 = gr.Image(label="Negatif katkı (GERÇEK'e iten)", type="numpy", height=260, interactive=False)
-                x_p5 = gr.Image(label="Sınıf panelleri: SAHTE | GERÇEK (= −SAHTE)", type="numpy", height=280, interactive=False)
-                x_mass = gr.Image(label="Pozitif SHAP kütlesinin bölgelere dağılımı (GT kutusu / kenar halkası / işaretçi / geri kalan)", type="numpy", interactive=False)
-                with gr.Accordion("Tüm paneller (galeri)", open=False):
-                    x_gal = gr.Gallery(columns=3, height=520, object_fit="contain", preview=False, format="png")
-                with gr.Accordion("Model karşılaştırması (③)", open=True):
-                    x_cmp_md = gr.Markdown(" ")
-                    x_cmp_img = gr.Image(label="IoU · Spearman · ortak/özgü bölge", type="numpy", interactive=False)
-                    x_cmp_df = gr.Dataframe(label="Karşılaştırılan açıklamalar", wrap=True, interactive=False)
-                x_files = gr.File(label="Dışa aktarım (PNG paneller · JSON · NPZ · MD rapor)", file_count="multiple")
+                    with gr.Column(scale=1, min_width=340):
+                        gr.Markdown("#### 1) Görüntü ve modeller")
+                        x_src = gr.Radio(XAI_SOURCES, value=XAI_SOURCES[0], label="Görüntü kaynağı", elem_id="tip-x_src")
+                        with gr.Group(visible=False) as x_up_grp:
+                            x_up_img = gr.Image(label="Görüntü", type="numpy", height=200, elem_id="tip-x_up_img")
+                            with gr.Row():
+                                x_up_auth = gr.Image(label="Authentic eş (isteğe bağlı)", type="numpy", height=120, elem_id="tip-x_up_auth")
+                                x_up_gt = gr.Image(label="GT maskesi (isteğe bağlı)", type="numpy", height=120, image_mode="L", elem_id="tip-x_up_gt")
+                        x_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS, label="U-Net", elem_id="tip-x_unet")
+                        x_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET, label="ResNet-18", elem_id="tip-x_res")
+                        gr.Markdown(xai_unsupported_md(), elem_classes="small-md")
+                        b_xpred = gr.Button("① Tahmin yap", variant="primary", elem_id="tip-b_xpred")
+                        gr.Markdown("#### 2) SHAP")
+                        x_target = gr.Radio(XAI_TARGETS, value=XAI_TARGETS[0], label="Açıklanacak hedef", elem_id="tip-x_target")
+                        x_k = gr.Slider(1, 3, value=3, step=1, label="Tespit sayısı k", elem_id="tip-x_k")
+                        x_method = gr.Radio(XAI_METHODS, value=XAI_METHODS[0], label="Yöntem", elem_id="tip-x_method")
+                        x_ref = gr.Dropdown(XAI_REFS, value=XAI_REFS[0], label="Referans (arka plan)", elem_id="tip-x_ref")
+                        x_evals = gr.Slider(300, 3000, value=1000, step=100, label="max_evals (Partition bütçesi)", elem_id="tip-x_evals")
+                        b_xshap = gr.Button("② SHAP analizini başlat", variant="primary", elem_id="tip-b_xshap")
+                        b_xcmp = gr.Button("③ Modelleri karşılaştır", elem_id="tip-b_xcmp")
+                    with gr.Column(scale=2):
+                        x_status = gr.Markdown("① ile tahmin yapın, ② ile seçilen hedefleri SHAP ile açıklayın, ③ ile modelleri aynı pencerede karşılaştırın.")
+                        x_pred_df = gr.Dataframe(label="Tahminler (uygulamanın kendi çıkarımı)", wrap=True, interactive=False)
+                        x_res_df = gr.Dataframe(label="SHAP sonuçları", wrap=True, interactive=False)
+                        x_loc = gr.Image(label="Açıklanan pencerelerin konumu (numara = sonuç sırası)", type="numpy", height=300, interactive=False)
+                        x_show = gr.Dropdown(choices=[], label="Gösterilecek açıklama", elem_id="tip-x_show")
+                        x_sum = gr.Markdown(" ")
+                        with gr.Row():
+                            x_p0 = gr.Image(label="Orijinal pencere (mavi: GT · magenta: işaretçi · yeşil: hedef bölge)", type="numpy", height=260, interactive=False)
+                            x_p1 = gr.Image(label="SHAP ısı haritası (kırmızı: SAHTE · mavi: GERÇEK)", type="numpy", height=260, interactive=False)
+                            x_p2 = gr.Image(label="Bindirme", type="numpy", height=260, interactive=False)
+                        with gr.Row():
+                            x_p3 = gr.Image(label="Pozitif katkı (SAHTE'yi artıran)", type="numpy", height=260, interactive=False)
+                            x_p4 = gr.Image(label="Negatif katkı (GERÇEK'e iten)", type="numpy", height=260, interactive=False)
+                        x_p5 = gr.Image(label="Sınıf panelleri: SAHTE | GERÇEK (= −SAHTE)", type="numpy", height=280, interactive=False)
+                        x_mass = gr.Image(label="Pozitif SHAP kütlesinin bölgelere dağılımı (GT kutusu / kenar halkası / işaretçi / geri kalan)", type="numpy", interactive=False)
+                        with gr.Accordion("Tüm paneller (galeri)", open=False):
+                            x_gal = gr.Gallery(columns=3, height=520, object_fit="contain", preview=False, format="png")
+                        with gr.Accordion("Model karşılaştırması (③)", open=True):
+                            x_cmp_md = gr.Markdown(" ")
+                            x_cmp_img = gr.Image(label="IoU · Spearman · ortak/özgü bölge", type="numpy", interactive=False)
+                            x_cmp_df = gr.Dataframe(label="Karşılaştırılan açıklamalar", wrap=True, interactive=False)
+                        x_files = gr.File(label="Dışa aktarım (PNG paneller · JSON · NPZ · MD rapor)", file_count="multiple")
 
-    # ---------------------------------------------------------------- 9 · XAI · KATMAN FİLTRELERİ (Filter Visualization)
-    with gr.Tab("9 · Katman filtreleri (Filter Visualization)"):
-        gr.Markdown("**XAI Analysis · Filter Visualization** — SHAP sekmesinden bağımsızdır. Eğitilmiş modelin ilk konvolüsyon "
-                    "katmanlarındaki **gerçek kernel ağırlıkları** (B) ile bunların modelin kendi ön işlemesinden geçen görüntüye "
-                    "uygulanmasıyla oluşan **aktivasyon haritaları** (C) ayrı ayrı gösterilir; D'de orijinal görüntüyle karşılaştırılır. "
-                    "Filtre eğitilmez/üretilmez, ağırlıklar ve mimari değiştirilmez, derin katmanlara ilerlenmez.", elem_classes="small-md")
-        if XFILT_OK and TORCH_OK:
-            def _xf_sample(key):
-                try:
-                    return load_dataset_sample(key)
-                except Exception as e:
-                    raise gr.Error(f"Örnek yüklenemedi: {e}")
-            XFILT.build_tab(gr, models_dir=MODELS, yolo_runs_dir=ROOT / "phase3_yolo" / "runs", gpu=gpu,
-                            freq_fn=project_freq_channels, load_sample=_xf_sample,
-                            sample_choices=sample_choices(filter_index("test (testing)", max_mp=12)),
-                            image_states=(st_orig, st_mask), default_key="PHASE2/unet_bbox_s42", store_fp16=True if ZERO_GPU else None)
-        else:
-            gr.Markdown(f"⚠️ Katman filtreleri kullanılamıyor: `{_XFILT_ERR or _TORCH_ERR}`")
+            # ------------------------------------------------ 8b · Filter Visualization / Katman Filtreleri
+            with gr.Tab("Filter Visualization / Katman Filtreleri"):
+                if XFILT_OK and TORCH_OK:
+                    def _xf_sample(key):
+                        try:
+                            return load_dataset_sample(key)
+                        except Exception as e:
+                            raise gr.Error(f"Örnek yüklenemedi: {e}")
+                    XFILT.build_tab(gr, models_dir=MODELS, yolo_runs_dir=ROOT / "phase3_yolo" / "runs", gpu=gpu,
+                                    freq_fn=project_freq_channels, load_sample=_xf_sample,
+                                    sample_choices=sample_choices(filter_index("test (testing)", max_mp=12)),
+                                    image_states=(st_orig, st_mask), default_key="PHASE2/unet_bbox_s42", store_fp16=True if ZERO_GPU else None)
+                else:
+                    gr.Markdown(f"⚠️ Katman filtreleri kullanılamıyor: `{_XFILT_ERR or _TORCH_ERR}`")
+
 
     # ---------------------------------------------------------------- olaylar
     filt_in = [f_split, f_source, f_tool, f_area, f_pair, f_marker, f_mp]
@@ -2682,7 +2687,7 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
     btn_green.click(run_green, [st_cur, st_mask, st_auth], [green_ov, green_md])
 
 
-    # ---------------------------------------------------------------- 8 · SHAP olayları
+    # ---------------------------------------------------------------- 8 · XAI Analysis › SHAP olayları
     x_src.change(lambda v: gr.update(visible=v == XAI_SOURCES[3]), [x_src], [x_up_grp])
     b_xpred.click(xai_predict, [x_src, x_unet, x_res, st_orig, st_cur, st_mask, st_auth, st_sim, x_up_img, x_up_auth, x_up_gt],
                   [x_pred_df, x_status, st_xpred])

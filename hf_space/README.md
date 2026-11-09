@@ -20,7 +20,7 @@ görüntülerinde sahteciliği **sınıflandırır** (ResNet-18) ve değiştiril
 **Sekmeler:** `0 · Simülasyon` (veri setinden örnek seç → GT analizi → yeşil işaretçi taraması → girdi senaryosu ve bozulma →
 ResNet-18 + U-Net'ler → bbox ve piksel-değişim GT'siyle metrikler, görüntü-düzeyi karar, yakın plan, indirilebilir rapor) ·
 `1 · Toplu test` (N örnekte aynı hat; TPR/FPR/AUROC, boru hattının kayıtlı sonuçlarıyla yeniden-üretim farkı) ·
-`2–7` girdi, 61 ön işleme işlemi (aşamalı pipeline), U-Net, ResNet-18, yeşil işaretçi, sonuçlar · `8 · SHAP açıklamaları` (tahmin → SHAP Partition/Gradient, authentic/blur/inpaint referansı → tespit bölgesi bazında açıklama, bölge kütlesi, modeller arası IoU/Spearman karşılaştırması, PNG/JSON/NPZ/MD dışa aktarım; ayrıntı `docs/XAI.md`).
+`2–7` girdi, 61 ön işleme işlemi (aşamalı pipeline), U-Net, ResNet-18, yeşil işaretçi, sonuçlar · `8 · XAI Analysis` › SHAP Analysis (tahmin → SHAP Partition/Gradient, authentic/blur/inpaint referansı → tespit bölgesi bazında açıklama, bölge kütlesi, modeller arası IoU/Spearman karşılaştırması, PNG/JSON/NPZ/MD dışa aktarım; ayrıntı `docs/XAI.md`) ve › Filter Visualization / Katman Filtreleri (SHAP'tan bağımsız: ilk conv katmanlarının checkpoint'teki gerçek kernel'leri, görüntüye uygulanmış aktivasyon haritaları conv/BN/aktivasyon, filtre↔harita çiftleri, orijinalle karşılaştırma; U-Net, DeepLabV3+, ResNet-18, YOLO11; ayrıntı `docs/XAI_FILTERS.md`).
 
 Donanım: **ZeroGPU** (NVIDIA RTX Pro 6000 Blackwell, istek başına; `@spaces.GPU`).
 

@@ -38,7 +38,7 @@
   {
    "name": "T3 model keşfi",
    "ok": true,
-   "detail": "40 checkpoint"
+   "detail": "46 checkpoint"
   },
   {
    "name": "T3 PHASE2/dlv3p_bbox_s42",
@@ -221,6 +221,21 @@
    "detail": "smp.Unet(encoder=resnet18, in_channels=5, classes=1) · 5 katman · en kötü göreli 1.1e-06 · kanal-toplam 9.4e-07"
   },
   {
+   "name": "T3 YOLO/aiforge-full-yolo11s-img1280-conserv-s42",
+   "ok": true,
+   "detail": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16) · 6 katman · en kötü göreli 0.0e+00 · kanal-toplam 3.8e-07"
+  },
+  {
+   "name": "T3 YOLO/aiforge-tiles-yolo11m-img1024-conserv-s42",
+   "ok": true,
+   "detail": "Ultralytics DetectionModel (yolo11m.yaml, ultralytics 8.4.208, kayıt float16) · 6 katman · en kötü göreli 0.0e+00 · kanal-toplam 4.6e-07"
+  },
+  {
+   "name": "T3 YOLO/aiforge-tiles-yolo11n-img1024-conserv-s42",
+   "ok": true,
+   "detail": "Ultralytics DetectionModel (yolo11n.yaml, ultralytics 8.4.208, kayıt float16) · 6 katman · en kötü göreli 0.0e+00 · kanal-toplam 2.1e-07"
+  },
+  {
    "name": "T3 YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42-dryrun",
    "ok": true,
    "detail": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16) · 6 katman · en kötü göreli 0.0e+00 · kanal-toplam 4.0e-07"
@@ -238,7 +253,22 @@
   {
    "name": "T3 YOLO/aiforge-tiles-yolo11s-img1024-conserv-s44",
    "ok": true,
-   "detail": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16) · 6 katman · en kötü göreli 0.0e+00 · kanal-toplam 3.9e-07"
+   "detail": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16) · 6 katman · en kötü göreli 0.0e+00 · kanal-toplam 3.8e-07"
+  },
+  {
+   "name": "T3 YOLO/aiforge-tiles-yolo11s-img1024-default-s42",
+   "ok": true,
+   "detail": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16) · 6 katman · en kötü göreli 0.0e+00 · kanal-toplam 3.6e-07"
+  },
+  {
+   "name": "T3 YOLO/aiforge-tiles_authneg-yolo11s-img1024-conserv-s42",
+   "ok": true,
+   "detail": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16) · 6 katman · en kötü göreli 0.0e+00 · kanal-toplam 3.8e-07"
+  },
+  {
+   "name": "T3 YOLO/aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42",
+   "ok": true,
+   "detail": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16) · 6 katman · en kötü göreli 0.0e+00 · kanal-toplam 3.3e-07"
   },
   {
    "name": "T4 çıkarılmış YOLO ilk katmanları = tam checkpoint (ağırlık + tüm aşamalar)",
@@ -248,7 +278,7 @@
   {
    "name": "T5 cuda haritaları ≈ CPU (TF32 toleransı)",
    "ok": true,
-   "detail": "göreli 1.0e-03 · tepe 73 MiB · 1.58 s"
+   "detail": "göreli 1.0e-03 · tepe 73 MiB · 1.43 s"
   },
   {
    "name": "T6 PHASE2/unet_bbox_s42: görseller + ham dışa aktarım",
@@ -271,7 +301,7 @@
    "detail": "40 görsel/normalizasyon · 3 dosya"
   },
   {
-   "name": "T6 YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42-dryrun: görseller + ham dışa aktarım",
+   "name": "T6 YOLO/aiforge-full-yolo11s-img1280-conserv-s42: görseller + ham dışa aktarım",
    "ok": true,
    "detail": "40 görsel/normalizasyon · 3 dosya"
   }
@@ -465,7 +495,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.115794010635e-07,
-   "sec": 0.69,
+   "sec": 0.36,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "9425801afcbe6980c7a935878d92c14c9128fc29c25c71ba044f97b23fafbe7c"
   },
@@ -657,7 +687,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.685900591994141e-07,
-   "sec": 0.42,
+   "sec": 0.37,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "c691f9bac8afd3c9f7e66460663c34f0f7c3cdd886ac4292cf720d8996ccec71"
   },
@@ -849,7 +879,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.142080681252992e-07,
-   "sec": 0.41,
+   "sec": 0.37,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "e4143c0c7fa8fd8511ade94c1e93886f8f7c63a157fd7a782475a7107807f98f"
   },
@@ -1041,7 +1071,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.274796197023534e-07,
-   "sec": 0.4,
+   "sec": 0.33,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "a40972d0fab31208a5ed8c88a9e9d88bce1ec5f9256f07f5e97ae33b2f07def2"
   },
@@ -1233,7 +1263,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.115765588925569e-07,
-   "sec": 0.38,
+   "sec": 0.34,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "c0090c8498b48d50cbda83ac68b798d0bd37d4ede90f77f3ee0728e3cb16295b"
   },
@@ -1425,7 +1455,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.953640425104822e-07,
-   "sec": 0.48,
+   "sec": 0.44,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "0174c0cd7ac079460fea3b84655ea0f88d949b2ec50db65369e19bc737784e23"
   },
@@ -1617,7 +1647,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.7150268756013247e-07,
-   "sec": 0.48,
+   "sec": 0.4,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "3db3b27cdd1309222ee2a7de83be589f2fa5c8d5df353ba1b5b1e3e738b58294"
   },
@@ -1809,7 +1839,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.130787030793726e-07,
-   "sec": 0.53,
+   "sec": 0.4,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "0536a33f04b9d9df278a90010de2abadc6b0a046fcb2fe492bca4e2753e891a0"
   },
@@ -2001,7 +2031,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.3385495018810616e-07,
-   "sec": 0.47,
+   "sec": 0.42,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "ef42e787ed68e684f550b226fd85d2e9a0967f5cff4fe202eb483c96672cbe26"
   },
@@ -2193,7 +2223,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.290881747692765e-07,
-   "sec": 0.43,
+   "sec": 0.41,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "3fb35df4bc5b4bdc98d3c0ace3663420f77e0add3fccf8c4ea10ffb80a0ac1b8"
   },
@@ -2385,7 +2415,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 6.003008365951246e-07,
-   "sec": 0.45,
+   "sec": 0.4,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "6d5260e865f51aa0ef581206aa056a049a0340499ce6ffce0f89ec8cc6f53d7b"
   },
@@ -2577,7 +2607,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.2750269813041086e-07,
-   "sec": 0.44,
+   "sec": 0.41,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "8521a9ebaec9d7115e4c35c668c3631ed52c4883b4e0be59be89d4b6ac6c6d94"
   },
@@ -2961,7 +2991,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.107474407850532e-07,
-   "sec": 0.45,
+   "sec": 0.5,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "2a17843c97f4c5fc3744f3100b36aaba176067b4d5f06d3a0c35d7e21e4d815c"
   },
@@ -3345,7 +3375,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.523131676454796e-07,
-   "sec": 0.43,
+   "sec": 0.46,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "eded29416888a89b1ded5c2c4bc563630687c15911cbbec3daa7d7cd9f6eb540"
   },
@@ -3537,7 +3567,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 3.9008995145195513e-07,
-   "sec": 0.4,
+   "sec": 0.44,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "8a8cddee2e98f514aa477f6890875c816c4a90cfe7ebeb99b4a7690afaad4e6d"
   },
@@ -3729,7 +3759,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.130831368660438e-07,
-   "sec": 0.47,
+   "sec": 0.49,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "edf79b2d73364a90f3b87c75868820b176e7ccaead4abad5ac6403aced8cb196"
   },
@@ -3921,7 +3951,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.099288955534576e-07,
-   "sec": 0.55,
+   "sec": 0.46,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "4569bf7a332abbbe60f18a1c4dd5482b01a58b143a170d5a8cabd3a9ce7a93f8"
   },
@@ -4113,7 +4143,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 7.678033284719277e-07,
-   "sec": 0.52,
+   "sec": 0.44,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "b4b5574a7ffe8500e1c54fc49f9060c837718d62ea08c5b7fe529b5c8979dfd4"
   },
@@ -4305,7 +4335,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.993519494040811e-07,
-   "sec": 0.51,
+   "sec": 0.41,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "53956bc7a6000ff02463da23901d5b43db93d73fb79ff103a1beade31a8ca6c5"
   },
@@ -4497,7 +4527,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.2794326304829156e-07,
-   "sec": 0.52,
+   "sec": 0.44,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "8b0249a7cd6388b26900679ab8d413a9c67bb669a939ce8b89eefc9e7372ef39"
   },
@@ -4689,7 +4719,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.132664568918699e-07,
-   "sec": 0.44,
+   "sec": 0.48,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "9198eb1f82f2e781059b7c63f37aba498550f3d9c3efe2f7b8b8595e01707bec"
   },
@@ -4881,7 +4911,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.124713311488449e-07,
-   "sec": 0.47,
+   "sec": 0.45,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "56fde51880e9d76a8d81fd8abb390c52b9b8128cee78271373647976e85bc490"
   },
@@ -5073,7 +5103,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.166344294593728e-07,
-   "sec": 0.45,
+   "sec": 0.57,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "5fad7717c1625a339c776b40029835a62a69906fab67faeadeb63eff90c1a39e"
   },
@@ -5265,7 +5295,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.480281970449141e-07,
-   "sec": 0.44,
+   "sec": 0.5,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "328bc20999585420e3ede6c1085af69c393b9b05b4f329a69977a1a4404a2a1f"
   },
@@ -5457,7 +5487,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.272768876489863e-07,
-   "sec": 0.47,
+   "sec": 0.42,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "485e29bd267718c27dbed8def8cea6e15cdbf7cf2236a8057b24c36dac9542f4"
   },
@@ -5649,7 +5679,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.96184179357806e-07,
-   "sec": 0.49,
+   "sec": 1.38,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "e8d4f23643ff880262698fa2c74473be1d933ef03ecf174ce01f7c0e4c2ffd6b"
   },
@@ -5841,7 +5871,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.101526312500937e-07,
-   "sec": 0.48,
+   "sec": 0.49,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "bdc4c3a02fc659896ceb20f7785e9425cdbf6d1a93c1cde86c5bd6b858b450c6"
   },
@@ -6033,7 +6063,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.2812808942471747e-07,
-   "sec": 0.45,
+   "sec": 0.52,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "a9deb7d0a73583e9fcfbc0b28b0491a8c505c519662a01e3af8d8d3fa061b5d2"
   },
@@ -6225,7 +6255,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.10829181621375e-07,
-   "sec": 0.66,
+   "sec": 0.61,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "3a446801891363a7d559afd6fd628cf9751b22353d1c888eff561ec9a2338805"
   },
@@ -6417,7 +6447,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.109246785650612e-07,
-   "sec": 0.42,
+   "sec": 0.35,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "b0ecb250b47ff3c7259fbf781d7ce38370a83cfd0e6bd236da763478cc8db590"
   },
@@ -6609,7 +6639,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.507159812623286e-07,
-   "sec": 0.39,
+   "sec": 0.35,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "af2a2da364ee13234400b2e47c5de51e35c2338e59ee53ed775dd7333a35fb71"
   },
@@ -6801,7 +6831,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.133927629685786e-07,
-   "sec": 0.41,
+   "sec": 0.5,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "09ffb7b606ab4af67bf5e767a9ed72d7ea452a5e43b4578a43d869c3b909bb70"
   },
@@ -6993,7 +7023,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 5.94270090914506e-07,
-   "sec": 0.49,
+   "sec": 0.78,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "9db95ca15b938881eb33d5190f48b6d545c38617dd571a235c53f1d46bab0297"
   },
@@ -7185,9 +7215,702 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 9.401325655744586e-07,
-   "sec": 0.5,
+   "sec": 0.81,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "167965c9857745713436e37fbc45442be896a86b47492917d4c24ea61c36f29b"
+  },
+  {
+   "key": "YOLO/aiforge-full-yolo11s-img1280-conserv-s42",
+   "label": "YOLO11 · aiforge-full-yolo11s-img1280-conserv-s42 [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      32,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      32,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      64,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      64,
+      64,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      16,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      16,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv2.conv",
+     "shape": [
+      32,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv2.conv",
+     "shape": [
+      128,
+      96,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 1008,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 3.8170696825545747e-07,
+   "sec": 0.52,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "441d08798fa8673ed075f20fa0a7f3e9937084a7b1d76eee71c0dffeea236f1c"
+  },
+  {
+   "key": "YOLO/aiforge-tiles-yolo11m-img1024-conserv-s42",
+   "label": "YOLO11 · aiforge-tiles-yolo11m-img1024-conserv-s42 [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11m.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      64,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      64,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      128,
+      64,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      128,
+      128,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      32,
+      64,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.m.0.cv1.conv",
+     "shape": [
+      32,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.m.0.cv2.conv",
+     "shape": [
+      32,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 1248,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 4.567743587813311e-07,
+   "sec": 0.56,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "2736d9984f462772afc543014a90ae180f07ff16678b837efc0f346b461fc2d2"
+  },
+  {
+   "key": "YOLO/aiforge-tiles-yolo11n-img1024-conserv-s42",
+   "label": "YOLO11 · aiforge-tiles-yolo11n-img1024-conserv-s42 [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11n.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      16,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      16,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      32,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      32,
+      32,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      8,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      8,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv2.conv",
+     "shape": [
+      16,
+      8,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      16,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv2.conv",
+     "shape": [
+      64,
+      48,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 504,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 2.1183191734053253e-07,
+   "sec": 0.54,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "70664034c8e54e53b5144c93a9b0157516e0671ebb917babdd45caac870f0bdb"
   },
   {
    "key": "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42-dryrun",
@@ -7416,7 +8139,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 3.9526062778350024e-07,
-   "sec": 0.45,
+   "sec": 0.7,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "56073781f629645067d57a16efcb0eff565845bc7e9725a60175bdab8611b8b8"
   },
@@ -7647,7 +8370,7 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 3.7838560729142046e-07,
-   "sec": 0.3,
+   "sec": 0.63,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "8e84f837f7789e0d2d78a9e31452d1536069bf9421b1477b729cd2ececa715ee"
   },
@@ -7878,13 +8601,13 @@
    "weights_sha_unchanged": true,
    "file_unchanged": true,
    "channel_sum_rel": 4.436041365352139e-07,
-   "sec": 0.27,
+   "sec": 0.39,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
    "sha": "c41db2eff948a7f2469e6df9e7c38162256c16a1239cd1bb72b63c28750b0b69"
   },
   {
    "key": "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s44",
-   "label": "YOLO11 · aiforge-tiles-yolo11s-img1024-conserv-s44 · eğitim sürüyor (son best.pt) [PHASE3]",
+   "label": "YOLO11 · aiforge-tiles-yolo11s-img1024-conserv-s44 [PHASE3]",
    "file": "best.pt",
    "ok": true,
    "arch": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16)",
@@ -8108,24 +8831,717 @@
    "input_equal": true,
    "weights_sha_unchanged": true,
    "file_unchanged": true,
-   "channel_sum_rel": 3.8616548181380494e-07,
-   "sec": 0.37,
+   "channel_sum_rel": 3.7789294538015383e-07,
+   "sec": 0.28,
    "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
-   "sha": "29957f1c362b7b38a021e3aecc2faa461f669c276ae7adc948a6b56b4ced0349"
+   "sha": "e23a0d4ccefda9a641b77ad6195f3256ade75be2d74b50f9dfd7506ad4c6c086"
+  },
+  {
+   "key": "YOLO/aiforge-tiles-yolo11s-img1024-default-s42",
+   "label": "YOLO11 · aiforge-tiles-yolo11s-img1024-default-s42 [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      32,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      32,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      64,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      64,
+      64,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      16,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      16,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv2.conv",
+     "shape": [
+      32,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv2.conv",
+     "shape": [
+      128,
+      96,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 1008,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 3.570872024738492e-07,
+   "sec": 0.26,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "f52ee2364a2874f0917063d28deee44cf19f2ba8285d9b6a657a7590be9b3717"
+  },
+  {
+   "key": "YOLO/aiforge-tiles_authneg-yolo11s-img1024-conserv-s42",
+   "label": "YOLO11 · aiforge-tiles_authneg-yolo11s-img1024-conserv-s42 [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      32,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      32,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      64,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      64,
+      64,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      16,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      16,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv2.conv",
+     "shape": [
+      32,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv2.conv",
+     "shape": [
+      128,
+      96,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 1008,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 3.7548605291704007e-07,
+   "sec": 0.47,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "12530ad135bc8c2428c753d6019b407b8c88eb434979715e9c9b8655d99ee201"
+  },
+  {
+   "key": "YOLO/aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42",
+   "label": "YOLO11 · aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42 [PHASE3]",
+   "file": "best.pt",
+   "ok": true,
+   "arch": "Ultralytics DetectionModel (yolo11s.yaml, ultralytics 8.4.208, kayıt float16)",
+   "family": "yolo",
+   "preprocess": "yolo",
+   "in_ch": 3,
+   "layers": [
+    {
+     "name": "model.0.conv",
+     "shape": [
+      32,
+      3,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 2.0,
+     "out_shape": [
+      32,
+      256,
+      256
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.0.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.1.conv",
+     "shape": [
+      64,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      2,
+      2
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv1.conv",
+     "shape": [
+      64,
+      64,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      64,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv1.conv",
+     "shape": [
+      16,
+      32,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      16,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv1.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.m.0.cv2.conv",
+     "shape": [
+      32,
+      16,
+      3,
+      3
+     ],
+     "kernel": [
+      3,
+      3
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(1, 1)",
+     "out_stride": 4.0,
+     "out_shape": [
+      32,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.m.0.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    },
+    {
+     "name": "model.2.cv2.conv",
+     "shape": [
+      128,
+      96,
+      1,
+      1
+     ],
+     "kernel": [
+      1,
+      1
+     ],
+     "stride": [
+      1,
+      1
+     ],
+     "padding": "(0, 0)",
+     "out_stride": 4.0,
+     "out_shape": [
+      128,
+      128,
+      128
+     ],
+     "stages": [
+      "conv",
+      "norm",
+      "act"
+     ],
+     "ops": {
+      "norm": "model.2.cv2.bn (BatchNorm2d)",
+      "act": "model.0.act (SiLU, paylaşımlı modül)"
+     },
+     "rel": 0.0,
+     "max_abs": 0.0
+    }
+   ],
+   "n_maps": 1008,
+   "worst_rel": 0.0,
+   "input_equal": true,
+   "weights_sha_unchanged": true,
+   "file_unchanged": true,
+   "channel_sum_rel": 3.348332313635183e-07,
+   "sec": 0.88,
+   "region": "natif çözünürlük kırpma 512×512 px @ (x=64, y=138) — sahte bölge (GT kutusu) merkezli; kaynak 576×864 px",
+   "sha": "4fdb13aa0aec18bc7a7c355210b0cf4e068108d2c49e7b9eabb32203ca0de865"
   }
  ],
- "started": "2026-11-09 18:59:04",
+ "started": "2026-11-10 02:33:13",
  "image": "000000001.png",
  "gpu": {
   "rel": 0.0009989087702706456,
   "peak_mb": 73.4560546875,
-  "sec": 1.5835843086242676,
-  "free_gib": 9.546001434326172
+  "sec": 1.430673599243164,
+  "free_gib": 14.6337890625
  },
- "n_checks": 55,
+ "n_checks": 61,
  "n_fail": 0,
  "failed": [],
- "sec": 67.6,
+ "sec": 88.6,
  "env": {
   "torch": "2.11.0+cu128",
   "cuda": true
