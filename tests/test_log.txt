@@ -1,0 +1,72 @@
+[ai515] 8 model yüklendi (cpu, ZeroGPU=False) 1.7s; hata: []
+import 6.1s · modeller 8 · hata {} · cihaz cpu · ZeroGPU False
+dizin 4061 · yerelde mevcut 35
+[01/35] training:000000231 ok 10.0s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[02/35] training:000000329 ok 5.2s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[03/35] training:000000345 ok 7.7s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): GERÇEK ✗
+[04/35] training:000000380 ok 4.5s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[05/35] training:000000742 ok 9.7s · auth=True · ResNet-18 · tam ince a: GERÇEK ✗ | U-Net · bbox-GT (s42): GERÇEK ✗ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): GERÇEK ✗
+[06/35] training:000000760 ok 8.3s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): GERÇEK ✗ | U-Net · piksel-GT (s42: GERÇEK ✗ | U-Net · glif-GT (s42): GERÇEK ✗
+[07/35] training:000000774 ok 2.3s · auth=True · ResNet-18 · tam ince a: GERÇEK ✗ | U-Net · bbox-GT (s42): GERÇEK ✗ | U-Net · piksel-GT (s42: GERÇEK ✗ | U-Net · glif-GT (s42): GERÇEK ✗
+[08/35] training:000000776 ok 8.3s · auth=True · ResNet-18 · tam ince a: GERÇEK ✗ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[09/35] training:000001029 ok 12.3s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[10/35] training:000001340 ok 12.3s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[11/35] training:000001397 ok 12.0s · auth=True · ResNet-18 · tam ince a: GERÇEK ✗ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[12/35] training:000001467 ok 11.7s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[13/35] training:000001531 ok 6.9s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[14/35] training:000001547 ok 10.5s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[15/35] training:000001677 ok 7.0s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[16/35] training:000002261 ok 1.5s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[17/35] training:000002430 ok 1.2s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[18/35] training:000002696 ok 1.2s · auth=True · ResNet-18 · tam ince a: GERÇEK ✗ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[19/35] training:000002916 ok 67.9s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): GERÇEK ✗ | U-Net · piksel-GT (s42: GERÇEK ✗ | U-Net · glif-GT (s42): GERÇEK ✗
+[20/35] training:000002923 ok 66.1s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): GERÇEK ✗ | U-Net · piksel-GT (s42: GERÇEK ✗ | U-Net · glif-GT (s42): GERÇEK ✗
+[21/35] testing:000000310 ok 12.9s · auth=False · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[22/35] testing:000000372 ok 13.7s · auth=False · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[23/35] testing:000000389 ok 129.0s · auth=False · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[24/35] testing:000000423 ok 2.3s · auth=False · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[25/35] testing:000000475 ok 3.6s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[26/35] testing:000000483 ok 10.4s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[27/35] testing:000000494 ok 1.4s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[28/35] testing:000000520 ok 6.4s · auth=False · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[29/35] testing:000000540 ok 1.3s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[30/35] testing:000000558 ok 1.1s · auth=False · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[31/35] testing:000000620 ok 1.2s · auth=False · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[32/35] testing:000000622 ok 5.8s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[33/35] testing:000000681 ok 1.1s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[34/35] testing:000000691 ok 1.3s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+[35/35] testing:000000700 ok 12.7s · auth=True · ResNet-18 · tam ince a: SAHTE ✓ | U-Net · bbox-GT (s42): SAHTE ✓ | U-Net · piksel-GT (s42: SAHTE ✓ | U-Net · glif-GT (s42): SAHTE ✓
+
+YENİDEN ÜRETİM (F1@0.5, uygulama vs boru hattı kayıtlı):
+                         count    mean     max
+model                                         
+U-Net · bbox-GT (s42)       33  0.0062  0.0763
+U-Net · glif-GT (s42)       33  0.0013  0.0136
+U-Net · piksel-GT (s42)     33  0.0066  0.1447
+
+Senaryo testleri: training:000000329
+  Sahte belge (forged) → [('U-Net · bbox-GT (s42', 'SAHTE', 0.351, 0.971), ('U-Net · piksel-GT (s', 'SAHTE', 0.22, 0.687), ('U-Net · glif-GT (s42', 'SAHTE', 0.109, 0.363)]
+  Authentic eş (negatif kontrol) → [('U-Net · bbox-GT (s42', 'SAHTE', 0.334, 0.621), ('U-Net · piksel-GT (s', 'GERÇEK', 0.062, 0.155), ('U-Net · glif-GT (s42', 'SAHTE', 0.186, 0.283)]
+  Sahte, yeşil işaretçi onarılmış → [('U-Net · bbox-GT (s42', 'SAHTE', 0.371, 0.972), ('U-Net · piksel-GT (s', 'SAHTE', 0.251, 0.77), ('U-Net · glif-GT (s42', 'SAHTE', 0.164, 0.374)]
+  Authentic + yalnız yeşil işaretçi (kısayol testi) → [('U-Net · bbox-GT (s42', 'SAHTE', 0.36, 0.979), ('U-Net · piksel-GT (s', 'SAHTE', 0.19, 0.623), ('U-Net · glif-GT (s42', 'SAHTE', 0.125, 0.298)]
+  bozulma JPEG Q75: F1 bbox 0.953 · skor 0.37
+  bozulma JPEG Q50: F1 bbox 0.943 · skor 0.339
+  bozulma 0.75× yeniden ölçekleme: F1 bbox 0.983 · skor 0.372
+  bozulma 0.5× yeniden ölçekleme: F1 bbox 0.974 · skor 0.34
+  bozulma Gauss bulanıklık σ=1: F1 bbox 0.992 · skor 0.361
+  bozulma Gauss gürültüsü σ=5: F1 bbox 0.993 · skor 0.357
+
+Toplu test (dengeli, test bölümü, tüm eşli):
+### Tamamlandı — 8 örnek, 48 s (cpu)
+                       Model n sahte n authentic F1 bbox-GT IoU bbox-GT AP bbox-GT F1 piksel-GT AP piksel-GT Tespit TPR Yanlış alarm FPR Doğruluk Görüntü AUROC Yeniden üretim n |ΔF1@0.5| ort. |ΔAP| ort.
+0  ResNet-18 · tam ince ayar       8           8          —           —          —            —            —        1.0            0.375    0.812         0.922                0              —          —
+1      U-Net · bbox-GT (s42)       8           8      0.829       0.754       0.97        0.431        0.332        1.0            0.375    0.812         0.922                8          0.007      0.001
+2    U-Net · piksel-GT (s42)       8           8      0.668       0.526      0.696         0.49        0.542        1.0            0.375    0.812         0.891                8           0.02      0.017
+
+Toplu test (yalnız sahte, eğitim/val, 16 örnek, JPEG Q75):
+                   Model n sahte n authentic F1 bbox-GT IoU bbox-GT AP bbox-GT F1 piksel-GT AP piksel-GT Tespit TPR Yanlış alarm FPR Doğruluk Görüntü AUROC Yeniden üretim n |ΔF1@0.5| ort. |ΔAP| ort.
+0  U-Net · bbox-GT (s42)      16           0      0.571       0.494      0.616         0.31        0.295      0.625                —    0.625             —                0              —          —
+training:000000329 diğer sekmelere aktarıldı.
+
+==== 281 kontrol, 0 hata, 610s ====
+exit 0

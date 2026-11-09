@@ -1,0 +1,8 @@
+{
+ "best_epoch": 9,
+ "best_val_auroc": 0.9803619977402727,
+ "n_train_pairs": 5276,
+ "n_val_pairs": 476,
+ "train_time_s": 207.57109332084656,
+ "epochs_run": 10
+}

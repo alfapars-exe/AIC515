@@ -1,0 +1,15 @@
+\section{Introduction}
+\label{sec:intro}
+Image-editing services built on multimodal generators can now rewrite a single amount on a receipt or a field on a form without a visible seam. Detectors trained on classical splicing or on synthetic document tampering transfer poorly to this setting: on AIForge-Doc~v1~\cite{wu2026aiforgedoc}, the generic localizer TruFor~\cite{guillaro2023trufor} reaches a pixel IoU of 0.36 zero-shot and document-specific models fall further, and on its successor humans perform at chance~\cite{wu2026aiforgedocv2}. The obvious response is to train localizers on these benchmarks. We ask a prior question: \emph{what does the ground truth of such a benchmark actually teach a localizer, and what do its scores measure?}
+
+AIForge-Doc annotates every forgery with the bounding box of the edited field. Our audit of the released files shows that every mask is a rectangle, that only a median 49\,\% of the box pixels differ from the paired authentic image, and that one third of the forgeries also change pixels outside the box. A segmentation network trained on such masks is rewarded for a rectangle around any detectable cue, which is the setting in which shortcut learning thrives~\cite{geirhos2020shortcut}. Annotation geometry has been questioned for natural-image edits~\cite{shang2026maskspixels}, but not for AI-inpainted documents and not with controlled training. AIForge-Doc releases the authentic source of every training forgery, which lets us derive a pixel-change ground truth and change \emph{only} the training mask.
+
+Our contributions are:
+\begin{enumerate}
+\item \textbf{A dual-ground-truth protocol.} The same localizer trained on box, pixel-change and glyph masks (three seeds each) is scored under all three; the box-trained model's 0.92 validation AUPRC drops to 0.37 under the pixel-change truth and each ground truth ranks its own model first (Sec.~\ref{sec:res-h1}). The effect replicates with a second decoder (DeepLabV3+).
+\item \textbf{A hidden marker shortcut, removed and re-measured.} The generation pipeline leaves a 1--3\,px green line of the drawn edit marker in over 80\,\% of Gemini forgeries. Pasting only this line onto an authentic image makes the box model ``find'' the field; we retrain every condition on marker-repaired images and report how much of the benchmark score survives (Sec.~\ref{sec:res-marker}).
+\item \textbf{A region-appearance decomposition} that separates the content change from the generator's re-rendering of the field (Sec.~\ref{sec:res-render}).
+\item \textbf{Box detection versus segmentation.} A tiled YOLO11 detector trained on the same boxes, scored with the same code under both ground truths and with box AP, shows what the box label can reward at a fraction of the cost (Sec.~\ref{sec:res-yolo}).
+\item \textbf{Negative results} on the paste-back seam, a global re-encoding trace, held-out-generator transfer (now three seeds) and joint pixel--box supervision.
+\end{enumerate}
+We release the audit, derived masks, controls, probes and evaluation code; the data themselves are not redistributed.

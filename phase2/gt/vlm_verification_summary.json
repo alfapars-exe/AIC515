@@ -1,0 +1,78 @@
+{
+ "model": "claude-sonnet-5",
+ "n": 100,
+ "parsed": 96,
+ "eps8": {
+  "ok": 69,
+  "partial": 26,
+  "wrong": 1
+ },
+ "glyph": {
+  "ok": 55,
+  "partial": 41
+ },
+ "outside_marked": {
+  "no": 75,
+  "yes": 21
+ },
+ "outside_real": {
+  "n/a": 75,
+  "unclear": 15,
+  "yes": 4,
+  "no": 2
+ },
+ "bbox_unchanged": {
+  "yes": 96
+ },
+ "green_vlm": {
+  "yes": 40,
+  "unsure": 32,
+  "no": 24
+ },
+ "green_objective_in_sample": {
+  "yes": 76,
+  "no": 24
+ },
+ "repeat_agreement": {
+  "eps8_verdict": 0.8333333333333334,
+  "glyph_verdict": 0.6666666666666666,
+  "outside_bbox_marked": 0.8333333333333334,
+  "green_marker_line": 0.7777777777777778,
+  "bbox_unchanged_area": 0.9444444444444444
+ },
+ "repeat_n": 18,
+ "confidence": {
+  "medium": 62,
+  "high": 34
+ },
+ "vlm_green_vs_objective": {
+  "no": {
+   "no": 8,
+   "yes": 3
+  },
+  "yes": {
+   "no": 16,
+   "yes": 37
+  }
+ },
+ "objective_fullset": {
+  "n_pairs": 3336,
+  "share_residue": 0.7535971223021583,
+  "by_tool": {
+   "gemini-nano": 0.836,
+   "qwen-inpaint": 0.015
+  },
+  "by_source": {
+   "cord": 0.503,
+   "sroie": 0.856,
+   "wildreceipt": 0.897,
+   "xfund": 0.507
+  },
+  "by_split": {
+   "testing": 0.933,
+   "training": 0.749
+  },
+  "inside_bbox_median_px": 176.0,
+  "outside_share": 0.0031821797931583136
+ }
+}

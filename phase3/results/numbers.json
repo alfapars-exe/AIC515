@@ -1,0 +1,113 @@
+{
+ "val_U-Net_main_box_on_box_auprc": 0.923,
+ "val_U-Net_main_box_on_box_f1tau": 0.8415,
+ "val_U-Net_main_box_on_glyph_auprc": 0.2575,
+ "val_U-Net_main_box_on_glyph_f1tau": 0.3865,
+ "val_U-Net_main_box_on_pix_auprc": 0.3745,
+ "val_U-Net_main_box_on_pix_f1tau": 0.4473,
+ "val_U-Net_main_glyph_on_box_auprc": 0.3507,
+ "val_U-Net_main_glyph_on_box_f1tau": 0.4009,
+ "val_U-Net_main_glyph_on_glyph_auprc": 0.6759,
+ "val_U-Net_main_glyph_on_glyph_f1tau": 0.6737,
+ "val_U-Net_main_glyph_on_pix_auprc": 0.3787,
+ "val_U-Net_main_glyph_on_pix_f1tau": 0.4567,
+ "val_U-Net_main_pix_on_box_auprc": 0.5791,
+ "val_U-Net_main_pix_on_box_f1tau": 0.5999,
+ "val_U-Net_main_pix_on_glyph_auprc": 0.511,
+ "val_U-Net_main_pix_on_glyph_f1tau": 0.5318,
+ "val_U-Net_main_pix_on_pix_auprc": 0.6097,
+ "val_U-Net_main_pix_on_pix_f1tau": 0.5767,
+ "best_on_box": "U-Net/box 0.923",
+ "best_on_pix": "U-Net/pix 0.610",
+ "best_on_glyph": "U-Net/glyph 0.676",
+ "test_U-Net_main_box_auprc_box": 0.9499,
+ "test_U-Net_main_box_auprc_pix89": 0.4271,
+ "test_U-Net_main_box_f1tau_box": 0.8463,
+ "test_U-Net_main_glyph_auprc_box": 0.4028,
+ "test_U-Net_main_glyph_auprc_pix89": 0.41,
+ "test_U-Net_main_glyph_f1tau_box": 0.4055,
+ "test_U-Net_main_pix_auprc_box": 0.6385,
+ "test_U-Net_main_pix_auprc_pix89": 0.6539,
+ "test_U-Net_main_pix_f1tau_box": 0.6157,
+ "test_ap_with_marker_U-Net_main_box": 0.9722,
+ "test_ap_no_marker_U-Net_main_box": 0.6896,
+ "test_ap_with_marker_U-Net_main_glyph": 0.3882,
+ "test_ap_no_marker_U-Net_main_glyph": 0.3392,
+ "test_ap_with_marker_U-Net_main_pix": 0.6394,
+ "test_ap_no_marker_U-Net_main_pix": 0.5028,
+ "heldout_U-Net_geminionly_box_go1_box": {
+  "ideogram": 0.3952,
+  "gemini": 0.9083
+ },
+ "heldout_U-Net_geminionly_box_go1_pix": {
+  "ideogram": 0.2544,
+  "gemini": 0.3465
+ },
+ "heldout_U-Net_geminionly_glyph_go1_box": {
+  "ideogram": 0.1985,
+  "gemini": 0.3937
+ },
+ "heldout_U-Net_geminionly_glyph_go1_pix": {
+  "ideogram": 0.2329,
+  "gemini": 0.406
+ },
+ "heldout_U-Net_geminionly_pix_go1_box": {
+  "ideogram": 0.2548,
+  "gemini": 0.5591
+ },
+ "heldout_U-Net_geminionly_pix_go1_pix": {
+  "ideogram": 0.2792,
+  "gemini": 0.582
+ },
+ "heldout_U-Net_main_box_go0_box": {
+  "ideogram": 0.6291,
+  "gemini": 0.9121
+ },
+ "heldout_U-Net_main_box_go0_pix": {
+  "ideogram": 0.3741,
+  "gemini": 0.3585
+ },
+ "heldout_U-Net_main_glyph_go0_box": {
+  "ideogram": 0.3115,
+  "gemini": 0.369
+ },
+ "heldout_U-Net_main_glyph_go0_pix": {
+  "ideogram": 0.3645,
+  "gemini": 0.389
+ },
+ "heldout_U-Net_main_pix_go0_box": {
+  "ideogram": 0.4232,
+  "gemini": 0.5739
+ },
+ "heldout_U-Net_main_pix_go0_pix": {
+  "ideogram": 0.4542,
+  "gemini": 0.5715
+ },
+ "rob_U-Net_main_box_blur1": -0.2065,
+ "rob_U-Net_main_box_jpeg75": -0.1664,
+ "rob_U-Net_main_box_rescale075": -0.1223,
+ "rob_U-Net_main_glyph_blur1": -0.5895,
+ "rob_U-Net_main_glyph_jpeg75": -0.1799,
+ "rob_U-Net_main_glyph_rescale075": -0.4271,
+ "rob_U-Net_main_pix_blur1": -0.5914,
+ "rob_U-Net_main_pix_jpeg75": -0.2249,
+ "rob_U-Net_main_pix_rescale075": -0.4026,
+ "ctrl_U-Net_main_box_authentic_auroc_top1": 0.8917,
+ "ctrl_U-Net_main_box_authentic_flag05": 0.2601,
+ "ctrl_U-Net_main_box_benign_pasteback_auroc_top1": 0.872,
+ "ctrl_U-Net_main_box_benign_pasteback_flag05": 0.3128,
+ "ctrl_U-Net_main_box_fullimage_resample_auroc_top1": 0.8664,
+ "ctrl_U-Net_main_box_fullimage_resample_flag05": 0.3381,
+ "ctrl_U-Net_main_glyph_authentic_auroc_top1": 0.7991,
+ "ctrl_U-Net_main_glyph_authentic_flag05": 0.2286,
+ "ctrl_U-Net_main_glyph_benign_pasteback_auroc_top1": 0.7787,
+ "ctrl_U-Net_main_glyph_benign_pasteback_flag05": 0.2704,
+ "ctrl_U-Net_main_glyph_fullimage_resample_auroc_top1": 0.7692,
+ "ctrl_U-Net_main_glyph_fullimage_resample_flag05": 0.2704,
+ "ctrl_U-Net_main_pix_authentic_auroc_top1": 0.8916,
+ "ctrl_U-Net_main_pix_authentic_flag05": 0.1157,
+ "ctrl_U-Net_main_pix_benign_pasteback_auroc_top1": 0.8758,
+ "ctrl_U-Net_main_pix_benign_pasteback_flag05": 0.1465,
+ "ctrl_U-Net_main_pix_fullimage_resample_auroc_top1": 0.8634,
+ "ctrl_U-Net_main_pix_fullimage_resample_flag05": 0.1663
+}

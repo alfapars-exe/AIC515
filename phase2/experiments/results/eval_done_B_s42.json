@@ -1,0 +1,10 @@
+{
+ "tag": "B_s42",
+ "models": [
+  "unet_bbox_s42",
+  "unet_pixel_eps8_morph_s42",
+  "unet_glyph_v2_s42"
+ ],
+ "stages": "ablation,rectfit",
+ "seconds": 578.0002152919769
+}

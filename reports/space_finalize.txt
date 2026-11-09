@@ -1,0 +1,11 @@
+﻿dosyalar: ['.gitattributes', 'README.md', 'app.py', 'baselines/features_classical.py', 'baselines/results/results_tables.md', 'meta/green_marker_all_forged.csv', 'meta/image_tau.json', 'meta/reference_per_image_s42.csv', 'meta/tau.json', 'phase2/experiments/results/summary_test_agg.csv', 'phase2/experiments/results/tau.json', 'requirements.txt', 'space_logs.py', 'space_status.py']
+silindi: ['space_logs.py', 'space_status.py']
+0 RUNNING_BUILDING zero-a10g
+1 RUNNING_APP_STARTING zero-a10g
+2 RUNNING_APP_STARTING zero-a10g
+3 RUNNING_APP_STARTING zero-a10g
+4 RUNNING_APP_STARTING zero-a10g
+5 RUNNING_APP_STARTING zero-a10g
+6 RUNNING_APP_STARTING zero-a10g
+7 RUNNING_APP_STARTING zero-a10g
+8 RUNNING zero-a10g

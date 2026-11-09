@@ -1,0 +1,13 @@
+family,variant,train_gt,gemini_only,seeds,eval_gt,n_ideogram,AP_ideogram,AP_gemini_matched,gap
+U-Net,geminionly,box,True,1,box,126,"0.395 [0.324, 0.471]","0.908 [0.890, 0.927]",0.513
+U-Net,geminionly,box,True,1,pix,41,"0.254 [0.161, 0.345]","0.347 [0.319, 0.375]",0.092
+U-Net,geminionly,glyph,True,1,box,126,"0.199 [0.160, 0.241]","0.394 [0.380, 0.410]",0.195
+U-Net,geminionly,glyph,True,1,pix,41,"0.233 [0.162, 0.311]","0.406 [0.377, 0.434]",0.173
+U-Net,geminionly,pix,True,1,box,126,"0.255 [0.204, 0.305]","0.559 [0.542, 0.576]",0.304
+U-Net,geminionly,pix,True,1,pix,41,"0.279 [0.181, 0.386]","0.582 [0.552, 0.614]",0.303
+U-Net,main,box,False,3,box,126,"0.629 [0.569, 0.692]","0.912 [0.896, 0.928]",0.283
+U-Net,main,box,False,3,pix,41,"0.374 [0.286, 0.458]","0.359 [0.332, 0.386]",-0.016
+U-Net,main,glyph,False,3,box,126,"0.312 [0.269, 0.357]","0.369 [0.356, 0.382]",0.057
+U-Net,main,glyph,False,3,pix,41,"0.365 [0.276, 0.440]","0.389 [0.364, 0.414]",0.024
+U-Net,main,pix,False,3,box,126,"0.423 [0.367, 0.481]","0.574 [0.557, 0.590]",0.151
+U-Net,main,pix,False,3,pix,41,"0.454 [0.350, 0.550]","0.571 [0.540, 0.603]",0.117

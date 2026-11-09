@@ -1,0 +1,15 @@
+condition,subset,n_pairs,auroc,acc_pairwise,best_epoch,n_train_pairs,n_val_pairs
+forged_vs_authentic,all,457,0.5157362496349037,0.39606126914660833,9,5103,457
+forged_vs_authentic,gemini,416,0.5162693001109467,0.4254807692307692,9,5103,457
+forged_vs_authentic,ideogram,41,0.5124925639500297,0.0975609756097561,9,5103,457
+forged_vs_authentic,source=cord,121,0.5,0.0,9,5103,457
+forged_vs_authentic,source=sroie,119,0.5208671703975708,0.36134453781512604,9,5103,457
+forged_vs_authentic,source=wildreceipt,168,0.5288938492063492,0.8214285714285714,9,5103,457
+forged_vs_authentic,source=xfund,49,0.5,0.0,9,5103,457
+forged_vs_fullimage_resample,all,457,0.49754128580936463,0.4485776805251641,9,5103,457
+forged_vs_fullimage_resample,gemini,416,0.4982260077662722,0.4495192307692308,9,5103,457
+forged_vs_fullimage_resample,ideogram,41,0.4818560380725758,0.43902439024390244,9,5103,457
+forged_vs_fullimage_resample,source=cord,121,0.49327231746465405,0.4380165289256198,9,5103,457
+forged_vs_fullimage_resample,source=sroie,119,0.5099216157051056,0.48739495798319327,9,5103,457
+forged_vs_fullimage_resample,source=wildreceipt,168,0.4966163548752834,0.48214285714285715,9,5103,457
+forged_vs_fullimage_resample,source=xfund,49,0.46438983756768015,0.2653061224489796,9,5103,457

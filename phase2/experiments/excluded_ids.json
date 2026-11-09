@@ -1,0 +1,49 @@
+{
+ "degenerate_pairs_Dmax_le4": [
+  "000000035",
+  "000000129",
+  "000000515",
+  "000000710",
+  "000001193",
+  "000002526",
+  "000002946",
+  "000002974",
+  "000003018"
+ ],
+ "all_change_outside_bbox": [
+  "000000804",
+  "000001361",
+  "000002022",
+  "000002647",
+  "000002820"
+ ],
+ "pair_accepted_false_train": [
+  "000001511",
+  "000001514"
+ ],
+ "all_excluded_ids": [
+  "000000035",
+  "000000129",
+  "000000515",
+  "000000710",
+  "000000804",
+  "000001193",
+  "000001361",
+  "000001511",
+  "000001514",
+  "000002022",
+  "000002526",
+  "000002647",
+  "000002820",
+  "000002946",
+  "000002974",
+  "000003018"
+ ],
+ "note": "TrainingSet new_id; excluded from TRAINING in all GT conditions (val 487 is kept intact for evaluation; 2 of these ids fall in val and are evaluated like any other image).",
+ "n_in_train_split": 14,
+ "n_in_val_split": 2,
+ "in_val_ids": [
+  "000002946",
+  "000003018"
+ ]
+}

@@ -1,0 +1,20 @@
+{
+ "run": "dlv3p_bbox_s42",
+ "arch": "dlv3p",
+ "gt": "bbox",
+ "seed": 42,
+ "marker_repair": false,
+ "aux_bbox": 0.0,
+ "n_train": 2748,
+ "best_epoch": 10,
+ "best_val_auprc": 0.994164694307429,
+ "epochs_run": 10,
+ "epochs_planned": 10,
+ "train_time_s": 503.856493473053,
+ "peak_gpu_mem_gib": 3.4433512687683105,
+ "n_params": 12329297,
+ "ckpt": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\models\\phase2\\dlv3p_bbox_s42.pt",
+ "ckpt_mb": 47.14726448059082,
+ "torch": "2.11.0+cu128",
+ "gpu": "NVIDIA GeForce RTX 5080"
+}

@@ -1,0 +1,12 @@
+{
+ "B": 1000,
+ "seed": 0,
+ "notes": [
+  "val: n_pos=0 (boş GT) → F1/AP ortalamalarından dışlandı: GT ['glyph', 'pixel'], new_id [2946, 3018] (2 görüntü; metrikler zaten NaN).",
+  "test: n_pos=0 (boş GT) → F1/AP ortalamalarından dışlandı: GT ['glyph', 'pixel'], new_id [723] (1 görüntü; metrikler zaten NaN).",
+  "robustness: n_pos=0 (boş GT) → F1/AP ortalamalarından dışlandı: GT ['glyph', 'pixel'], new_id [2946, 3018] (2 görüntü; metrikler zaten NaN).",
+  "boundary: n_pos=0 (boş GT) → F1/AP ortalamalarından dışlandı: GT ['glyph', 'pixel'], new_id [2946, 3018] (2 görüntü; metrikler zaten NaN).",
+  "test: pixel-GT yalnız eşleşmiş authentic'i olan 89 çiftte mevcut; n_pos>0 olan 88 görüntü kullanıldı, 724 görüntü (GT yok/boş) dışlandı.",
+  "test: glyph-GT yalnız eşleşmiş authentic'i olan 89 çiftte mevcut; n_pos>0 olan 88 görüntü kullanıldı, 724 görüntü (GT yok/boş) dışlandı."
+ ]
+}

@@ -1,0 +1,4 @@
+simülasyon UI süresi 30.2s
+toplu test UI süresi 50.6s
+UI HATALARI: yok
+exit 0

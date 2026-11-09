@@ -1,0 +1,25 @@
+{
+ "test_n": 812,
+ "fired": 0.5283251231527094,
+ "mean_f1": 0.05443282598021846,
+ "mean_iou": 0.04040498152314672,
+ "pooled_f1": 0.049985589986276294,
+ "f1_among_fired": 0.103029031925262,
+ "iou_ge_05": 0.029556650246305417,
+ "by_tool": {
+  "fired": {
+   "gemini-nano": 0.5887,
+   "qwen-inpaint": 0.0118
+  },
+  "f1": {
+   "gemini-nano": 0.0608,
+   "qwen-inpaint": 0.0
+  },
+  "iou": {
+   "gemini-nano": 0.0451,
+   "qwen-inpaint": 0.0
+  }
+ },
+ "authentic_n": 600,
+ "authentic_fired": 0.0
+}

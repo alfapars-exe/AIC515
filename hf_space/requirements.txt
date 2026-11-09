@@ -1,0 +1,13 @@
+torch==2.11.0
+torchvision==0.26.0
+segmentation-models-pytorch==0.5.0
+timm
+opencv-python-headless
+scikit-image
+scikit-learn
+scipy
+numpy
+pandas
+tabulate
+matplotlib
+Pillow

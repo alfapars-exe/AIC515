@@ -1,0 +1,10 @@
+{
+ "tag": "C_geminionly",
+ "models": [
+  "unet_bbox_geminionly_s42",
+  "unet_pixel_eps8_morph_geminionly_s42",
+  "unet_glyph_v2_geminionly_s42"
+ ],
+ "stages": "val,test",
+ "seconds": 432.70433831214905
+}

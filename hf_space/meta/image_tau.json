@@ -1,0 +1,75 @@
+{
+ "_doc": "Görüntü-düzeyi karar eşikleri: skor = olasılık haritasının en yüksek %1 piksel ortalaması; val 487 sahte vs eşleşen authentic, Youden-J ile seçildi (per_image_val.csv + per_image_controls.csv).",
+ "unet_bbox_s42": {
+  "thr": 0.1667,
+  "tpr": 0.879,
+  "fpr": 0.15,
+  "auroc": 0.921,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unet_bbox_s43": {
+  "thr": 0.1459,
+  "tpr": 0.871,
+  "fpr": 0.193,
+  "auroc": 0.916,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unet_bbox_s44": {
+  "thr": 0.9796,
+  "tpr": 0.544,
+  "fpr": 0.041,
+  "auroc": 0.838,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unet_glyph_v2_s42": {
+  "thr": 0.0673,
+  "tpr": 0.823,
+  "fpr": 0.314,
+  "auroc": 0.796,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unet_glyph_v2_s43": {
+  "thr": 0.0527,
+  "tpr": 0.84,
+  "fpr": 0.337,
+  "auroc": 0.787,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unet_glyph_v2_s44": {
+  "thr": 0.0441,
+  "tpr": 0.836,
+  "fpr": 0.271,
+  "auroc": 0.814,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unet_pixel_eps8_morph_s42": {
+  "thr": 0.0838,
+  "tpr": 0.862,
+  "fpr": 0.209,
+  "auroc": 0.885,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unet_pixel_eps8_morph_s43": {
+  "thr": 0.09,
+  "tpr": 0.815,
+  "fpr": 0.131,
+  "auroc": 0.894,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unet_pixel_eps8_morph_s44": {
+  "thr": 0.0797,
+  "tpr": 0.846,
+  "fpr": 0.148,
+  "auroc": 0.896,
+  "n_pos": 487,
+  "n_neg": 487
+ }
+}

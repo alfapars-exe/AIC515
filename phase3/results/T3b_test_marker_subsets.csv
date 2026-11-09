@@ -1,0 +1,4 @@
+family,variant,train_gt,seeds,AP_with_marker,n_with_marker,AP_no_marker,n_no_marker,AP_no_marker_gemini,n_nm_gem
+U-Net,main,box,3,"0.972 [0.966, 0.977]",627,"0.690 [0.640, 0.739]",185,"0.722 [0.657, 0.788]",102
+U-Net,main,glyph,3,"0.388 [0.377, 0.399]",627,"0.339 [0.307, 0.374]",185,"0.361 [0.317, 0.405]",102
+U-Net,main,pix,3,"0.639 [0.624, 0.652]",627,"0.503 [0.455, 0.550]",185,"0.559 [0.504, 0.622]",102

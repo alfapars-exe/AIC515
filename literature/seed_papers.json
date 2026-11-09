@@ -1,0 +1,1132 @@
+{
+ "meta": {
+  "generated": "2026-10-19",
+  "research_cutoff": "2026-10-17",
+  "access_summary": "6/6 full-text",
+  "sources_of_truth": [
+   "arXiv API",
+   "CrossRef API",
+   "arXiv/CVF/ECVA PDFs",
+   "GitHub API",
+   "Hugging Face API"
+  ],
+  "not_used": [
+   "alphaXiv connector (approval not granted; not needed)"
+  ]
+ },
+ "papers": [
+  {
+   "id": "aiforge_doc_v1",
+   "title": "AIForge-Doc: A Benchmark for Detecting AI-Forged Tampering in Financial and Form Documents",
+   "authors": [
+    "Jiaqi Wu",
+    "Yuchen Zhou",
+    "Muduo Xu",
+    "Zisheng Liang",
+    "Simiao Ren",
+    "Jiayu Xue",
+    "Meige Yang",
+    "Siying Chen",
+    "Jingheng Huan"
+   ],
+   "year": 2026,
+   "venue": "arXiv preprint",
+   "doi": null,
+   "arxiv": "2602.20569v1",
+   "status": "preprint",
+   "access_level": "full-text (arXiv PDF, 17 pp.)",
+   "datasets": {
+    "name": "AIForge-Doc v1",
+    "forged_images": 4061,
+    "authentic_images": 4061,
+    "train": 3249,
+    "test": 812,
+    "sources": {
+     "CORD v2": 1000,
+     "WildReceipt": 1696,
+     "SROIE": 946,
+     "XFUND": 419
+    },
+    "generators": {
+     "Gemini 2.5 Flash Image": 3639,
+     "Ideogram v2 Edit": 422
+    },
+    "languages": 9,
+    "median_tampered_fraction_pct": 0.92,
+    "iqr_pct": [
+     0.35,
+     1.55
+    ],
+    "format": "PNG, DocTamper-compatible"
+   },
+   "evidence_type": [
+    "benchmark; baselines use RGB+NoisePrint++ (TruFor), RGB+DCT (DocTamper/DTD), VLM reasoning (GPT-4o)"
+   ],
+   "spatial_freq": "n/a (benchmark); baseline DocTamper uses DCT, TruFor uses noise residual",
+   "unseen_generator_eval": "All baselines zero-shot; per-tool breakdown only for TruFor (Gemini AUC 0.778 n=727; Ideogram 0.521 n=85, CI spans 0.5). No train-on-one/test-on-other protocol.",
+   "mask_procedure": "Full-image 8-bit PNG, 255 at the exact field bounding box (tight, no padding) = bbox mask, not pixel-change mask; guaranteed by paste-back of only the bbox region (§3.3, §4.2).",
+   "degradation_eval": "None (PNG only; no JPEG/blur/noise/resize).",
+   "small_region_eval": "Statistics only (median 0.92% pixels, 52% of images <1%); no size-stratified metrics.",
+   "reported_results": [
+    {
+     "metric": "image AUC",
+     "dataset": "AIForge-Doc test (812+812)",
+     "value": 0.751,
+     "ci": [
+      0.726,
+      0.776
+     ],
+     "method": "TruFor",
+     "source_location": "Table 2, p.11"
+    },
+    {
+     "metric": "pixel IoU",
+     "dataset": "AIForge-Doc test",
+     "value": 0.358,
+     "method": "TruFor",
+     "source_location": "Table 2, p.11"
+    },
+    {
+     "metric": "pixel F1",
+     "dataset": "AIForge-Doc test",
+     "value": 0.434,
+     "method": "TruFor",
+     "source_location": "Table 2, p.11"
+    },
+    {
+     "metric": "pixel AUC",
+     "dataset": "AIForge-Doc test",
+     "value": 0.916,
+     "method": "TruFor",
+     "source_location": "Table 2, p.11"
+    },
+    {
+     "metric": "image AUC",
+     "dataset": "AIForge-Doc test",
+     "value": 0.563,
+     "ci": [
+      0.535,
+      0.591
+     ],
+     "method": "DocTamper (official ckpt)",
+     "source_location": "Table 2, p.11"
+    },
+    {
+     "metric": "pixel IoU",
+     "dataset": "AIForge-Doc test",
+     "value": 0.02,
+     "method": "DocTamper",
+     "source_location": "Table 2, p.11"
+    },
+    {
+     "metric": "pixel AUC",
+     "dataset": "AIForge-Doc test",
+     "value": 0.675,
+     "method": "DocTamper",
+     "source_location": "Table 2, p.11"
+    },
+    {
+     "metric": "image AUC",
+     "dataset": "AIForge-Doc test",
+     "value": 0.509,
+     "ci": [
+      0.481,
+      0.537
+     ],
+     "method": "GPT-4o zero-shot",
+     "source_location": "Table 2, p.11"
+    },
+    {
+     "metric": "image AUC",
+     "dataset": "AIForge-Doc test, Gemini subset (n=727)",
+     "value": 0.778,
+     "ci": [
+      0.754,
+      0.802
+     ],
+     "method": "TruFor",
+     "source_location": "Table 3, p.11"
+    },
+    {
+     "metric": "image AUC",
+     "dataset": "AIForge-Doc test, Ideogram subset (n=85)",
+     "value": 0.521,
+     "ci": [
+      0.447,
+      0.597
+     ],
+     "method": "TruFor",
+     "source_location": "Table 3, p.11"
+    }
+   ],
+   "code_url": "UNKNOWN (paper claims open-source pipeline; no URL in text; HF README bibtex has placeholder github.com/YOUR_ORG/aiforge-doc)",
+   "data_url": "https://huggingface.co/datasets/Scam-AI/AIForge-Doc-v1 (gated)",
+   "checkpoint": "none (benchmark)",
+   "license": "HF card: cc-by-nc-sa-4.0 (card body text inconsistent: links CC BY 4.0, 'for any purpose'); paper: not stated",
+   "limitations": [
+    "Field type governed by source annotation schema (WildReceipt phone/address dominate)",
+    "Single field per image, two generators (89.6/10.4 imbalance), Ideogram test n=85",
+    "bbox mask not pixel-change mask",
+    "No degradation evaluation",
+    "Authentic images not passed through the same resize/PNG cycle (shortcut risk, HYPOTHESIS)",
+    "Cites DocTamper in-distribution AUC 0.98/IoU 0.71 and 'DFL/NFC' modules that do not appear in the CVPR 2023 paper (UNKNOWN provenance)",
+    "HF metadata assigned_tool values 'gemini-nano'/'qwen-inpaint' vs paper's Gemini/Ideogram naming; min context padding 150 px (paper) vs 100 px (HF card)"
+   ],
+   "gap_relevance": {
+    "A": "high",
+    "B": "high",
+    "C": "high",
+    "D": "high"
+   },
+   "evidence_class": "VERIFIED (full text + HF API); discrepancies flagged as UNKNOWN"
+  },
+  {
+   "id": "doctamper_dtd",
+   "title": "Towards Robust Tampered Text Detection in Document Image: New Dataset and New Solution",
+   "authors": [
+    "Chenfan Qu",
+    "Chongyu Liu",
+    "Yuliang Liu",
+    "Xinhong Chen",
+    "Dezhi Peng",
+    "Fengjun Guo",
+    "Lianwen Jin"
+   ],
+   "year": 2023,
+   "venue": "CVPR 2023, pp. 5937-5946",
+   "doi": "10.1109/CVPR52729.2023.00575",
+   "arxiv": null,
+   "status": "peer-reviewed",
+   "access_level": "full-text (CVF Open Access PDF, 10 pp.)",
+   "datasets": {
+    "name": "DocTamper",
+    "total": 170000,
+    "english": 95000,
+    "chinese": 75000,
+    "copy_move": 60000,
+    "splicing": 50000,
+    "generation": 60000,
+    "train": 120000,
+    "test": 30000,
+    "FCD": 2000,
+    "SCD": 18000,
+    "source_images": 50562,
+    "storage": "uncompressed; JPEG applied at train/test (Q 75-100, 1-3 times)"
+   },
+   "evidence_type": [
+    "RGB (VPH)",
+    "DCT coefficients of Y channel + JPEG quantization table (FPH) -> Block Artifact Grid discontinuities"
+   ],
+   "spatial_freq": "Yes: VPH + FPH, concat + scSE fusion, Swin-small encoder, Multi-view Iterative Decoder; CLTD curriculum over JPEG quality",
+   "unseen_generator_eval": "No AI generators. Cross-domain source sets FCD (Noisy Office) and SCD (HUAWEI Cloud) with the same synthesis pipeline.",
+   "mask_procedure": "Pixel-level annotation of the tampered text region produced by the synthesis pipeline; exact granularity (word bbox vs glyph) not specified (UNKNOWN).",
+   "degradation_eval": "JPEG only: lowest quality Q75/80/85/90, 1-3 recompressions (Tables 5, 7).",
+   "small_region_eval": "Motivation only (Fig. 1); no size-stratified metrics.",
+   "reported_results": [
+    {
+     "metric": "IoU",
+     "dataset": "DocTamper Test",
+     "value": 0.828,
+     "method": "DTD",
+     "source_location": "Table 3, p.7"
+    },
+    {
+     "metric": "F-score",
+     "dataset": "DocTamper Test",
+     "value": 0.792,
+     "method": "DTD",
+     "source_location": "Table 3/4, p.7"
+    },
+    {
+     "metric": "IoU",
+     "dataset": "DocTamper-FCD",
+     "value": 0.749,
+     "method": "DTD",
+     "source_location": "Table 3, p.7"
+    },
+    {
+     "metric": "F-score",
+     "dataset": "DocTamper-FCD",
+     "value": 0.816,
+     "method": "DTD",
+     "source_location": "Table 3/4, p.7"
+    },
+    {
+     "metric": "IoU",
+     "dataset": "DocTamper-SCD",
+     "value": 0.691,
+     "method": "DTD",
+     "source_location": "Table 3, p.7"
+    },
+    {
+     "metric": "F-score",
+     "dataset": "DocTamper-SCD",
+     "value": 0.754,
+     "method": "DTD",
+     "source_location": "Table 3/4, p.7"
+    },
+    {
+     "metric": "F-score",
+     "dataset": "DocTamper Test",
+     "value": 0.7,
+     "method": "CAT-Net",
+     "source_location": "Table 4, p.7"
+    },
+    {
+     "metric": "F-score",
+     "dataset": "DocTamper Test",
+     "value": 0.721,
+     "method": "CAT-Net + CLTD",
+     "source_location": "Table 4, p.7"
+    },
+    {
+     "metric": "IoU",
+     "dataset": "DocTamper Test Q75/Q80/Q85/Q90",
+     "value": [
+      0.83,
+      0.85,
+      0.87,
+      0.89
+     ],
+     "method": "DTD",
+     "source_location": "Table 7, p.8"
+    },
+    {
+     "metric": "F-score",
+     "dataset": "T-SROIE",
+     "value": 0.9927,
+     "method": "DTD",
+     "source_location": "Table 6, p.7"
+    }
+   ],
+   "code_url": "https://github.com/qcf-568/DocTamper (inference code + models dir; training code by email; synthesis code in stg/)",
+   "data_url": "BaiduDrive / Kaggle mirror; password on request",
+   "checkpoint": "REPORTED available in repo models/ (not downloaded); v2 paper used dtd doctamper.pth",
+   "license": "Dataset: non-commercial, licensed to universities/research institutions (README). Code: no LICENSE file (GitHub API license=null) -> UNKNOWN",
+   "limitations": [
+    "Heavy reliance on DCT/JPEG history (fragile to block misalignment and PNG inputs, per ADCD-Net/FFDN)",
+    "Synthetic typesetting 'generation', no AI inpainting",
+    "No AUC reported",
+    "Training code not public",
+    "Restricted dataset licence"
+   ],
+   "gap_relevance": {
+    "A": "high",
+    "B": "low-medium",
+    "C": "medium",
+    "D": "medium"
+   },
+   "evidence_class": "VERIFIED"
+  },
+  {
+   "id": "ffdn",
+   "title": "Enhancing Tampered Text Detection through Frequency Feature Fusion and Decomposition",
+   "authors": [
+    "Zhongxi Chen",
+    "Shen Chen",
+    "Taiping Yao",
+    "Ke Sun",
+    "Shouhong Ding",
+    "Xianming Lin",
+    "Liujuan Cao",
+    "Rongrong Ji"
+   ],
+   "year": 2024,
+   "venue": "ECCV 2024 (LNCS), pp. 200-217; ECVA paper id 04834",
+   "doi": "10.1007/978-3-031-73414-4_12",
+   "arxiv": null,
+   "status": "peer-reviewed",
+   "access_level": "full-text (ECVA Open Access PDF, 18 pp.)",
+   "datasets": {
+    "train": "DocTamper train 120k",
+    "test": [
+     "DocTamper-T 30k",
+     "FCD 2k",
+     "SCD 18k",
+     "T-SROIE 986 (retrained)"
+    ]
+   },
+   "evidence_type": [
+    "RGB (primary)",
+    "DCT via DTD's FPH (auxiliary, zero-init gated)",
+    "Learnable Haar wavelet decomposition of multi-level features (LL/HH)"
+   ],
+   "spatial_freq": "Yes: VEM (channel+spatial attention, zero-initialized conv so RGB dominates) + WFE (LWD Haar decomposition, FFM with GFA/WLM); ConvNeXtV2-base + FPN head; 512x512",
+   "unseen_generator_eval": "No. T-SROIE evaluated after retraining, not zero-shot.",
+   "mask_procedure": "Uses DocTamper masks.",
+   "degradation_eval": "JPEG Q100/Q90/Q75 (Table 6) and Gaussian noise, Gaussian blur, resize 1.5x/0.75x, color jitter at Q90 (Table 7).",
+   "small_region_eval": "Motivation ('small targets'); no size-stratified metrics.",
+   "reported_results": [
+    {
+     "metric": "IoU/P/R/F",
+     "dataset": "DocTamper-T",
+     "value": [
+      0.9,
+      0.87,
+      0.84,
+      0.86
+     ],
+     "method": "FFDN",
+     "source_location": "Table 1, p.10"
+    },
+    {
+     "metric": "IoU/P/R/F",
+     "dataset": "DocTamper-FCD",
+     "value": [
+      0.88,
+      0.93,
+      0.91,
+      0.92
+     ],
+     "method": "FFDN",
+     "source_location": "Table 1, p.10"
+    },
+    {
+     "metric": "IoU/P/R/F",
+     "dataset": "DocTamper-SCD",
+     "value": [
+      0.75,
+      0.81,
+      0.82,
+      0.81
+     ],
+     "method": "FFDN",
+     "source_location": "Table 1, p.10"
+    },
+    {
+     "metric": "IoU/P/R/F",
+     "dataset": "DocTamper-T",
+     "value": [
+      0.84,
+      0.81,
+      0.77,
+      0.79
+     ],
+     "method": "DTD* (reimplemented)",
+     "source_location": "Table 1, p.10"
+    },
+    {
+     "metric": "F at Q100/Q90/Q75",
+     "dataset": "DocTamper-T",
+     "value": [
+      0.96,
+      0.91,
+      0.75
+     ],
+     "method": "FFDN",
+     "source_location": "Table 6, p.14"
+    },
+    {
+     "metric": "F at Q100/Q90/Q75",
+     "dataset": "DocTamper-T",
+     "value": [
+      0.95,
+      0.87,
+      0.65
+     ],
+     "method": "DTD*",
+     "source_location": "Table 6, p.14"
+    },
+    {
+     "metric": "F1 noise/blur/resize1.5/resize0.75/jitter",
+     "dataset": "DocTamper-T (Q90)",
+     "value": [
+      0.84,
+      0.79,
+      0.85,
+      0.78,
+      0.81
+     ],
+     "method": "FFDN",
+     "source_location": "Table 7, p.14"
+    },
+    {
+     "metric": "F1 noise/blur/resize1.5/resize0.75/jitter",
+     "dataset": "DocTamper-T (Q90)",
+     "value": [
+      0.71,
+      0.69,
+      0.78,
+      0.69,
+      0.71
+     ],
+     "method": "DTD",
+     "source_location": "Table 7, p.14"
+    },
+    {
+     "metric": "P/R/F",
+     "dataset": "T-SROIE (retrained)",
+     "value": [
+      0.993,
+      0.993,
+      0.993
+     ],
+     "method": "FFDN",
+     "source_location": "Table 8, p.14"
+    }
+   ],
+   "code_url": "No official URL in paper. Third-party implementation: https://github.com/scu-zjz/ForensicHub (ForensicHub/tasks/document/models/ffdn/ffdn.py)",
+   "checkpoint": "UNKNOWN (official); DOCFORGE-BENCH reports using ForensicHub weights (REPORTED)",
+   "license": "Original: UNKNOWN; ForensicHub repo: CC-BY-4.0",
+   "limitations": [
+    "Only DocTamper family + retrained T-SROIE",
+    "No zero-shot cross-dataset test (DOCFORGE-BENCH zero-shot F1 0.043 on T-SROIE)",
+    "No AI inpainting",
+    "Threshold policy not stated (REPORTED as optimized threshold by DOCFORGE-BENCH)",
+    "No official code release"
+   ],
+   "gap_relevance": {
+    "A": "medium-high",
+    "B": "low",
+    "C": "medium-high",
+    "D": "medium"
+   },
+   "evidence_class": "VERIFIED"
+  },
+  {
+   "id": "adcd_net",
+   "title": "ADCD-Net: Robust Document Image Forgery Localization via Adaptive DCT Feature and Hierarchical Content Disentanglement",
+   "authors": [
+    "Kahim Wong",
+    "Jicheng Zhou",
+    "Haiwei Wu",
+    "Yain-Whar Si",
+    "Jiantao Zhou"
+   ],
+   "year": 2025,
+   "venue": "ICCV 2025, pp. 19280-19289",
+   "doi": "10.1109/ICCV51701.2025.01792",
+   "arxiv": "2507.16397v1",
+   "status": "peer-reviewed",
+   "access_level": "full-text (arXiv PDF, 10 pp.; supplementary not read)",
+   "datasets": {
+    "train": "DocTamper train",
+    "test": [
+     "DocTamper Test 30k",
+     "FCD 2k",
+     "SCD 18k",
+     "ablation: 3,000-sample subset",
+     "FAR: 1,000 pristine images from Tianchi 2023 Detecting Tampered Text competition"
+    ]
+   },
+   "evidence_type": [
+    "RGB (Restormer encoder, DocRes init)",
+    "DCT coefficients + quantization table from JPEG header (FPH from DTD), adaptively gated by predicted alignment score",
+    "OCR (CRAFT) background mask -> pristine prototype (noise pattern of untampered regions)",
+    "within-image contrastive (FOCAL/SupCon) features"
+   ],
+   "spatial_freq": "Yes: F_fuse = F_rgb + s_aln * F_dct per level; s_aln from a classifier trained on block-misalignment augmentations; HCD content/forgery disentanglement with reconstruction of [X, X_dct]; PPE",
+   "unseen_generator_eval": "No AI generators; no unseen manipulation method.",
+   "mask_procedure": "Uses DocTamper masks.",
+   "degradation_eval": "5 distortions (Gaussian noise, Gaussian blur, downscale, JPEG, multi-JPEG; Fig. 4) + block-misalignment perturbations crop 2%, shift 1 px, scale 98% (Fig. 5); FAR on pristine images (Table 2).",
+   "small_region_eval": "Class imbalance handled via SupCon sampling; no size-stratified metrics.",
+   "reported_results": [
+    {
+     "metric": "P/R/F1",
+     "dataset": "DocTamper Test (multi-JPEG Q>=75)",
+     "value": [
+      0.789,
+      0.823,
+      0.806
+     ],
+     "method": "ADCD-Net",
+     "source_location": "Table 1, p.6"
+    },
+    {
+     "metric": "P/R/F1",
+     "dataset": "DocTamper-FCD",
+     "value": [
+      0.866,
+      0.77,
+      0.815
+     ],
+     "method": "ADCD-Net",
+     "source_location": "Table 1, p.6"
+    },
+    {
+     "metric": "P/R/F1",
+     "dataset": "DocTamper-SCD",
+     "value": [
+      0.69,
+      0.799,
+      0.74
+     ],
+     "method": "ADCD-Net",
+     "source_location": "Table 1, p.6"
+    },
+    {
+     "metric": "AVG F1 (3 sets)",
+     "dataset": "DocTamper Test/FCD/SCD",
+     "value": 0.787,
+     "method": "ADCD-Net (23M params)",
+     "source_location": "Table 1, p.6"
+    },
+    {
+     "metric": "AVG F1 (3 sets)",
+     "dataset": "DocTamper Test/FCD/SCD",
+     "value": 0.778,
+     "method": "DTD",
+     "source_location": "Table 1, p.6"
+    },
+    {
+     "metric": "AVG F1 (3 sets)",
+     "dataset": "DocTamper Test/FCD/SCD",
+     "value": 0.655,
+     "method": "TruFor (retrained)",
+     "source_location": "Table 1, p.6"
+    },
+    {
+     "metric": "AVG F1 (3 sets)",
+     "dataset": "DocTamper Test/FCD/SCD",
+     "value": 0.205,
+     "method": "TruFor* (official ckpt)",
+     "source_location": "Table 1, p.6"
+    },
+    {
+     "metric": "relative F1 gain over 2nd best (TruFor) averaged over 5 distortions",
+     "dataset": "3 test sets",
+     "value": "20.79%",
+     "method": "ADCD-Net",
+     "source_location": "§4.3 / Fig. 4, p.6"
+    },
+    {
+     "metric": "F1 drop under crop 2% / shift 1px / scale 98%",
+     "dataset": "DocTamper (clean F1 0.935)",
+     "value": [
+      "67.95%",
+      "73.34%",
+      "69.28%"
+     ],
+     "method": "DTD",
+     "source_location": "§4.3 / Fig. 5, p.7"
+    },
+    {
+     "metric": "F1 drop under crop 2% / shift 1px / scale 98%",
+     "dataset": "DocTamper",
+     "value": [
+      "25.74%",
+      "22.66%",
+      "25.39%"
+     ],
+     "method": "ADCD-Net",
+     "source_location": "§4.3 / Fig. 5, p.7"
+    },
+    {
+     "metric": "F1 / FAR",
+     "dataset": "1,000 pristine images (Tianchi 2023)",
+     "value": [
+      0.808,
+      0.012
+     ],
+     "method": "ADCD-Net",
+     "source_location": "Table 2, p.7"
+    },
+    {
+     "metric": "F1 / FAR",
+     "dataset": "1,000 pristine images",
+     "value": [
+      0.779,
+      0.058
+     ],
+     "method": "DTD",
+     "source_location": "Table 2, p.7"
+    },
+    {
+     "metric": "avg F1 ablation baseline -> full",
+     "dataset": "3,000-sample subset, 5 distortions",
+     "value": [
+      0.602,
+      0.75
+     ],
+     "method": "ADCD-Net",
+     "source_location": "Table 4, p.8"
+    }
+   ],
+   "code_url": "https://github.com/KAHIMWONG/ACDC-Net",
+   "checkpoint": "ADCDNet.pth + docres.pkl + OCR masks via Google Drive link in README (VERIFIED README; not downloaded)",
+   "license": "MIT (GitHub API, VERIFIED)",
+   "limitations": [
+    "Assumes JPEG input (DCT + quantization table from header); DCT path meaningless on PNG/AI-inpainted PNG",
+    "OCR dependency (CRAFT) for PPE",
+    "Trained on synthetic DocTamper only; no AI inpainting / cross-generator evaluation",
+    "Reports optimized-threshold F1 (REPORTED by DOCFORGE-BENCH); zero-shot cross-dataset mean F1 0.23 in DOCFORGE-BENCH"
+   ],
+   "gap_relevance": {
+    "A": "very high",
+    "B": "low",
+    "C": "high",
+    "D": "medium"
+   },
+   "evidence_class": "VERIFIED"
+  },
+  {
+   "id": "docforge_bench",
+   "title": "DOCFORGE-BENCH: A Comprehensive 0-shot Benchmark for Document Forgery Detection and Analysis (arXiv v2 record; PDF title omits '0-shot')",
+   "authors": [
+    "Zengqi Zhao",
+    "Weidi Xia",
+    "En Wei",
+    "Yan Zhang",
+    "Jane Mo",
+    "Tiannan Zhang",
+    "Yuanqin Dai",
+    "Zexi Chen",
+    "Yiran Tao",
+    "Simiao Ren"
+   ],
+   "year": 2026,
+   "venue": "arXiv preprint",
+   "doi": null,
+   "arxiv": "2603.01433v2",
+   "status": "preprint",
+   "access_level": "full-text (arXiv PDF, 24 pp.)",
+   "datasets": {
+    "methods": 14,
+    "datasets": [
+     "DocTamper (1,000 sampled)",
+     "T-SROIE 360",
+     "RealTextManipulation 1,000 tampered",
+     "Tampered-IC13 188 tampered (bbox)",
+     "ReceiptForgery 35 forged (bbox)",
+     "MixTamper 1,000 sampled",
+     "FSTS-1.5k 1,488",
+     "FantasyID 2,773 tampered"
+    ],
+    "ai_generated_sets": 0
+   },
+   "evidence_type": [
+    "benchmark of 7 general (TruFor, ManTraNet, MVSS-Net, CAT-Net, PSCC-Net, IML-ViT, SAFIRE) + 7 document-specific (DocTamper model, DTD, FFDN, CAFTB-Net, TIFDM, ASCFormer, ADCD-Net)"
+   ],
+   "spatial_freq": "n/a",
+   "unseen_generator_eval": "No AI generators. Cross-dataset zero-shot with official weights; in-domain cells marked.",
+   "mask_procedure": "Mixed: pixel masks; bbox rasterized to masks for ReceiptForgery and Tampered-IC13; MixTamper any-channel binarization; authentic images excluded via NaN convention; preds+GT downsampled to <=2 MP.",
+   "degradation_eval": "None (raw datasets as-is).",
+   "small_region_eval": "Central: tampered-pixel base rate 0.27-4.17% explains AUC-F1 calibration gap; Oracle-F1; threshold calibration with N=10..200 images (8 of 112 pairs).",
+   "reported_results": [
+    {
+     "metric": "mean Pixel-F1@0.5 / sigma / mean Pixel-AUC (7 datasets)",
+     "dataset": "all",
+     "value": {
+      "CAFTB-Net": [
+       0.34,
+       0.33,
+       0.85
+      ],
+      "DocTamper": [
+       0.3,
+       0.31,
+       0.81
+      ],
+      "ASCFormer": [
+       0.27,
+       0.21,
+       0.63
+      ],
+      "TIFDM": [
+       0.24,
+       0.22,
+       0.83
+      ],
+      "ADCD-Net": [
+       0.23,
+       0.23,
+       0.79
+      ],
+      "FFDN": [
+       0.17,
+       0.22,
+       0.84
+      ],
+      "DTD": [
+       0.16,
+       0.21,
+       0.83
+      ],
+      "TruFor": [
+       0.34,
+       0.23,
+       0.83
+      ],
+      "CAT-Net": [
+       0.33,
+       0.25,
+       0.82
+      ],
+      "PSCC-Net": [
+       0.13,
+       0.16,
+       0.73
+      ],
+      "SAFIRE": [
+       0.1,
+       0.12,
+       0.58
+      ],
+      "IML-ViT": [
+       0.08,
+       0.1,
+       0.67
+      ],
+      "ManTraNet": [
+       0.07,
+       0.06,
+       0.58
+      ],
+      "MVSS-Net": [
+       0.03,
+       0.05,
+       0.63
+      ]
+     },
+     "source_location": "Table 3, p.10"
+    },
+    {
+     "metric": "Pixel-F1@0.5 DocTamper/T-SROIE/RTM/IC13/Receipt/FantasyID/MixTamper/FSTS",
+     "dataset": "8 sets",
+     "value": {
+      "DocTamper model": [
+       0.914,
+       0.045,
+       0.035,
+       0.185,
+       0.015,
+       0.107,
+       0.604,
+       0.475
+      ],
+      "DTD": [
+       0.682,
+       0.021,
+       0.024,
+       0.14,
+       0.003,
+       0.036,
+       0.106,
+       0.242
+      ],
+      "FFDN": [
+       0.736,
+       0.043,
+       0.025,
+       0.156,
+       0.019,
+       0.068,
+       0.072,
+       0.219
+      ],
+      "CAFTB-Net": [
+       0.893,
+       0.048,
+       0.039,
+       0.17,
+       0.023,
+       0.213,
+       0.676,
+       0.671
+      ],
+      "TIFDM": [
+       0.742,
+       0.046,
+       0.042,
+       0.164,
+       0.019,
+       0.3,
+       0.312,
+       0.32
+      ],
+      "ASCFormer": [
+       0.18,
+       0.779,
+       0.265,
+       0.022,
+       0.26,
+       0.222,
+       0.314,
+       0.133
+      ],
+      "ADCD-Net": [
+       0.762,
+       0.176,
+       0.064,
+       0.115,
+       0.043,
+       0.057,
+       0.331,
+       0.32
+      ]
+     },
+     "source_location": "Table 4, p.20"
+    },
+    {
+     "metric": "Pixel-F1@0.5",
+     "dataset": "T-SROIE / MixTamper / FSTS / FantasyID",
+     "value": [
+      0.664,
+      0.689,
+      0.522,
+      0.296
+     ],
+     "method": "TruFor",
+     "source_location": "§8.1 p.10-11"
+    },
+    {
+     "metric": "Pixel-AUC",
+     "dataset": "T-SROIE / RTM",
+     "value": [
+      0.904,
+      0.743
+     ],
+     "method": "FFDN",
+     "source_location": "§8.1 p.10"
+    },
+    {
+     "metric": "Pixel-AUC",
+     "dataset": "T-SROIE",
+     "value": 0.899,
+     "method": "ADCD-Net",
+     "source_location": "§8.1 p.11"
+    },
+    {
+     "metric": "Pixel-F1 after calibration (N=200 / N=10)",
+     "dataset": "FSTS-1.5k",
+     "value": {
+      "before": 0.104,
+      "N200": 0.319,
+      "N10": 0.255
+     },
+     "method": "PSCC-Net",
+     "source_location": "§9.1 p.15"
+    },
+    {
+     "metric": "Pixel-F1 after calibration",
+     "dataset": "T-SROIE",
+     "value": {
+      "before": 0.043,
+      "after": 0.102
+     },
+     "method": "FFDN",
+     "source_location": "§9.1 p.15"
+    },
+    {
+     "metric": "median tampered-pixel fraction",
+     "dataset": "ReceiptForgery/MixTamper/DocTamper/T-SROIE/FantasyID-FSTS",
+     "value": [
+      "0.27%",
+      "0.45%",
+      "0.71%",
+      "0.97%",
+      "2.88-4.17%"
+     ],
+     "source_location": "§9.1 p.15-16"
+    }
+   ],
+   "code_url": "Paper: https://github.com/BensonRen/document_forgery_benchmark -> HTTP 404 on 2026-10-19 (GitHub API) -> UNKNOWN",
+   "checkpoint": "none (third-party official weights)",
+   "license": "UNKNOWN (repo not reachable)",
+   "limitations": [
+    "No AI-generated/diffusion forgeries (authors call it the critical open gap)",
+    "Calibration experiment covers 8/112 pairs",
+    "Oracle-F1 is per-image (unachievable ceiling)",
+    "Image-level AUROC deferred",
+    "Authentic images excluded from pixel metrics (FPR on pristine not measured)",
+    "MixTamper cited as 'Anonymous 2024'; TIFDM training corpus private",
+    "Title differs between arXiv record and PDF",
+    "'DocTamper (model)' vs DTD distinction and arXiv:2311.18818 citation not verifiable (UNKNOWN)"
+   ],
+   "gap_relevance": {
+    "A": "medium",
+    "B": "low-medium",
+    "C": "very high",
+    "D": "very high"
+   },
+   "evidence_class": "VERIFIED (full text); toolkit availability UNKNOWN"
+  },
+  {
+   "id": "aiforge_doc_v2_forger_judge",
+   "title": "When the Forger Is the Judge: GPT-Image-2 Cannot Recognize Its Own Faked Documents (introduces AIForge-Doc v2)",
+   "authors": [
+    "Jiaqi Wu",
+    "Yuchen Zhou",
+    "Dennis Tsang Ng",
+    "Xingyu Shen",
+    "Kidus Zewde",
+    "Ankit Raj",
+    "Tommy Duong",
+    "Simiao Ren"
+   ],
+   "year": 2026,
+   "venue": "arXiv preprint",
+   "doi": null,
+   "arxiv": "2604.25213v1",
+   "status": "preprint",
+   "access_level": "full-text (arXiv PDF, 13 pp.)",
+   "datasets": {
+    "name": "AIForge-Doc v2",
+    "forged_images": 3066,
+    "authentic_images": 3066,
+    "train": 2453,
+    "test": 613,
+    "sources": {
+     "CORD v2": 983,
+     "WildReceipt": 1336,
+     "SROIE": 329,
+     "XFUND": 418
+    },
+    "generator": "OpenAI GPT-Image-2 (openai/gpt-5.4-image-2)",
+    "specs_inherited_from_v1": 4062,
+    "rejection_rate_pct": 24.5,
+    "safety_filter_rejection_pct": "~10 (CORD financial amounts)",
+    "median_tampered_fraction_pct": 0.92
+   },
+   "evidence_type": [
+    "measurement study: human 2AFC, TruFor (NoisePrint++/PRNU), DocTamper (DCT/JPEG history), GPT-Image-2 self-judge (VLM)"
+   ],
+   "spatial_freq": "n/a",
+   "unseen_generator_eval": "Single generator; all judges zero-shot. v1 spec-paired (3,062/3,066 have v1 counterpart: 2,729 'Gemini-nano', 333 'qwen-inpaint'); per-spec cross-generator table promised in §3.3 but absent from §5.",
+   "mask_procedure": "Same as v1: 8-bit PNG, 255 at tight field bbox (bbox mask). Semantic check ensures bbox pixels differ from authentic.",
+   "degradation_eval": "None.",
+   "small_region_eval": "Statistics only (median 0.92%).",
+   "reported_results": [
+    {
+     "metric": "2AFC accuracy (= Mann-Whitney AUC)",
+     "dataset": "v2 GPT-Image-2 receipt subset (30 images, N=120, n=365)",
+     "value": 0.501,
+     "ci": [
+      0.45,
+      0.553
+     ],
+     "method": "Human",
+     "source_location": "Table 2, p.6"
+    },
+    {
+     "metric": "image AUC",
+     "dataset": "v2 full paired set (6,132)",
+     "value": 0.599,
+     "ci": [
+      0.592,
+      0.606
+     ],
+     "method": "TruFor",
+     "source_location": "Table 2, p.6"
+    },
+    {
+     "metric": "image AUC",
+     "dataset": "v2 full paired set",
+     "value": 0.585,
+     "ci": [
+      0.571,
+      0.6
+     ],
+     "method": "DocTamper (qcf-568)",
+     "source_location": "Table 2, p.6"
+    },
+    {
+     "metric": "image 'AUC' (= balanced accuracy)",
+     "dataset": "v2 full paired set",
+     "value": 0.532,
+     "ci": [
+      0.525,
+      0.537
+     ],
+     "method": "GPT-Image-2 self-judge",
+     "source_location": "Table 2, p.6 + footnote 1 p.10"
+    },
+    {
+     "metric": "per-source AUC CORD/WildReceipt/SROIE/XFUND",
+     "dataset": "v2",
+     "value": [
+      0.498,
+      0.791,
+      0.513,
+      0.5
+     ],
+     "method": "TruFor",
+     "source_location": "Table 5, p.10"
+    },
+    {
+     "metric": "per-source AUC CORD/WildReceipt/SROIE/XFUND",
+     "dataset": "v2",
+     "value": [
+      0.524,
+      0.654,
+      0.71,
+      0.5
+     ],
+     "method": "DocTamper",
+     "source_location": "Table 5, p.10"
+    },
+    {
+     "metric": "AUC calibration set vs v2 (gap)",
+     "dataset": "50 cross-camera splicing pairs vs v2",
+     "value": [
+      0.962,
+      0.599,
+      0.363
+     ],
+     "method": "TruFor",
+     "source_location": "Table 4, p.8"
+    },
+    {
+     "metric": "AUC calibration set vs v2 (gap)",
+     "dataset": "100 cross-document OCR-token splicing + 2-pass JPEG pairs vs v2",
+     "value": [
+      0.852,
+      0.585,
+      0.267
+     ],
+     "method": "DocTamper",
+     "source_location": "Table 4, p.8"
+    },
+    {
+     "metric": "self-judge AUC across prompts P0-P4",
+     "dataset": "50+50 subset",
+     "value": [
+      0.522,
+      0.453,
+      0.586,
+      0.538,
+      0.529
+     ],
+     "method": "GPT-Image-2 self-judge",
+     "source_location": "Table 3, p.7"
+    },
+    {
+     "metric": "self-judge AUC under AMBIG fill-in policies",
+     "dataset": "v2",
+     "value": [
+      0.5,
+      0.568
+     ],
+     "method": "range",
+     "source_location": "Table 6, p.11"
+    },
+    {
+     "metric": "per-image score correlation TruFor-DocTamper",
+     "dataset": "v2",
+     "value": 0.31,
+     "source_location": "Appendix F, p.11"
+    }
+   ],
+   "code_url": "UNKNOWN (paper: dataset/pipeline released at scam.ai/en/research; no GitHub URL)",
+   "data_url": "https://huggingface.co/datasets/Scam-AI/AIForge-Doc-v2 (gated; authentic images only in Google Drive 'full package')",
+   "checkpoint": "none",
+   "license": "Paper §7: CC-BY-4.0; HF card: cc-by-nc-sa-4.0 -> conflict (UNKNOWN which governs)",
+   "limitations": [
+    "Human study: 30 images / 365 votes from anonymous web visitors",
+    "Self-judge single trial, binary score (AUC = balanced accuracy)",
+    "No pixel-level metrics",
+    "Computational judges evaluated on train+test together",
+    "Single generator; cross-generator per-spec comparison not actually reported",
+    "Generation asymmetry (forged passes through GPT-Image-2 render + PNG re-encode; authentic does not) acknowledged, not controlled",
+    "Naming inconsistencies with v1 (green outline vs red fill; 4,062 vs 4,061 specs; 'qwen-inpaint' vs Ideogram)"
+   ],
+   "gap_relevance": {
+    "A": "high",
+    "B": "very high",
+    "C": "medium",
+    "D": "high"
+   },
+   "evidence_class": "VERIFIED (full text + HF API); licence conflict UNKNOWN"
+  }
+ ]
+}

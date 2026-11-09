@@ -1,0 +1,3 @@
+run,data,model,imgsz,aug,seed,epochs,best_epoch,best_val_tile_map50,last_val_tile_map50,best_val_tile_map5095,time_min,peak_gib,ckpt_mb,params_M,dry_run
+aiforge-tiles-yolo11s-img1024-conserv-s42-dryrun,tiles,yolo11s,1024,conserv,42,2,2,0.0,0.0,0.0,3.4,4.8,18.4,9.43,True
+aiforge-tiles-yolo11s-img1024-conserv-s42-dryrun,tiles,yolo11s,1024,conserv,42,4,4,0.6462,0.6462,0.423,5.1,4.8,18.4,9.43,True

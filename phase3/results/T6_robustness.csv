@@ -1,0 +1,4 @@
+family,variant,train_gt,blur1,jpeg75,rescale075
+U-Net,main,box,-20.7% ± 6.7,-16.6% ± 1.4,-12.2% ± 4.3
+U-Net,main,glyph,-59.0% ± 6.8,-18.0% ± 0.8,-42.7% ± 5.4
+U-Net,main,pix,-59.1% ± 4.5,-22.5% ± 2.3,-40.3% ± 1.5

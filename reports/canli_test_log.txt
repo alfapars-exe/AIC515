@@ -1,0 +1,35 @@
+﻿u├ğ noktalar: ['/apply_preset', '/apply_step', '/batch_test', '/classical_features', '/compare_unet', '/lambda', '/lambda_1', '/lambda_2', '/lambda_3', '/lambda_4', '/lambda_5', '/lambda_6', '/lambda_7', '/on_sample', '/on_upload', '/op_choices', '/param_updates', '/param_updates_1', '/preview', '/reset', '/run_green', '/run_resnet', '/run_unet', '/sim_filter', '/sim_preview', '/sim_random', '/sim_to_tabs', '/simulate', '/undo']
+se├ğilen ├Ârnek: testing:000000452 ┬À 82 ├Ârnek filtreye uyuyor ┬À rastgele se├ğildi: `testing:000000452`
+
+[Sahte belge (forged)] 37.3s
+   ResNet-18 ┬À tam ince ayar ÔåÆ SAHTE Ô£ô skor 0.997 F1bbox ÔÇö F1piks ÔÇö kapsama ÔÇö
+   U-Net ┬À bbox-GT (s42) ÔåÆ SAHTE Ô£ô skor 1.0 F1bbox 0.971 F1piks 0.483 kapsama 0.951
+   U-Net ┬À piksel-GT (s42) ÔåÆ SAHTE Ô£ô skor 0.98 F1bbox 0.768 F1piks 0.604 kapsama 0.633
+   U-Net ┬À glif-GT (s42) ÔåÆ SAHTE Ô£ô skor 0.987 F1bbox 0.6 F1piks 0.468 kapsama 0.452
+
+[Authentic e┼ş (negatif kontrol)] 35.9s
+   ResNet-18 ┬À tam ince ayar ÔåÆ GER├çEK Ô£ô skor 0.263 F1bbox ÔÇö F1piks ÔÇö kapsama ÔÇö
+   U-Net ┬À bbox-GT (s42) ÔåÆ GER├çEK Ô£ô skor 0.001 F1bbox ÔÇö F1piks ÔÇö kapsama 0.0
+   U-Net ┬À piksel-GT (s42) ÔåÆ GER├çEK Ô£ô skor 0.002 F1bbox ÔÇö F1piks ÔÇö kapsama 0.0
+   U-Net ┬À glif-GT (s42) ÔåÆ GER├çEK Ô£ô skor 0.001 F1bbox ÔÇö F1piks ÔÇö kapsama 0.0
+
+[Sahte, ye┼şil i┼şaret├ği onar─▒lm─▒┼ş] 37.2s
+   ResNet-18 ┬À tam ince ayar ÔåÆ GER├çEK Ô£ù skor 0.248 F1bbox ÔÇö F1piks ÔÇö kapsama ÔÇö
+   U-Net ┬À bbox-GT (s42) ÔåÆ GER├çEK Ô£ù skor 0.001 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+   U-Net ┬À piksel-GT (s42) ÔåÆ GER├çEK Ô£ù skor 0.002 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+   U-Net ┬À glif-GT (s42) ÔåÆ GER├çEK Ô£ù skor 0.001 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+
+[Authentic + yaln─▒z ye┼şil i┼şaret├ği (k─▒sayol testi)] 36.0s
+   ResNet-18 ┬À tam ince ayar ÔåÆ SAHTE Ô£ù skor 0.997 F1bbox ÔÇö F1piks ÔÇö kapsama ÔÇö
+   U-Net ┬À bbox-GT (s42) ÔåÆ SAHTE Ô£ù skor 1.0 F1bbox ÔÇö F1piks ÔÇö kapsama 0.907
+   U-Net ┬À piksel-GT (s42) ÔåÆ SAHTE Ô£ù skor 0.98 F1bbox ÔÇö F1piks ÔÇö kapsama 0.61
+   U-Net ┬À glif-GT (s42) ÔåÆ SAHTE Ô£ù skor 0.985 F1bbox ÔÇö F1piks ÔÇö kapsama 0.442
+
+[toplu test] 54.2s
+### Tamamland─▒ ÔÇö 24 ├Ârnek, 49 s (ZeroGPU)
+Referans (rapor, resm├« test 812 g├Âr├╝nt├╝, 3 tohum): bbox-GT modeli F1@¤ä* 0,846 ┬À AUPRC 0,950; ayn─▒ tahminler piksel-GT ile F1 Ôëê 0,45. K├╝├ğ├╝k ├Ârneklemde de─şerler ├Ârnekleme hatas─▒ i├ğerir; 'Ref' s├╝tunlar─▒ ayn─▒ g├Âr├╝nt├╝lerde boru hatt─▒n─▒n kay─▒tl─▒ sonu├ğlar─▒d─▒r.
+   {'Model': 'ResNet-18 ┬À tam ince ayar', 'n sahte': 24, 'n authentic': 24, 'F1 bbox-GT': 'ÔÇö', 'IoU bbox-GT': 'ÔÇö', 'AP bbox-GT': 'ÔÇö', 'F1 piksel-GT': 'ÔÇö', 'AP piksel-GT': 'ÔÇö', 'Tespit TPR': 1.0, 'Yanl─▒┼ş alarm FPR': 0.375, 'Do─şruluk': 0.812, 'G├Âr├╝nt├╝ AUROC': 0.99, 'Yeniden ├╝retim n': 0, '|╬öF1@0.5| ort.': 'ÔÇö', '|╬öAP| ort.': 'ÔÇö'}
+   {'Model': 'U-Net ┬À bbox-GT (s42)', 'n sahte': 24, 'n authentic': 24, 'F1 bbox-GT': 0.925, 'IoU bbox-GT': 0.871, 'AP bbox-GT': 0.964, 'F1 piksel-GT': 0.528, 'AP piksel-GT': 0.41, 'Tespit TPR': 1.0, 'Yanl─▒┼ş alarm FPR': 0.042, 'Do─şruluk': 0.979, 'G├Âr├╝nt├╝ AUROC': 0.988, 'Yeniden ├╝retim n': 24, '|╬öF1@0.5| ort.': 0.0, '|╬öAP| ort.': 0.0}
+   {'Model': 'U-Net ┬À piksel-GT (s42)', 'n sahte': 24, 'n authentic': 24, 'F1 bbox-GT': 0.739, 'IoU bbox-GT': 0.602, 'AP bbox-GT': 0.73, 'F1 piksel-GT': 0.635, 'AP piksel-GT': 0.609, 'Tespit TPR': 1.0, 'Yanl─▒┼ş alarm FPR': 0.083, 'Do─şruluk': 0.958, 'G├Âr├╝nt├╝ AUROC': 1.0, 'Yeniden ├╝retim n': 24, '|╬öF1@0.5| ort.': 0.0, '|╬öAP| ort.': 0.0}
+
+yaz─▒ld─▒: reports\canli_test.json (204.8 s)

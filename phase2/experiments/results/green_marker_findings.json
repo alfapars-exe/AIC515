@@ -1,0 +1,64 @@
+{
+ "prevalence": {
+  "pairs_total": 3336,
+  "pairs_with_residue": 2514,
+  "share": 0.754,
+  "line_like": 2509,
+  "gemini": 0.836,
+  "ideogram": 0.015,
+  "by_source": {
+   "cord": 0.503,
+   "sroie": 0.856,
+   "wildreceipt": 0.897,
+   "xfund": 0.507
+  },
+  "inside_bbox_median_px": 176,
+  "outside_any_share": 0.003,
+  "all_forged_detector": {
+   "train_share": 0.748,
+   "test_share": 0.744,
+   "test_n": 604,
+   "gemini_test": 0.828,
+   "ideogram_test": 0.024,
+   "authentic_false_alarm": 0.0,
+   "authentic_n": 600
+  }
+ },
+ "marker_share_of_pixel_gt": {
+  "median": 0.10198675496688742,
+  "p75": 0.19254658385093168
+ },
+ "heuristic": {
+  "test_n": 812,
+  "fired": 0.5283251231527094,
+  "mean_f1": 0.05443282598021846,
+  "mean_iou": 0.04040498152314672,
+  "pooled_f1": 0.049985589986276294,
+  "f1_among_fired": 0.103029031925262,
+  "iou_ge_05": 0.029556650246305417,
+  "by_tool": {
+   "fired": {
+    "gemini-nano": 0.5887,
+    "qwen-inpaint": 0.0118
+   },
+   "f1": {
+    "gemini-nano": 0.0608,
+    "qwen-inpaint": 0.0
+   },
+   "iou": {
+    "gemini-nano": 0.0451,
+    "qwen-inpaint": 0.0
+   }
+  },
+  "authentic_n": 600,
+  "authentic_fired": 0.0
+ },
+ "probe_val": {
+  "n_pairs": 487,
+  "with_residue": 368,
+  "by_tool": {
+   "gemini": 0.823,
+   "ideogram": 0.024
+  }
+ }
+}

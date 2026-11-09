@@ -1,0 +1,15 @@
+condition,subset,n_pairs,auroc,acc_pairwise,best_epoch,n_train_pairs,n_val_pairs,probe
+forged_vs_authentic,all,476,0.9803619977402727,0.9831932773109243,9,5276,476,positive_control_bbox_crops
+forged_vs_authentic,gemini,435,0.9841960628880961,0.9816091954022989,9,5276,476,positive_control_bbox_crops
+forged_vs_authentic,ideogram,41,0.9393218322427126,1.0,9,5276,476,positive_control_bbox_crops
+forged_vs_authentic,source=cord,121,0.9487056895020832,0.9586776859504132,9,5276,476,positive_control_bbox_crops
+forged_vs_authentic,source=sroie,119,0.9998587670362262,1.0,9,5276,476,positive_control_bbox_crops
+forged_vs_authentic,source=wildreceipt,187,0.9892190225628413,0.9946524064171123,9,5276,476,positive_control_bbox_crops
+forged_vs_authentic,source=xfund,49,0.9708454810495627,0.9591836734693877,9,5276,476,positive_control_bbox_crops
+forged_vs_fullimage_resample,all,476,0.9753923628274839,0.9726890756302521,9,5276,476,positive_control_bbox_crops
+forged_vs_fullimage_resample,gemini,435,0.9812128418549346,0.9770114942528736,9,5276,476,positive_control_bbox_crops
+forged_vs_fullimage_resample,ideogram,41,0.8902439024390243,0.926829268292683,9,5276,476,positive_control_bbox_crops
+forged_vs_fullimage_resample,source=cord,121,0.9424561163854929,0.9338842975206612,9,5276,476,positive_control_bbox_crops
+forged_vs_fullimage_resample,source=sroie,119,0.9997881505543394,1.0,9,5276,476,positive_control_bbox_crops
+forged_vs_fullimage_resample,source=wildreceipt,187,0.9880322571420401,0.9946524064171123,9,5276,476,positive_control_bbox_crops
+forged_vs_fullimage_resample,source=xfund,49,0.9302374010828821,0.9183673469387755,9,5276,476,positive_control_bbox_crops

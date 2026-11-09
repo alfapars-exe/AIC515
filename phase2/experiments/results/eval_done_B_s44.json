@@ -1,0 +1,10 @@
+{
+ "tag": "B_s44",
+ "models": [
+  "unet_bbox_s44",
+  "unet_pixel_eps8_morph_s44",
+  "unet_glyph_v2_s44"
+ ],
+ "stages": "val,test,robust,controls,ablation,rectfit",
+ "seconds": 1397.0926616191864
+}

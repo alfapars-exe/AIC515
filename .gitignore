@@ -1,0 +1,29 @@
+# AIC515 — veri, ağırlık ve türetilmiş görüntüler repoda tutulmaz (bkz. README "Veri ve lisans")
+data/
+models/
+**/preds/
+**/preds_boxes/
+**/hists/
+**/cache/
+**/marker_repaired/
+**/yolo_data/
+**/weights/
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.npy
+*.zip
+*.log
+*.done
+__pycache__/
+.env
+literature/**/*.pdf
+reports/TEKMER/
+
+# veri setinden kırpılmış görüntüler (yeniden dağıtılmaz)
+phase2/gt/vlm_verification/*.png
+phase2/gt/verification_grid.pdf
+**/train_batch*.jpg
+**/val_batch*.jpg
+**/labels.jpg

@@ -1,0 +1,31 @@
+{
+ "trufor_2MP": {
+  "n": 1299,
+  "infer_s_mean": 0.279,
+  "infer_s_median": 0.223,
+  "infer_s_max": 0.96,
+  "frac_downscaled": 0.232,
+  "min_scale": 0.2397,
+  "total_wall_s": 574,
+  "peakGB": 4.36
+ },
+ "trufor_1024pad": {
+  "n": 1299,
+  "infer_s_mean": 0.237,
+  "infer_s_median": 0.224,
+  "total_wall_s": 528,
+  "peakGB": 2.41
+ },
+ "adcd": {
+  "n": 1299,
+  "per_cond_infer_s_mean": {
+   "q100_ocrproxy": 0.158,
+   "q95_ocrproxy": 0.118,
+   "q100_noaln": 0.147,
+   "q100_emptyocr": 0.118
+  },
+  "total_wall_s_4conds": 1083,
+  "peakGB": 1.82,
+  "frac_downscaled_512": 0.801
+ }
+}

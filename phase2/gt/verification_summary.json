@@ -1,0 +1,94 @@
+{
+ "all_train": {
+  "n": 3247,
+  "n_outside_bbox_component(eps8_morph)": 150,
+  "n_outside_px_gt_1pct(eps8)": 594,
+  "n_any_outside_px(eps8)": 1109,
+  "n_empty_glyph": 17,
+  "n_empty_eps8": 12,
+  "n_eps8_bbox_coverage_lt_20pct": 173,
+  "n_polarity_inverted": 193,
+  "n_polarity_inverted_v2": 21,
+  "n_empty_glyph_v2": 17
+ },
+ "sample": {
+  "n": 100,
+  "n_outside_bbox_component(eps8_morph)": 3,
+  "n_outside_px_gt_1pct(eps8)": 15,
+  "n_any_outside_px(eps8)": 28,
+  "n_empty_glyph": 0,
+  "n_empty_eps8": 0,
+  "n_eps8_bbox_coverage_lt_20pct": 7,
+  "n_polarity_inverted": 8,
+  "n_polarity_inverted_v2": 1,
+  "n_empty_glyph_v2": 0
+ },
+ "seed": 42,
+ "strata_allocation": [
+  {
+   "stratum": "('cord', 'gemini-nano', '1-5%')",
+   "n_available": 26,
+   "n_sampled": 2
+  },
+  {
+   "stratum": "('cord', 'gemini-nano', '<1%')",
+   "n_available": 694,
+   "n_sampled": 20
+  },
+  {
+   "stratum": "('cord', 'qwen-inpaint', '1-5%')",
+   "n_available": 4,
+   "n_sampled": 1
+  },
+  {
+   "stratum": "('cord', 'qwen-inpaint', '<1%')",
+   "n_available": 76,
+   "n_sampled": 3
+  },
+  {
+   "stratum": "('sroie', 'gemini-nano', '1-5%')",
+   "n_available": 490,
+   "n_sampled": 14
+  },
+  {
+   "stratum": "('sroie', 'gemini-nano', '<1%')",
+   "n_available": 160,
+   "n_sampled": 5
+  },
+  {
+   "stratum": "('sroie', 'qwen-inpaint', '1-5%')",
+   "n_available": 76,
+   "n_sampled": 3
+  },
+  {
+   "stratum": "('sroie', 'qwen-inpaint', '<1%')",
+   "n_available": 29,
+   "n_sampled": 2
+  },
+  {
+   "stratum": "('wildreceipt', 'gemini-nano', '1-5%')",
+   "n_available": 1011,
+   "n_sampled": 28
+  },
+  {
+   "stratum": "('wildreceipt', 'gemini-nano', '5-20%')",
+   "n_available": 13,
+   "n_sampled": 1
+  },
+  {
+   "stratum": "('wildreceipt', 'gemini-nano', '<1%')",
+   "n_available": 333,
+   "n_sampled": 10
+  },
+  {
+   "stratum": "('xfund', 'gemini-nano', '<1%')",
+   "n_available": 185,
+   "n_sampled": 6
+  },
+  {
+   "stratum": "('xfund', 'qwen-inpaint', '<1%')",
+   "n_available": 150,
+   "n_sampled": 5
+  }
+ ]
+}

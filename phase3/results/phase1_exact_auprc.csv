@@ -1,0 +1,3 @@
+variant,reported_phase1_auprc,reproduced_subsampled_auprc,exact_auprc_all_pixels,exact_auroc,pos_rate,n_crops,n_pixels
+rgb,0.947,0.9423,0.8053,0.9344,0.03306,200,52428800
+rgbfreq,0.939,0.9331,0.7922,0.9255,0.03306,200,52428800

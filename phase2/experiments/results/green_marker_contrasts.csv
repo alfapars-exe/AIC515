@@ -1,0 +1,19 @@
+family,contrast,metric,n,mean,ci_lo,ci_hi
+bbox,repaired − forged (ΔAP box GT),ap_bbox,368,-0.22548448806833368,-0.26231568372385794,-0.18869977946747876
+bbox,repaired − forged (ΔAP pixel GT),ap_pixel,368,-0.11004867658367626,-0.13336843321932618,-0.08611824894910643
+bbox,authentic+marker − authentic (Δ positive fraction @τ*),pos_frac_tau,368,0.00994046660255508,0.008953064875438593,0.010927849964995085
+bbox,"authentic+marker − authentic (Δ IoU(pred, box))",iou_predbox_tau,368,0.703468284346787,0.6774862820604804,0.7313603262208503
+bbox,authentic+marker − authentic (Δ box coverage),bbox_cover_tau,368,0.7573704940876796,0.7301407523304468,0.7871192206169322
+bbox,authentic+marker − authentic (Δ top-1 % score),top1,368,0.4343349413895234,0.3880056096519565,0.47907603230318035
+glyph,repaired − forged (ΔAP box GT),ap_bbox,368,-0.12431823903103852,-0.14597309297240588,-0.10253537506520212
+glyph,repaired − forged (ΔAP pixel GT),ap_pixel,368,-0.14013985912806862,-0.16382139854504632,-0.11903851350227769
+glyph,authentic+marker − authentic (Δ positive fraction @τ*),pos_frac_tau,368,0.0031680417988969108,0.0028346312379527987,0.0035037668085239034
+glyph,"authentic+marker − authentic (Δ IoU(pred, box))",iou_predbox_tau,368,0.22513667372397717,0.21269540816454324,0.2391303073139866
+glyph,authentic+marker − authentic (Δ box coverage),bbox_cover_tau,368,0.2606628538571645,0.24719181920755137,0.27556151268354495
+glyph,authentic+marker − authentic (Δ top-1 % score),top1,368,0.03326694530379968,0.022420355875825044,0.04391939633790056
+pixel,repaired − forged (ΔAP box GT),ap_bbox,368,-0.2506352211115151,-0.280961786735675,-0.21886816291148506
+pixel,repaired − forged (ΔAP pixel GT),ap_pixel,368,-0.26571817559900096,-0.2948155617812086,-0.2381064923694692
+pixel,authentic+marker − authentic (Δ positive fraction @τ*),pos_frac_tau,368,0.004850130059538109,0.004343983952361291,0.005367428729421338
+pixel,"authentic+marker − authentic (Δ IoU(pred, box))",iou_predbox_tau,368,0.3636852187485496,0.3433656080023986,0.38712519632933867
+pixel,authentic+marker − authentic (Δ box coverage),bbox_cover_tau,368,0.39366089463741266,0.37208516805527,0.41862635811802923
+pixel,authentic+marker − authentic (Δ top-1 % score),top1,368,0.09088073067808486,0.06788462034037215,0.11455052495252728
