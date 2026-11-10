@@ -1,7 +1,8 @@
 # PHASE 3 — Sonuçlar ve Proje Kapanışı (AIC515, AIForge-Doc v1)
 
 **Tarih:** 10 Kasım 2026 · **Yazar:** Harun Benli · **Donanım:** RTX 5080 16 GB · torch 2.11.0+cu128, smp 0.6.0, ultralytics 8.4.208
-**Bağlayıcı metin:** `paper/main.pdf` (IEEE bildirisi). Tüm sayılar `phase3/results/tables_p3.md` ve `phase3_yolo/results/*.csv`'den otomatik üretildi (`phase3/synthesize_p3.py`).
+**Bağlayıcı metin:** `paper/main.pdf` (IEEE bildirisi). Tüm sayılar `phase3/results/tables_p3.md` ve `phase3_yolo/results/*.csv`'den otomatik üretildi (`kod/phase3/synthesize_p3.py`).
+**Sonradan eklenen not (10 Kasım 2026, akşam):** Bu belge Faz 3'ün kapanış kaydıdır. Yazıldıktan sonra kaynak kod `kod/` çatısı altına taşındı (aşağıdaki betik yolları buna göre düzeltildi), Faz 4 tamamlandı (`reports/PHASE4_ResNet_Sonuclar.md`) ve bir tutarlılık denetimi yapıldı (`reports/inceleme/paper_check_2026-11-10_v2.md`). §5'teki test sayıları o günkü dağıtıma aittir; güncel değerler dönem içi raporunun §4.7'sindedir.
 **Tohum etiketi:** Aksi belirtilmedikçe Faz 3'teki tek-faktör deneyleri **tek tohumdur (42)** ve öncül kanıt sayılmalıdır. Üç tohumlu olanlar: Faz 2 U-Net ana ızgarası (3 GT × s42–44), Gemini-only held-out U-Net'ler (3 GT × s42–44), YOLO11s ana model (s42–44).
 
 ## 1. Faz 2'den devralınan açık işler — kapanış tablosu
@@ -13,14 +14,14 @@
 | W5 piksel GT işaretçiyi içeriyor | ✅ Kapandı | `*_nm` GT varyantları üretildi ve eğitimde kullanıldı | `make_marker_repaired.py` |
 | W3 held-out tek tohum | ✅ Kapandı | 3 tohum: Gemini-only box U-Net Ideogram 0.412 vs Gemini 0.909; piksel denetimi açığı kapatmıyor (H3 reddi teyit) | T4 |
 | W6 Faz 1 AUPRC şişkin | ✅ Kapandı | Kesin AUPRC 0.805 (rgb) / 0.792 (rgbfreq); raporlanan 0.947/0.939 alt-örneklemeden | T8 |
-| W9/W10 tek tohum etiketleri, eksik kaynaklar | ✅ Kapandı | Errata eski raporlara eklendi; kaynakça 77 doğrulanmış kayıt | `references_v3.bib` |
+| W9/W10 tek tohum etiketleri, eksik kaynaklar | ✅ Kapandı | Errata eski raporlara eklendi; kaynakça 77 doğrulanmış kayıt (10 Kasım akşamı itibarıyla 79; `paper/refs.bib` ile özdeş) | `references_v3.bib` |
 | PHASE3-a birleşik kayıp | ✅ Kapandı | Piksel+0.5·box: pix-GT 0.610→0.622, box-GT 0.579→0.647, blur −59 %→−43 % (tek tohum) | T1, T6 |
 | PHASE3-b 20 epoch | ✅ Kapandı | Fayda yok (box 0.926, pix 0.594, glyph 0.645 vs 0.923/0.610/0.676) | T1 |
 | PHASE3-d bölge görünümü | ✅ Kapandı | Render-only/content-only ayrıştırması; standart modeller ikisinin birlikteliğine (ve işaretçiye) tepki veriyor; işaretçisiz eğitim içeriğe kaydırıyor | T3 |
 | PHASE3-e kutu formülasyonu (YOLO) | ✅ Kapandı | Bkz. §2 | T2, T5 |
 | §6.4 "test edilmedi" ön işleme | ✅ Kapandı | Gri seviye tüm modellerde AUPRC −47…−67 % (en zararlı; YOLO −59 %); CLAHE ≤ ±3 % | T3, T6 |
 | Veri bias analizi | ✅ Kapandı | İşaretçi × üretici Cramér's V 0.61; split χ² p ≥ 0.30 | `dataset_curation.md` |
-| W1 100 çift GT doğrulaması | ⚠ Kısmen | İkinci bağımsız denetim tamamlandı (değerlendirici türü doğrulanmadı → insan etiketlemesi sayılmaz): kutu 99/100 OK; piksel GT 36 OK / 64 PARTIAL / 0 WRONG — PARTIAL'ların 61'i değişmeyen, yeniden çizilmiş metni fazladan kapsamaktan (WildReceipt 39/39, XFUND 0/11); glyph_v2 42/54/4; VLM ile uyum zayıf (κ = 0.07 [−0.08, 0.21]), VLM 43 çiftte daha iyimser. Bildiri sınırlaması güncellendi | `phase2/gt/human_verification_summary.md` |
+| W1 100 çift GT doğrulaması | ⚠ Kısmen | İkinci bağımsız denetim tamamlandı (değerlendirici türü doğrulanmadı → insan etiketlemesi sayılmaz): kutu 99/100 OK; piksel GT 36 OK / 64 PARTIAL / 0 WRONG — PARTIAL sayılan 64 çiftin tamamında not fazla kapsamayı anlatıyor: maske, alanın yeniden çizilen arka planını ya da değişmeyen içeriğini de işaretliyor (WildReceipt 39/39, XFUND 0/11; önceki sürümdeki "61" sayısı notlardan bir kuralla yeniden üretilemediği için kaldırıldı); glyph_v2 42/54/4; VLM ile uyum zayıf (κ = 0.07 [−0.08, 0.21]), VLM 43 çiftte daha iyimser. Bildiri sınırlaması güncellendi | `phase2/gt/human_verification_summary.md` |
 | W7 TruFor ince ayar | ❌ Yapılamadı | Yayımlanan kodda eğitim betiği yok (README "TODO"); mimari bağımsızlık DeepLabV3+ ve YOLO ile gösterildi | — |
 | AIForge-Doc v2 harici test | ✅ Kapandı | 567 sızıntısız çift (v1 test karşılığı, kaynak belge eğitimde yok), yeniden eğitim/kalibrasyon yok: box U-Net 0.950 → 0.520±0.018 AUPRC; YOLO11s 0.887±0.006 (görüntü AUROC 0.919); işaretçisiz box U-Net 0.712 ve kalıntısız spesifikasyonlarda kayıpsız (+0.003, tek tohum). Kaybın çoğu v1'de işaretçi taşıyan spesifikasyonlarda (§6) | `phase3_v2/results/v2_tables.md` |
 
@@ -45,20 +46,20 @@ Ek: YOLO işaretçiye daha az bağımlı (onarım Δ −0.062 vs U-Net −0.222)
 ## 4. Operasyon notları
 - 9 Kasım 23:30'da tüm kuyruk süreçleri sonlandı (makine yeniden başlamadı; neden belirsiz). Yarım kalan 2 adım (YOLO E1, U-Net s43/s44 sondası) 01:14'te yeniden koşuldu; tamamlanan adımlar `.done` işaretleriyle korundu (`phase3/logs/queue_notes.txt`).
 - Plandan sapmalar (lr0 0.01→0.001, epoch 40→30, workers 6, YOLO sondaları s42): `phase3_yolo/README.md` §7.
-- Yeniden üretim: `phase3/q0_dataprep.ps1` → `q1_unet_train.ps1` ∥ `q2_yolo_train.ps1` → `q3a_eval_unet.ps1` → `q3b_eval_yolo.ps1` → `synthesize_p3.py`. Toplam ≈ 14 GPU-saat (RTX 5080).
+- Yeniden üretim: `kod/phase3/q0_dataprep.ps1` → `q1_unet_train.ps1` ∥ `q2_yolo_train.ps1` → `q3a_eval_unet.ps1` → `q3b_eval_yolo.ps1` → `synthesize_p3.py` → `yolo_controls.py` (dedektörün zararsız kontrolleri, `T7b_yolo_controls.csv`). Toplam ≈ 14 GPU-saat (RTX 5080).
 
 ## 5. Hugging Face Space entegrasyonu (infinayazilim/ai515, ZeroGPU)
 - **Modeller:** Lokalizasyon listelerine Faz 3 modelleri eklendi — DeepLabV3+ (3 GT), kutu yardımcı kayıplı U-Net (piksel/glif), işaretçisiz eğitilmiş U-Net (3 GT) ve YOLO11 kutu dedektörleri (s/n/m kare 1024, tam görüntü 1280, yalnız Gemini, +authentic kare, varsayılan aug). Tohum tekrarları (YOLO s43/s44, Gemini-only U-Net s43/s44) ve 20 epoch varyantları bucket'ta durur, arayüzde gizlidir. Ağırlıklar özel bucket'ta: `models/phase2/`, `models/phase3_yolo/<run>.pt`.
-- **YOLO çıkarımı** `phase3_yolo/infer_to_maps.py` ile aynı: natif çözünürlük, 1024 kare / 768 adım (ya da tam görüntü 1280), conf 0.001, NMS IoU 0.6, kareler arası NMS, kutular güvenle haritaya boyanır → U-Net ile aynı metrikler, τ* ve görüntü kararı.
-- **Doğrulama (`tests/test_app_p3.py`, RTX 5080):** 3 val görüntüsü × 9 Faz 3 modelinde uygulama içi harita, boru hattının kaydettiği haritayla karşılaştırıldı: 27 karşılaştırmanın 25'inde görüntü skoru farkı ≤ 0.0005; YOLO'da 2 durumda fp16/NMS sınırındaki kutulardan kaynaklı fark (0.011 ve 0.044; değişen piksel oranı ≤ %0.12). Mevcut `test_app.py` (76 kontrol) ve `test_xai_filters.py` geçti; `test_xai.py` CPU'da geçti (GPU'da bf16 toleransı nedeniyle 2 kesinlik testi 1e-5 eşiğini aşıyor — Faz 3'ten bağımsız).
+- **YOLO çıkarımı** `kod/phase3_yolo/infer_to_maps.py` ile aynı: natif çözünürlük, 1024 kare / 768 adım (ya da tam görüntü 1280), conf 0.001, NMS IoU 0.6, kareler arası NMS, kutular güvenle haritaya boyanır → U-Net ile aynı metrikler, τ* ve görüntü kararı.
+- **Doğrulama (`kod/tests/test_app_p3.py`, RTX 5080):** 3 val görüntüsü × 9 Faz 3 modelinde uygulama içi harita, boru hattının kaydettiği haritayla karşılaştırıldı: 27 karşılaştırmanın 25'inde görüntü skoru farkı ≤ 0.0005; YOLO'da 2 durumda fp16/NMS sınırındaki kutulardan kaynaklı fark (0.011 ve 0.044; değişen piksel oranı ≤ %0.12). Mevcut `test_app.py` (76 kontrol) ve `test_xai_filters.py` geçti; `test_xai.py` CPU'da geçti (GPU'da bf16 toleransı nedeniyle 2 kesinlik testi 1e-5 eşiğini aşıyor — Faz 3'ten bağımsız).
 - **Görüntü-düzeyi eşikler** (`hf_space/meta/image_tau.json`, Youden-J, val 487 sahte vs eşleşen authentic): YOLO11s s42 eşik 0.171, AUROC 0.961 (U-Net bbox s42: 0.921); DeepLabV3+ bbox 0.840; işaretçisiz U-Net bbox 0.890; birleşik kayıplı piksel U-Net 0.897. Authentic haritası bulunmayan YOLO varyantlarında görüntü kararı "kalibre değil" olarak işaretlenir.
 - **Yeni senaryolar:** *Yalnız yeniden-render* (değişen karakterler + işaretçi authentic'e döndürülür; etiket GERÇEK) ve *yalnız içerik* (authentic'e yalnız değişen karakterler yapıştırılır; etiket SAHTE) — `probes_p3.py` tanımı (4-komşu haç, 2 px genişletme); tek fark işaretçi kalıntısının bbox halkasıyla sınırlanmaması. Yeni bozulmalar: CLAHE (L kanalı), gri seviye.
 - **Sonuçlar sekmesi** Faz 3 sentez tablolarını (`meta/phase3_tables.md`) gösterir. XAI SHAP sekmesi piksel segmentasyon modelleriyle sınırlıdır (YOLO için tam görüntü hedefleri ayrı bir çalışmada geliştiriliyor).
-- **Canlı test** (`hf_space/live_test.py` → `reports/canli_test_p3.json`): 6 senaryo × 6 model + 24 çiftli toplu test ZeroGPU'da tamamlandı; toplu testte YOLO11s F1 bbox 0.948, IoU 0.910, AP bbox 0.939, piksel-GT F1 0.534 (U-Net bbox s42: 0.925 / 0.871 / 0.964 / 0.528). Bağımlılıklar: `ultralytics==8.4.208` (AGPL-3.0), `segmentation-models-pytorch==0.6.0`, `packages.txt` (libgl1).
+- **Canlı test** (`kod/hf_space/live_test.py` → `reports/canli_test_p3.json`): 6 senaryo × 6 model + 24 çiftli toplu test ZeroGPU'da tamamlandı; toplu testte YOLO11s F1 bbox 0.948, IoU 0.910, AP bbox 0.939, piksel-GT F1 0.534 (U-Net bbox s42: 0.925 / 0.871 / 0.964 / 0.528). Bağımlılıklar: `ultralytics==8.4.208` (AGPL-3.0), `segmentation-models-pytorch==0.6.0`, `packages.txt` (libgl1).
 
 ## 6. AIForge-Doc v2 (GPT-Image-2) — harici test, yeniden eğitim yok
 
-567 çiftlik birincil küme: v1 karşılığı test bölümünde, kaynak belgesi v1 eğitiminde hiç görülmemiş. v2'de yalnız düzenlenen kutu geri yapıştırılır; yeşil işaretçi kalıntısı yoktur (3066 görüntünün 0'ı). Eşikler v1 doğrulamadan, değişmeden. ΔAP: aynı spesifikasyonun v1 test görüntüsünden v2 görüntüsüne görüntü-başı AP değişimi; v1 görüntüsünde işaretçi kalıntısı olan (397) ve olmayan (170) çiftler ayrı.
+567 çiftlik birincil küme: v1 karşılığı test bölümünde, kaynak belgesi v1 eğitiminde hiç görülmemiş. v2'de yalnız düzenlenen kutu geri yapıştırılır; yeşil işaretçi kalıntısı yoktur (3.066 çiftin hiçbirinde kutu dışında farklı piksel yok; v1'deki eşli kural yalnız bir çiftte, baştan sona yeşil tonlu bir fişte ve kutunun içinde tetikleniyor: `phase3_v2/results/v2_marker_paired_check.json`). Eşikler v1 doğrulamadan, değişmeden. ΔAP: aynı spesifikasyonun v1 test görüntüsünden v2 görüntüsüne görüntü-başı AP değişimi; v1 görüntüsünde işaretçi kalıntısı olan (397) ve olmayan (170) çiftler ayrı.
 
 | model (v1'de eğitildi)        |   box AUPRC |   piksel AUPRC |   glif AUPRC |   görüntü AUROC |   ΔAP v1 kalıntılı |   ΔAP v1 kalıntısız |
 |:------------------------------|------------:|---------------:|-------------:|----------------:|-------------------:|--------------------:|
@@ -94,4 +95,4 @@ Ek: YOLO işaretçiye daha az bağımlı (onarım Δ −0.062 vs U-Net −0.222)
 | aiforge-tiles-yolo11s-img1024-conserv-s42 | primary  |       567 |           0.915 |
 | aiforge-tiles-yolo11s-img1024-conserv-s42 | seen     |      2494 |           0.911 |
 
-Yöntem: `phase3_v2/v2_eval.py` (prep → infer → eval; sızıntı kuralı koşmadan önce sabitlendi), `v2_report.py`, `v2_marker_split.py`, kuyruk `run_v2.ps1`. GT varyantları v1 ile birebir (`make_gt.process_pair`). Veri: tam paket (authentic dahil) Google Drive'dan; CC BY-NC-SA 4.0, yeniden dağıtılmaz.
+Yöntem: `kod/phase3_v2/v2_eval.py` (prep → infer → eval; sızıntı kuralı koşmadan önce sabitlendi), `v2_report.py`, `v2_marker_split.py`, `v2_marker_paired_check.py`, kuyruk `run_v2.ps1`. GT varyantları v1 ile birebir (`make_gt.process_pair`). Veri: tam paket (authentic dahil) Google Drive'dan; CC BY-NC-SA 4.0, yeniden dağıtılmaz.

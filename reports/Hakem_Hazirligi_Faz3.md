@@ -1,46 +1,73 @@
-# Hakem Hazırlığı (Lab Rat `rebuttal`) — IEEE bildirisi, Faz 3 sonrası
+# Hakem Hazırlığı (Lab Rat `rebuttal`) — IEEE bildirisi
 
-Hedef mekân: IEEE konferans (SIU 2027 / WIFS / ICIP tipi, 6+2 sayfa). Bildiri: `paper/main.pdf` (8 sayfa).
+**Sürüm:** 10 Kasım 2026 akşamı (v2 harici testi, ikinci GT denetimi, Faz 4 ve tutarlılık düzeltmelerinden sonra). Önceki sürüm (Faz 3 sonrası, 8 sayfalık bildiri): `_arsiv/_backup/2026-11-10_denetim/reports/Hakem_Hazirligi_Faz3.md`.
+**Bildiri:** `paper/main.pdf` — 9 sayfa (gövde yaklaşık 6,7 sayfa, kaynakça yaklaşık 2,3 sayfa; 62 kaynak).
+**Hedef mekân:** henüz seçilmedi. Ders kuralı final haftasında kabul mektubu ve katılım belgesi istediğinden, mekânın tarihi sayfa sınırından önce gelen kısıttır. Sayfa sınırı belli olunca "Önerilen son düzenlemeler" bölümündeki kısaltma sırası uygulanır.
+Tüm sayılar `phase3/results/tables_p3.md`, `phase3/results/T7b_yolo_controls.csv`, `phase3_v2/results/{v2_tables.md,v2_marker_paired_check.json}` ve `phase4_resnet/results/tables_p4.md` dosyalarından alınmıştır.
 
 ## Zayıflıklar
 
 | # | Zayıflık | Tür | Önem | Durum / öneri |
 |---|---|---|---|---|
-| 1 | Piksel-değişim GT'si insan tarafından doğrulanmadı (yalnız VLM denetimi) | deneysel | yüksek | Sınırlama olarak yazıldı. **En ucuz güçlendirme:** `verification_sheet.csv` ile 100 çift insan denetimi (~45 dk) |
-| 2 | Faz 3 tek-faktör deneyleri tek tohum (DeepLabV3+, işaretçi-onarımı, birleşik kayıp, 20 ep, YOLO ablasyonları) | istatistik | orta | Metinde her yerde etiketlendi. Gönderimden önce en kritik ikisi (işaretçi-onarımlı box, birleşik kayıp) için +2 tohum (~40 dk GPU) |
-| 3 | Tek veri seti | genelleme | orta | v2 aynı kutu anotasyonunu kullanıyor; erişim açılırsa 613 görüntülük harici test bir günde eklenir |
-| 4 | TruFor ince ayarı yok | taban çizgisi | orta | Eğitim kodu yayımlanmamış; ikinci mimari + kutu dedektörü ile mimari bağımsızlık gösterildi |
-| 5 | Kutu AP'de kareli YOLO tam-görüntü YOLO'dan düşük (kenarda bölünen kutular) | yöntem | düşük | Metinde açıklandı; düzeltme: kareler arası kutu birleştirme (GREEDYNMM) — gelecek iş |
-| 6 | Hız iddiası beklentiyi karşılamadı | sunum | düşük | Dürüstçe raporlandı (98 vs 81 ms) |
-| 7 | Görüntü düzeyi tespit testte ölçülemiyor (test authentic'leri eşli değil) | deneysel | düşük | Açıklandı; val eşlerinde raporlandı |
+| 1 | Piksel-değişim GT'si doğrulanmış bir insan etiketlemesiyle denetlenmedi. İki denetim var (VLM: 69 uygun / 26 kısmi / 1 hatalı, n = 96; ikinci, daha sıkı denetim: 36 uygun / 64 kısmi / 0 hatalı, n = 100) ve uyumları zayıf (κ = 0.07 [−0.08, 0.21]). İkinci denetimde değerlendirici türü doğrulanmadı | deneysel | yüksek | Sınırlama olarak yazıldı. İkinci denetimin 64 kısmi notunun tamamı fazla kapsamayı anlatıyor (değişimi kaçırma yok). **Güçlendirme:** `phase2/gt/verification_sheet.csv` ile gerçek insan denetimi (yaklaşık 45 dk). H1 daha sıkı olan glif GT'siyle de geçerli (0.923 → 0.257) |
+| 2 | Tek tohumlu sonuçlar: DeepLabV3+, işaretçisiz eğitim, birleşik kayıp, 20 epok, YOLO ablasyonları. v2 bölümünün en güçlü iddiası (işaretçisiz kutu U-Net 0.712; kalıntısız tariflerde +0.003 [−0.06, 0.06]) tek tohuma dayanıyor | istatistik | yüksek | Metinde her yerde etiketli. **Gönderimden önce:** işaretçisiz kutu modeli ve birleşik kayıp için +2 tohum (eğitim + sonda + v2 değerlendirmesi, yaklaşık 40–60 dk GPU) |
+| 3 | v1'deki ayrı tutulan üretici deneyi işaretçi ile üreticiyi ayıramıyor (kalıntı Gemini'de %86, Ideogram'da %2); yalnız Gemini ile işaretçisiz eğitim yapılmadı | tasarım | orta | Metinde açıkça yazıldı. v2 harici testi soruyu dışarıdan kısmen yanıtlıyor: aynı tarifin v1 ve v2 görüntüsü, v1 kalıntısına göre ayrılarak karşılaştırıldı |
+| 4 | v2 hem üreticiyi hem geri yapıştırma yöntemini değiştiriyor | tasarım | orta | Sınırlama olarak yazıldı; iki etki yalnız v1 kalıntı ayrımı üzerinden ayrışıyor |
+| 5 | TruFor ince ayarı yok; öğrenilmiş modeller yalnız sıfır-atış başvurularla karşılaştırılıyor | taban çizgisi | orta | Eğitim kodu yayımlanmamış; mimari bağımsızlık DeepLabV3+ ve YOLO11 ile gösterildi. Tablo V dipnotundaki TruFor F1 0.403 kendi koşumuz (veri seti makalesi 0.434 veriyor; fark `phase2/literature_baselines/README.md` içinde açıklandı) |
+| 6 | Dedektörün zararsız kontrolleri farklı bir görüntü skoruyla ölçüldü (en yüksek kutu güveni; bölütleme modellerinde %99 yüzdelik skoru) | yöntem | düşük | Metinde belirtildi ve aynı skorla kutu U-Net karşılaştırması eklendi (dedektör en çok 0.3 puan, U-Net 2.2–2.3 puan kaybediyor). Dedektör tek tohum |
+| 7 | Karolu YOLO'nun kutu AP'si tam görüntü YOLO'dan düşük (0.88 ve 0.96) | yöntem | düşük | Metinde açıklandı; mekanizma kesin değil. Düzeltme: karolar arası kutu birleştirme — gelecek iş |
+| 8 | Hız beklentisi doğrulanmadı (98 ms ve 81 ms) | sunum | düşük | Olduğu gibi raporlandı |
+| 9 | Görüntü düzeyi tespit testte ölçülemiyor (test özgünleri eşli değil) | deneysel | düşük | Açıklandı; doğrulama çiftlerinde raporlandı. v2'de bütün çiftler eşli olduğundan görüntü AUROC orada verildi |
+| 10 | Paylaşım: depo herkese açık ve kodu, kimlikleri, görüntü başı istatistikleri içeriyor; maskeler ve kontrol kümeleri dağıtılmıyor, betiklerle yeniden üretiliyor. Depoda `LICENSE` yok | yeniden üretilebilirlik | orta | Bildirideki ifadeler buna göre düzeltildi (özet, giriş, veri bölümü) ve depo bağlantısı eklendi. `LICENSE` seçimi açık karar |
+| 11 | Uzunluk: 9 sayfa; özet yaklaşık 282 kelime | biçim | mekâna bağlı | Kısaltma sırası aşağıda |
 
-## Ablasyon seçimi (Lab Rat `compare` mantığı: aynı protokol, tek faktör)
+## Ablasyon seçimi (Lab Rat `compare` mantığı: aynı protokol, tek etken)
 
-| Run | Değişen faktör | Ana metrik farkı | Anlatı gücü | Yer |
+| Koşu | Değişen etken | Ana ölçüt farkı | Anlatı gücü | Yer |
 |---|---|---|---|---|
-| Eğitim GT (box/pix/glyph) × 3 tohum | eğitim maskesi | box-GT 0.923 vs pix-GT 0.374 (aynı tahminler) | Ana iddia (H1) | Ana metin, Tablo I |
-| DeepLabV3+ | dekoder | 0.939 → 0.382 | H1 mimariden bağımsız | Ana metin |
-| İşaretçi-onarımlı eğitim | eğitim girdisi | onarım Δ −0.222 (3 tohum) → +0.019 (1 tohum); test AUPRC 0.950 → 0.939 | İşaretçi = kısayol, şart değil | Ana metin, Tablo II |
-| YOLO11s (3 tohum) | formülasyon | test box AUPRC 0.969; pix 0.368 | Box metriği = alan tespiti | Ana metin, Tablo V |
-| Render/içerik sondası | girdi | AUROC render 0.637 / içerik 0.733 (U-Net box, 3 tohum) | Mekanizma | Ana metin, Tablo III |
-| Gemini-only × 3 tohum | eğitim üreticisi | Ideogram 0.412 vs 0.909 | H3 reddi | Ana metin, Tablo IV |
-| Birleşik kayıp | kayıp | pix 0.610→0.622, blur −59→−43 % | Pratik öneri | Ana metin (kısa) |
-| 20 epoch, YOLO n/m, varsayılan aug, authneg | eğitim ayrıntısı | ≈0 | "Yetersiz eğitim" itirazına yanıt | Kısa cümle / ek |
+| Eğitim GT'si (kutu / piksel / glif) × 3 tohum | eğitim maskesi | aynı tahminler: kutu-GT 0.923, piksel-GT 0.374 | Ana iddia (H1) | Ana metin, Tablo I |
+| DeepLabV3+ | kod çözücü | 0.939 → 0.382 | H1 mimariden bağımsız | Ana metin, Tablo I |
+| YOLO11s (3 tohum) | formülasyon | test kutu AUPRC 0.969; piksel 0.368 | Kutu ölçütü alan tespitini ölçer | Ana metin, Tablo V |
+| İşaretçisiz eğitim | eğitim girdisi | onarım Δ −0.222 (3 tohum) → +0.019 (1 tohum); test AUPRC 0.950 → 0.939 | İşaretçi kısayoldur, ön koşul değildir | Ana metin, Tablo II |
+| v2 harici testi | test verisi (üretici, işaretçisiz) | kutu U-Net 0.950 → 0.520; işaretçisiz kutu U-Net 0.712; YOLO11s 0.887 | İşaretçi bulgusunun dışarıdan doğrulanması | Ana metin, Tablo VI |
+| Yeniden çizim / içerik sondası | girdi | AUROC: yeniden çizim 0.637, içerik 0.733 (kutu U-Net, 3 tohum) | Mekanizma | Ana metin, Tablo III |
+| Yalnız Gemini × 3 tohum | eğitim üreticisi | Ideogram 0.412, Gemini 0.909 | H3 reddi | Ana metin, Tablo IV |
+| Birleşik kayıp | kayıp | piksel 0.610 → 0.622; bulanıklık −%59 → −%43 | Pratik öneri | Ana metin (kısa) |
+| Zararsız kontroller (dedektör dahil) | girdi | bölütleme 1.6–6.5 puan; dedektör en çok 0.3 puan | Yapıştırma dikişi itirazına yanıt | Ana metin (tek cümle) |
+| 20 epok, YOLO n/m, varsayılan artırım, özgün negatif karo | eğitim ayrıntısı | yaklaşık 0 | "Yetersiz eğitim" itirazına yanıt | Kısa cümle; yer darsa ek |
+| ResNet-18 tam veri + eşik kalibrasyonu (Faz 4, 3 tohum) | model ailesi | onarılmış sahtede doğru tespit 0.995 → 0.471; işaretçisiz eğitimde 0.899 | İşaretçi bağımlılığı üçüncü model ailesinde | **Bildiride yok.** İstenirse tek cümle ya da ek; karar açık |
 
 ## En olası 10 hakem sorusu
 
-1. **Q:** Your pixel-change GT may encode re-encoding noise rather than real edits. How do you know it is the "true" ground truth?
-   *Yanıtlanabilir:* Evet. *Taslak:* We do not claim it is the true mask; the claim is that the choice of ground truth reverses the ranking. ε-sensitivity (global trace vanishes at ε ≥ 4), morphological cleaning and a glyph-restricted variant give the same ordering, and a VLM check rated 95/96 pairs OK or partial. A human audit is listed as a limitation.
-2. **Q:** Is the box-vs-pixel effect specific to the U-Net? — *Evet, Tablo I:* DeepLabV3+ 0.939 → 0.382 and a YOLO11 detector 0.965 → 0.368.
-3. **Q:** If the marker is removed, does the benchmark become harder or is your shortcut claim overstated? — *Evet, Tablo II:* retraining on repaired images keeps 0.939 test AUPRC but removes the marker dependence; we therefore call it a shortcut, not a prerequisite.
-4. **Q:** Why should a reader care, given that a detector already solves the box task? — *Evet:* that is the point: box metrics measure field detection; pixel-change metrics are needed to measure localization of changed pixels.
-5. **Q:** Many results are single-seed. — *Kısmen:* the main U-Net grid, held-out U-Nets and the main YOLO use three seeds; others are marked exploratory. Two extra seeds for the repaired and joint models can be added in the rebuttal period.
-6. **Q:** Why not fine-tune TruFor or another IML model? — *Kısmen:* training code is not released; two architectures and a detector show architecture independence.
-7. **Q:** Is the held-out-generator test powered? — *Kısmen:* 126 Ideogram images with group bootstrap CIs; the YOLO and U-Net gaps (0.19 vs 0.50) do not overlap.
-8. **Q:** The tiled detector has lower box AP than the full-image one; is tiling a good choice? — *Evet:* tiling raises pixel coverage and residue-free AP (0.878 vs 0.756) but splits boxes at tile borders; a merging step is future work.
-9. **Q:** Did you check for train/test leakage? — *Evet:* source-document group splits, a 740-image leakage-free test subset with identical results (0.949 vs 0.950).
-10. **Q:** Does preprocessing (e.g., grayscale to remove the green marker) solve the problem? — *Evet:* grayscale costs 47–67 % AUPRC for every model, including marker-repaired ones, so colour carries evidence beyond the marker.
+1. **Q:** Your pixel-change ground truth may encode re-rendering noise rather than real edits. Why is it a valid reference?
+   *Yanıtlanabilir:* Kısmen. *Taslak:* We do not claim it is the true mask; the claim is that changing only the training mask reverses the ranking. A stricter second audit of 100 stratified pairs found it wrong in none and partial in 64, and in all 64 the auditor's note describes over-coverage (re-rendered background or unchanged content), not a missed edit. The glyph-restricted variant, which removes most of that over-coverage, gives the same ordering (0.923 → 0.257). Neither audit is a verified human annotation; this is stated as a limitation.
+2. **Q:** Is the box-versus-pixel effect specific to the U-Net? — *Evet, Tablo I:* DeepLabV3+ 0.939 → 0.382 and a YOLO11 detector 0.965 → 0.368.
+3. **Q:** If the marker is removed, is your shortcut claim overstated? — *Evet, Tablo II ve VI:* retraining on repaired images keeps 0.939 test AUPRC and removes the dependence; on the marker-free v2 benchmark the repaired model loses nothing on residue-free specifications (+0.003) while the standard model loses 0.17. One seed; stated.
+4. **Q:** v2 changes the generator and the paste-back procedure at once. How do you attribute the loss to the marker? — *Kısmen:* by comparing the same specification on v1 and v2 and splitting by whether the v1 image carried the residue (397 / 170 pairs): −0.49 versus −0.17 for the box U-Net. The two v2 changes themselves are not separated; stated as a limitation.
+5. **Q:** Does v2 really carry no marker? — *Evet:* in none of the 3,066 pairs does a pixel outside the box differ from the authentic source, and the colour rule fires on a single green-tinted receipt, inside its box (`v2_marker_paired_check.json`).
+6. **Q:** Many results use a single seed. — *Kısmen:* the main U-Net grid, the held-out U-Nets and the main detector use three seeds; the rest are labelled. Two extra seeds for the repaired and joint models are the first item to add.
+7. **Q:** Why not fine-tune TruFor or another IML model? — *Kısmen:* its training code is not released; two decoders and a detector show architecture independence.
+8. **Q:** Is the held-out-generator test powered, and is it a generator gap or a marker gap? — *Kısmen:* 126 Ideogram images with group-bootstrap intervals; the design cannot separate the two on v1 and the paper says so.
+9. **Q:** Did you check for train/test leakage? — *Evet:* source-document group splits, a 740-image leakage-free test subset (0.949 versus 0.950), and on v2 a primary set fixed before scoring (image AUROC 0.915 on unseen versus 0.911 on seen documents).
+10. **Q:** Are your masks and probes available? — *Evet, sınırlı:* the code that derives them, the identifiers and per-image statistics are public; images and masks are not redistributed because the dataset is gated (CC BY-NC-SA 4.0) and are regenerated by the released scripts.
+
+Ek sorular: karolu dedektörün kutu AP'si neden düşük (Zayıflık 7); gri düzeye çevirmek işaretçiyi siler mi (hayır: sınanan bütün modellerde AUPRC'nin %47–67'si gidiyor, işaretçisiz eğitilenler dahil).
 
 ## Önerilen son düzenlemeler
-- Özet ve girişte tek-tohum uyarısı bulunuyor; gönderimden önce 2. maddedeki +2 tohum eklenirse "suggestive" ifadeleri güçlendirilebilir.
-- Hedef mekân 6 sayfa ise: Tablo III (render/içerik) ve §V-F'nin dayanıklılık paragrafı eke taşınabilir.
+1. **+2 tohum** (Zayıflık 2). Sonuç değişmezse özet ve tartışmadaki "one seed" kayıtları kaldırılır; değişirse iddia buna göre daraltılır.
+2. **Sayfa sınırına göre kısaltma sırası** (az kayıptan çoğa): Tablo III (yeniden çizim / içerik) eke; §V-F dayanıklılık paragrafı tek cümleye; YOLO ablasyon paragrafı ikiye; ilgili çalışmalar bölümünde 2.1 ve 2.3 birleştirilir; kaynakça 62'den yaklaşık 45'e iner.
+3. **Özet** şu an yaklaşık 282 kelimedir; IEEE konferanslarında sınır çoğunlukla 150–250 kelimedir (bazı çağrılarda 100–150). Sınır mekâna bağlı olduğundan bildiriye uygulanmadı; iki hazır sürüm bu belgenin sonundaki ekte.
+4. **Yazar bloğu:** bölüm adı yerine ders adı yazıyor ("AIC515 Image Processing"); gönderimde bölüm ya da enstitü adıyla değiştirilmeli.
+5. **Faz 4 cümlesi** (isteğe bağlı, §V-C sonuna): "An image-level ResNet-18 patch classifier trained on the full split shows the same dependence: repairing the residue lowers its detection rate from 0.995 to 0.471 (three seeds)."
+
+## Ek — özet için hazır kısa sürümler (bildiriye uygulanmadı)
+
+Her iki sürüm yalnız şu anki özetteki cümleleri ve sayıları kullanır; yeni sayı içermez.
+
+**242 kelime** (çıkarılanlar: işaretçinin tek başına özgün görüntüye yapıştırılması, Ideogram aktarımı, v2 kaybının işaretçili tariflerde yoğunlaşması):
+
+> Benchmarks for AI-inpainted document forgery, such as AIForge-Doc, annotate each edit with the bounding box of the rewritten field. We ask what such labels teach a localizer. Using the authentic source images released with the training forgeries, we derive pixel-change and glyph masks and train the same network on box, pixel-change and glyph masks, changing nothing else. Under its own box metric the box-trained U-Net scores 0.92 pixel AUPRC; against the pixels that actually changed the same predictions score 0.37, and each ground truth ranks its own model first; a second decoder (DeepLabV3+) reproduces the effect. A 1–3 px residue of the green edit marker drawn by the generation pipeline survives in over 80 % of Gemini forgeries: removing it lowers the box model's per-image AP from 0.99 to 0.77, and retraining on marker-repaired images (one seed) removes this dependence while keeping most of the box score. A tiled YOLO11 detector trained on the same boxes is the best model under the box metric (0.97 test AUPRC) and depends less on the marker, yet reaches only 0.37 validation AUPRC under the pixel-change truth. On the marker-free AIForge-Doc v2 (GPT-Image-2), without retraining, the box U-Net falls from 0.95 to 0.52 AUPRC while the detector keeps 0.89 and the marker-repaired U-Net 0.71. Box scores on this benchmark therefore measure field detection, not pixel-level tamper localization; we recommend reporting both and auditing generation residue, and we release the code that derives our masks, controls and probes.
+
+**150 kelime** (100–150 kelime isteyen çağrılar için; işaretçisiz yeniden eğitim ve öneri cümlesi de çıkar):
+
+> Benchmarks for AI-inpainted document forgery such as AIForge-Doc annotate each edit with the bounding box of the rewritten field. Using the authentic sources of the training forgeries, we derive pixel-change and glyph masks and train the same network on each ground truth. The box-trained U-Net scores 0.92 pixel AUPRC under its own metric but 0.37 against the pixels that actually changed; DeepLabV3+ reproduces the effect. A 1–3 px residue of the generator's green edit marker survives in over 80 % of Gemini forgeries, and removing it lowers the box model's per-image AP from 0.99 to 0.77. A tiled YOLO11 detector is the best model under the box metric (0.97 test AUPRC) yet reaches only 0.37 under the pixel-change truth. On the marker-free AIForge-Doc v2 the box U-Net falls from 0.95 to 0.52 AUPRC while the detector keeps 0.89. Box scores therefore measure field detection, not pixel-level localization; we release the code.

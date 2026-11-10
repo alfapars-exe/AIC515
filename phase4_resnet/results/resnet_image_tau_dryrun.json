@@ -1,0 +1,43 @@
+{
+ "_doc": "ResNet-18 görüntü düzeyi karar kuralı: skor = en yüksek k patch skorunun ortalaması (agg), eşik val 487 sahte + 487 eşleşen authentic üzerinde Youden-J. Üretici: kod/phase4_resnet/calibrate_p4.py",
+ "_agg_selection": {
+  "rule": "tam veri/ham 3 tohumun val AUROC ortalaması; 0.002 içinde küçük k",
+  "mean_val_auroc": {
+   "max": 0.7856,
+   "top2": 0.7856,
+   "top3": 0.783,
+   "top5": 0.7622
+  },
+  "chosen": "max"
+ },
+ "resnet18_ft_best": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.9962,
+  "tpr": 0.5,
+  "fpr": 0.0,
+  "auroc": 0.768,
+  "n_pos": 24,
+  "n_neg": 24
+ },
+ "resnet18_ft_full_mr_s42_dryrun": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.5898,
+  "tpr": 0.708,
+  "fpr": 0.542,
+  "auroc": 0.604,
+  "n_pos": 24,
+  "n_neg": 24
+ },
+ "resnet18_ft_full_s42_dryrun": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.5746,
+  "tpr": 0.583,
+  "fpr": 0.167,
+  "auroc": 0.786,
+  "n_pos": 24,
+  "n_neg": 24
+ }
+}

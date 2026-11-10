@@ -1,6 +1,6 @@
 # AIForge-Doc v2 (GPT-Image-2) harici test — v1'de eğitilmiş modeller, yeniden eğitim yok
 
-Birincil küme: 567 çift (v1 karşılığı TestingSet'te, kaynak belge v1 eğitiminde görülmemiş). v2'de yeşil işaretçi kalıntısı: 0.000; kutu dışı değişen piksel: 0 (patch-back).
+Birincil küme: 567 çift (v1 karşılığı TestingSet'te, kaynak belge v1 eğitiminde görülmemiş). v2'de renk kuralıyla işaretçi kalıntısı: 1/3066 görüntü (eşli kural ve konum: `v2_marker_paired_check.json`); kutu dışı değişen piksel: 0 (patch-back).
 
 ## Tohum ortalamaları (birincil küme)
 

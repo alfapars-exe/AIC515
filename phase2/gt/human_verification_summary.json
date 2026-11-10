@@ -2,6 +2,8 @@
  "form": "verification_human.xlsx",
  "n_rows": 100,
  "n_complete": 100,
+ "evaluator": "doğrulanmadı",
+ "evaluator_note": "Değerlendiricinin türü (insan / model destekli) doğrulanmadı; bu özet doğrulanmış insan etiketlemesi sayılmaz. Dosya ve anahtar adlarındaki 'human' sözcüğü tarihsel addır.",
  "distribution": {
   "bbox_verdict": {
    "OK": {
@@ -132,6 +134,28 @@
      0.07
     ]
    }
+  }
+ },
+ "eps8_by_source": {
+  "cord": {
+   "OK": 17,
+   "PARTIAL": 9,
+   "WRONG": 0
+  },
+  "sroie": {
+   "OK": 8,
+   "PARTIAL": 16,
+   "WRONG": 0
+  },
+  "wildreceipt": {
+   "OK": 0,
+   "PARTIAL": 39,
+   "WRONG": 0
+  },
+  "xfund": {
+   "OK": 11,
+   "PARTIAL": 0,
+   "WRONG": 0
   }
  },
  "weighted_fulltrain": {

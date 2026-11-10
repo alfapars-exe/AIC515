@@ -1,0 +1,38 @@
+{
+ "PHASE4/resnet18_ft_full_s42": {
+  "friendly": "ResNet-18 · tam veri (Faz 4, s42)",
+  "thr": 0.995095,
+  "n": 40,
+  "max_abs_diff": 0.0009240657091140747,
+  "mean_abs_diff": 4.403330385684967e-05,
+  "decisions_agree": 40
+ },
+ "PHASE4/resnet18_ft_full_mr_s42": {
+  "friendly": "ResNet-18 · tam veri · işaretçisiz eğitim (Faz 4, s42)",
+  "thr": 0.965381,
+  "n": 40,
+  "max_abs_diff": 0.0009166598320007324,
+  "mean_abs_diff": 6.774887442588806e-05,
+  "decisions_agree": 40
+ },
+ "PHASE1/resnet18_ft_best": {
+  "friendly": "ResNet-18 · tam ince ayar (Faz 1, 400 örnek)",
+  "thr": 0.938124,
+  "n": 40,
+  "max_abs_diff": 0.0013903677463531494,
+  "mean_abs_diff": 0.00015398971736431123,
+  "decisions_agree": 40
+ },
+ "_def_resnet": [
+  "PHASE4/resnet18_ft_full_s42"
+ ],
+ "_resnets": [
+  "PHASE1/resnet18_ft_best",
+  "PHASE1/resnet18_probe_best",
+  "PHASE1/resnet18_scratch_best",
+  "PHASE2/h4_resnet18",
+  "PHASE2/h4_resnet18_poscontrol",
+  "PHASE4/resnet18_ft_full_mr_s42",
+  "PHASE4/resnet18_ft_full_s42"
+ ]
+}

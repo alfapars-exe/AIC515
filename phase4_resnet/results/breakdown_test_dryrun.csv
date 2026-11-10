@@ -1,0 +1,22 @@
+model,by,value,n,tpr,auroc_vs_test_auth
+resnet18_ft_best,tool,gemini,24,0.5,0.8958333333333334
+resnet18_ft_best,marker,işaretçili,11,0.8181818181818182,0.9848484848484848
+resnet18_ft_best,marker,işaretçisiz,13,0.23076923076923078,0.8205128205128206
+resnet18_ft_best,area,1-5%,1,0.0,
+resnet18_ft_best,area,<1%,23,0.5217391304347826,0.9094202898550724
+resnet18_ft_best,clean,eğitimle kaynak paylaşan,3,0.6666666666666666,0.986111111111111
+resnet18_ft_best,clean,temiz test,21,0.47619047619047616,0.8829365079365079
+resnet18_ft_full_mr_s42_dryrun,tool,gemini,24,0.875,0.685763888888889
+resnet18_ft_full_mr_s42_dryrun,marker,işaretçili,11,0.7272727272727273,0.5435606060606061
+resnet18_ft_full_mr_s42_dryrun,marker,işaretçisiz,13,1.0,0.8060897435897436
+resnet18_ft_full_mr_s42_dryrun,area,1-5%,1,1.0,
+resnet18_ft_full_mr_s42_dryrun,area,<1%,23,0.8695652173913043,0.6902173913043478
+resnet18_ft_full_mr_s42_dryrun,clean,eğitimle kaynak paylaşan,3,1.0,0.7430555555555556
+resnet18_ft_full_mr_s42_dryrun,clean,temiz test,21,0.8571428571428571,0.677579365079365
+resnet18_ft_full_s42_dryrun,tool,gemini,24,0.9166666666666666,0.8020833333333333
+resnet18_ft_full_s42_dryrun,marker,işaretçili,11,0.8181818181818182,0.7651515151515151
+resnet18_ft_full_s42_dryrun,marker,işaretçisiz,13,1.0,0.8333333333333334
+resnet18_ft_full_s42_dryrun,area,1-5%,1,1.0,
+resnet18_ft_full_s42_dryrun,area,<1%,23,0.9130434782608695,0.8079710144927537
+resnet18_ft_full_s42_dryrun,clean,eğitimle kaynak paylaşan,3,1.0,0.8194444444444444
+resnet18_ft_full_s42_dryrun,clean,temiz test,21,0.9047619047619048,0.7996031746031746

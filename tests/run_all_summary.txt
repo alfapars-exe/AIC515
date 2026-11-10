@@ -1,4 +1,4 @@
-app rc=1
+﻿app rc=0
 app_p3 rc=0
 xai_filters rc=0
-xai rc=1
+xai rc=0

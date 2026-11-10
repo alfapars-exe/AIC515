@@ -1,0 +1,35 @@
+{
+ "form": "verification_human.xlsx",
+ "n_partial": 64,
+ "over_background": 46,
+ "over_unchanged_content": 43,
+ "over_any": 64,
+ "neither": 0,
+ "under_keyword_notes": [
+  {
+   "new_id": "000002053",
+   "source": "wildreceipt",
+   "note": "Üst ve sol kenarda yeşil çizgi var. eps8 geniş arka plan işaretliyor; glyph_v2 aynı kalan davet cümlesini de kapsıyor ve bazı harf parçaları eksik."
+  }
+ ],
+ "by_source": {
+  "cord": {
+   "n_partial": 9,
+   "over_any": 9
+  },
+  "sroie": {
+   "n_partial": 16,
+   "over_any": 16
+  },
+  "wildreceipt": {
+   "n_partial": 39,
+   "over_any": 39
+  }
+ },
+ "patterns": {
+  "over_background": "arka plan|yama|dolduruyor|dolu dikdörtgen|blok",
+  "over_unchanged_content": "değişmeyen|aynı kalan|korunmuş|değişmemiş",
+  "under": "eksik|kaçır|yakalamıyor|atlıyor|dışarıda bırak|kapsamıyor"
+ },
+ "note": "Anahtar sözcük sınıflaması. 'under_keyword_notes' içindeki notlar elle okunmalıdır; 10 Kasım 2026 okumasında tek eşleşme glyph_v2 maskesine aittir, eps8'e değil."
+}

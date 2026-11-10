@@ -12,4 +12,4 @@ Our contributions are:
 \item \textbf{Box detection versus segmentation.} A tiled YOLO11 detector trained on the same boxes, scored with the same code under both ground truths and with box AP, beats every segmenter under the box metric (test AUPRC 0.969), relies less on the marker and transfers better across generators, yet scores like the box U-Net under the pixel-change truth (Sec.~\ref{sec:res-yolo}).
 \item \textbf{Negative results} on the paste-back seam, a global re-encoding trace, held-out-generator transfer with pixel supervision (three seeds), longer training and test-time enhancement.
 \end{enumerate}
-We release the audit, derived masks, controls, probes and evaluation code; the data themselves are not redistributed.
+We release the audit and the code that derives the masks, controls and probes and evaluates the models\footnote{\url{https://github.com/alfapars-exe/AIC515}}; the images and the masks derived from them are not redistributed and are regenerated from the gated dataset by this code.

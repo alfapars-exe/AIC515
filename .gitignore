@@ -24,6 +24,8 @@ reports/TEKMER/
 # veri setinden kırpılmış görüntüler (yeniden dağıtılmaz)
 phase2/gt/vlm_verification/*.png
 phase2/gt/verification_grid.pdf
+phase2/gt/verification_grid_page*.png
+**/*_LOCAL_ONLY*
 **/train_batch*.jpg
 **/val_batch*.jpg
 **/labels.jpg

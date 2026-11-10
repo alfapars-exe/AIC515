@@ -1,6 +1,6 @@
-# XAI · SHAP açıklamaları (sekme 8 · XAI Analysis › SHAP Analysis ve `xai/` paketi)
+# XAI · SHAP açıklamaları (sekme 8 · Açıklanabilirlik (XAI) › SHAP Açıklamaları ve `xai/` paketi)
 
-> Sekme 8 iki bağımsız alt sekmeden oluşur: **SHAP Analysis** (bu belge) ve **Filter Visualization / Katman Filtreleri** (`xai_filters.py`, [XAI_FILTERS.md](XAI_FILTERS.md)).
+> Sekme 8 iki bağımsız alt sekmeden oluşur: **SHAP Açıklamaları** (bu belge) ve **Katman Filtreleri** (`xai_filters.py`, [XAI_FILTERS.md](XAI_FILTERS.md)).
 
 Bu belge, AIC515 uygulamasına eklenen SHAP tabanlı açıklanabilirlik modülünü anlatır: hangi model için hangi
 yöntemin neden seçildiği, mimari, kullanım ve sınırlamalar. Test sonuçları: [`xai_test_report.md`](xai_test_report.md).

@@ -1298,7 +1298,7 @@ def export_raw(an: Analysis, L: LayerRecord, f: int):
 # ====================================================================== Gradio sekmesi
 def build_tab(gr, *, models_dir, yolo_runs_dir=None, gpu=None, freq_fn=None, load_sample=None, sample_choices=None,
               image_states=None, default_key=None, store_fp16=None):
-    """Bağımsız 'Filter Visualization / Katman Filtreleri' sekmesinin içeriğini kurar (çağıran gr.Tab bağlamında).
+    """Bağımsız 'Katman Filtreleri' sekmesinin içeriğini kurar (çağıran gr.Tab bağlamında).
     gpu: @spaces.GPU sarmalayıcısı (ZeroGPU) · freq_fn: app.project_freq_channels · load_sample(key)→(img,mask,auth,meta)
     image_states: (st_orig, st_mask) — Girdi sekmesindeki görüntü."""
     specs = discover_models(models_dir, yolo_runs_dir)

@@ -1,0 +1,4 @@
+run,source,n_pairs,n_groups,auroc_maxconf,ci_lo,ci_hi,delta_vs_authentic_pts,control_rate_conf_ge_0p5
+aiforge-tiles-yolo11s-img1024-conserv-s42,authentic,487,469,0.9952,0.9917,0.998,0.0,0.0493
+aiforge-tiles-yolo11s-img1024-conserv-s42,benign_pasteback,487,469,0.9924,0.9879,0.9961,-0.28,0.0801
+aiforge-tiles-yolo11s-img1024-conserv-s42,fullimage_resample,487,469,0.9937,0.9896,0.9972,-0.15,0.0637

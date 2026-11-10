@@ -1,17 +1,19 @@
-# generated from env docforensics (python 3.11, CUDA 12.8 wheels: --extra-index-url https://download.pytorch.org/whl/cu128)
+# Yerel ortam: conda env `docforensics` (Python 3.11, CUDA 12.8 tekerlekleri:
+#   pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu128)
+# Kurulum ayrıntıları: baselines/ENV_SETUP.md. Hugging Face Space paketinin bağımlılıkları ayrıdır:
+#   kod/hf_space/space_src/requirements.txt (Python 3.12, Gradio SDK 6.31.0).
+
+# --- çekirdek (eğitim + değerlendirme)
 torch==2.11.0+cu128
 torchvision==0.26.0+cu128
-timm==1.0.30
-segmentation-models-pytorch==0.5.0
+timm==1.0.31
+segmentation-models-pytorch==0.6.0
 scikit-learn==1.9.1
 scikit-image==0.26.0
 opencv-python-headless==5.0.0.93
-albumentations==2.0.8
 torchmetrics==1.9.0
-imagehash==4.3.2
-huggingface_hub==2.2.0
-datasets==5.1.0
-python-docx==1.2.0
+ImageHash==4.3.2
+huggingface_hub==2.4.0
 pandas==3.0.6
 numpy==2.4.6
 scipy==1.17.1
@@ -19,5 +21,21 @@ matplotlib==3.11.2
 seaborn==0.13.2
 Pillow==12.3.0
 tqdm==4.70.1
-pyyaml==6.0.3
-shap==0.54.1
+PyYAML==6.0.3
+openpyxl==3.1.5
+
+# --- Faz 3: YOLO11 kutu dedektörü (torch'u ezmemesi için `pip install ultralytics==8.4.208 --no-deps`
+#     ardından `pip install py-cpuinfo ultralytics-thop polars`)
+ultralytics==8.4.208
+
+# --- uygulama (kod/app) ve açıklanabilirlik
+gradio==6.31.0
+tabulate==0.10.0
+shap==0.51.0          # Python 3.11 için son sürüm; Space (Python 3.12) shap==0.54.1 kullanır
+
+# --- testler ve belge üretimi (kod/tests, kod/tools)
+pytest==9.2.0
+playwright            # arayüz testi ve ekran görüntüleri: `python -m playwright install chromium`
+python-docx==1.2.0
+pypandoc_binary       # rapor: Markdown → Word (kod/tools/build_report.py)
+python-pptx           # sunum

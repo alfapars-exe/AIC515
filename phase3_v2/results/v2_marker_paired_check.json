@@ -1,0 +1,23 @@
+{
+ "n_pairs": 3066,
+ "n_pairs_with_authentic": 3066,
+ "rule_v1_paired": "gmask(forged) & ~gmask(authentic) & ring(bbox, 6 px haç genişletme − 6 px haç aşındırma); kalıntı <=> >= 20 piksel",
+ "paired_residue_ge20": 1,
+ "paired_residue_any": 1,
+ "paired_residue_max_px": 96,
+ "coloronly_ring_ge20": 1,
+ "coloronly_ring_any": 1,
+ "coloronly_ring_ge20_keys": [
+  "tr_000000726"
+ ],
+ "v2_eval_green_residue": 1,
+ "v2_eval_green_residue_keys": [
+  "tr_000000726"
+ ],
+ "pairs_with_any_difference_outside_box": 0,
+ "primary": {
+  "n": 567,
+  "paired_residue_ge20": 0,
+  "coloronly_ring_ge20": 0
+ }
+}

@@ -1,0 +1,15 @@
+torch==2.11.0
+torchvision==0.26.0
+segmentation-models-pytorch==0.6.0
+timm
+opencv-python-headless
+scikit-image
+scikit-learn
+scipy
+numpy
+pandas
+tabulate
+matplotlib
+Pillow
+shap==0.54.1
+ultralytics==8.4.208

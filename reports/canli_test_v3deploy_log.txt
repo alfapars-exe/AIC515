@@ -1,0 +1,60 @@
+﻿uç noktalar: ['/_xai_show_outputs', '/apply_preset', '/apply_step', '/batch_test', '/classical_features', '/compare_unet', '/draft_delete', '/draft_load', '/draft_save', '/lambda', '/lambda_1', '/lambda_10', '/lambda_11', '/lambda_12', '/lambda_13', '/lambda_2', '/lambda_3', '/lambda_4', '/lambda_5', '/lambda_6', '/lambda_7', '/lambda_8', '/lambda_9', '/on_hr', '/on_layer', '/on_model', '/on_run', '/on_sample', '/on_upload', '/op_choices', '/param_updates', '/param_updates_1', '/preview', '/render_filter', '/render_filter_1', '/render_filter_2', '/render_layer', '/render_layer_1', '/render_layer_2', '/render_pairs', '/reset', '/run_green', '/run_resnet', '/run_unet', '/sim_filter', '/sim_preview', '/sim_random', '/sim_summary', '/sim_to_tabs', '/simulate', '/undo', '/xai_compare', '/xai_predict', '/xai_run']
+seçilen örnek: testing:000000429 · 82 örnek filtreye uyuyor · rastgele seçildi: `testing:000000429`
+
+[Sahte belge (forged)] 52.0s
+   ResNet-18 · tam ince ayar → SAHTE ✓ skor 0.999 F1bbox — F1piks — kapsama —
+   U-Net · bbox-GT (s42) → SAHTE ✓ skor 0.93 F1bbox 0.961 F1piks 0.736 kapsama 0.984
+   U-Net · piksel-GT (s42) → SAHTE ✓ skor 0.759 F1bbox 0.91 F1piks 0.759 kapsama 0.929
+   U-Net · glif-GT (s42) → SAHTE ✓ skor 0.657 F1bbox 0.734 F1piks 0.507 kapsama 0.698
+   YOLO11s · kutu tespiti, kare 1024 (Faz 3, s42) → SAHTE ✓ skor 0.811 F1bbox 0.994 F1piks 0.712 kapsama 1.0
+   DeepLabV3+ · bbox-GT (Faz 3, s42) → SAHTE ✓ skor 0.863 F1bbox 0.947 F1piks 0.717 kapsama 0.902
+
+[Authentic eş (negatif kontrol)] 48.9s
+   ResNet-18 · tam ince ayar → GERÇEK ✓ skor 0.364 F1bbox — F1piks — kapsama —
+   U-Net · bbox-GT (s42) → GERÇEK ✓ skor 0.0 F1bbox — F1piks — kapsama 0.0
+   U-Net · piksel-GT (s42) → GERÇEK ✓ skor 0.0 F1bbox — F1piks — kapsama 0.0
+   U-Net · glif-GT (s42) → GERÇEK ✓ skor 0.0 F1bbox — F1piks — kapsama 0.0
+   YOLO11s · kutu tespiti, kare 1024 (Faz 3, s42) → GERÇEK ✓ skor 0.072 F1bbox — F1piks — kapsama 0.0
+   DeepLabV3+ · bbox-GT (Faz 3, s42) → GERÇEK ✓ skor 0.146 F1bbox — F1piks — kapsama 0.0
+
+[Sahte, yeşil işaretçi onarılmış] 49.6s
+   ResNet-18 · tam ince ayar → GERÇEK ✗ skor 0.387 F1bbox — F1piks — kapsama —
+   U-Net · bbox-GT (s42) → GERÇEK ✗ skor 0.0 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+   U-Net · piksel-GT (s42) → GERÇEK ✗ skor 0.0 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+   U-Net · glif-GT (s42) → GERÇEK ✗ skor 0.005 F1bbox 0.021 F1piks 0.0 kapsama 0.011
+   YOLO11s · kutu tespiti, kare 1024 (Faz 3, s42) → GERÇEK ✗ skor 0.073 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+   DeepLabV3+ · bbox-GT (Faz 3, s42) → GERÇEK ✗ skor 0.246 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+
+[Authentic + yalnız yeşil işaretçi (kısayol testi)] 49.7s
+   ResNet-18 · tam ince ayar → SAHTE ✗ skor 0.999 F1bbox — F1piks — kapsama —
+   U-Net · bbox-GT (s42) → SAHTE ✗ skor 0.931 F1bbox — F1piks — kapsama 0.979
+   U-Net · piksel-GT (s42) → SAHTE ✗ skor 0.609 F1bbox — F1piks — kapsama 0.826
+   U-Net · glif-GT (s42) → SAHTE ✗ skor 0.627 F1bbox — F1piks — kapsama 0.669
+   YOLO11s · kutu tespiti, kare 1024 (Faz 3, s42) → SAHTE ✗ skor 0.722 F1bbox — F1piks — kapsama 0.917
+   DeepLabV3+ · bbox-GT (Faz 3, s42) → SAHTE ✗ skor 0.827 F1bbox — F1piks — kapsama 0.868
+
+[Yalnız yeniden-render (karakterler geri alınmış · Faz 3 sondası)] 49.8s
+   ResNet-18 · tam ince ayar → GERÇEK ✓ skor 0.377 F1bbox — F1piks — kapsama —
+   U-Net · bbox-GT (s42) → GERÇEK ✓ skor 0.0 F1bbox — F1piks — kapsama 0.0
+   U-Net · piksel-GT (s42) → GERÇEK ✓ skor 0.0 F1bbox — F1piks — kapsama 0.0
+   U-Net · glif-GT (s42) → GERÇEK ✓ skor 0.0 F1bbox — F1piks — kapsama 0.0
+   YOLO11s · kutu tespiti, kare 1024 (Faz 3, s42) → GERÇEK ✓ skor 0.072 F1bbox — F1piks — kapsama 0.0
+   DeepLabV3+ · bbox-GT (Faz 3, s42) → GERÇEK ✓ skor 0.146 F1bbox — F1piks — kapsama 0.0
+
+[Yalnız içerik (render ve işaretçi yok · Faz 3 sondası)] 49.1s
+   ResNet-18 · tam ince ayar → GERÇEK ✗ skor 0.375 F1bbox — F1piks — kapsama —
+   U-Net · bbox-GT (s42) → GERÇEK ✗ skor 0.0 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+   U-Net · piksel-GT (s42) → GERÇEK ✗ skor 0.0 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+   U-Net · glif-GT (s42) → GERÇEK ✗ skor 0.002 F1bbox 0.002 F1piks 0.0 kapsama 0.001
+   YOLO11s · kutu tespiti, kare 1024 (Faz 3, s42) → GERÇEK ✗ skor 0.07 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+   DeepLabV3+ · bbox-GT (Faz 3, s42) → GERÇEK ✗ skor 0.184 F1bbox 0.0 F1piks 0.0 kapsama 0.0
+
+[toplu test] 93.8s
+### Tamamlandı — 24 örnek, 89 s (ZeroGPU)
+Referans (rapor, resmî test 812 görüntü, 3 tohum): bbox-GT modeli F1@τ* 0,846 · AUPRC 0,950; aynı tahminler piksel-GT ile F1 ≈ 0,45. Küçük örneklemde değerler örnekleme hatası içerir; 'Ref' sütunları aynı görüntülerde boru hattının kayıtlı sonuçlarıdır.
+   {'Model': 'ResNet-18 · tam ince ayar', 'n sahte': 24, 'n authentic': 24, 'F1 bbox-GT': '—', 'IoU bbox-GT': '—', 'AP bbox-GT': '—', 'F1 piksel-GT': '—', 'AP piksel-GT': '—', 'Tespit TPR': 1.0, 'Yanlış alarm FPR': 0.375, 'Doğruluk': 0.812, 'Görüntü AUROC': 0.99, 'Yeniden üretim n': 0, '|ΔF1@0.5| ort.': '—', '|ΔAP| ort.': '—'}
+   {'Model': 'U-Net · bbox-GT (s42)', 'n sahte': 24, 'n authentic': 24, 'F1 bbox-GT': 0.925, 'IoU bbox-GT': 0.871, 'AP bbox-GT': 0.964, 'F1 piksel-GT': 0.528, 'AP piksel-GT': 0.41, 'Tespit TPR': 1.0, 'Yanlış alarm FPR': 0.042, 'Doğruluk': 0.979, 'Görüntü AUROC': 0.988, 'Yeniden üretim n': 24, '|ΔF1@0.5| ort.': 0.0, '|ΔAP| ort.': 0.0}
+   {'Model': 'U-Net · piksel-GT (s42)', 'n sahte': 24, 'n authentic': 24, 'F1 bbox-GT': 0.739, 'IoU bbox-GT': 0.602, 'AP bbox-GT': 0.73, 'F1 piksel-GT': 0.635, 'AP piksel-GT': 0.609, 'Tespit TPR': 1.0, 'Yanlış alarm FPR': 0.083, 'Doğruluk': 0.958, 'Görüntü AUROC': 1.0, 'Yeniden üretim n': 24, '|ΔF1@0.5| ort.': 0.0, '|ΔAP| ort.': 0.0}
+   {'Model': 'YOLO11s · kutu tespiti, kare 1024 (Faz 3, s42)', 'n sahte': 24, 'n authentic': 24, 'F1 bbox-GT': 0.948, 'IoU bbox-GT': 0.91, 'AP bbox-GT': 0.939, 'F1 piksel-GT': 0.534, 'AP piksel-GT': 0.394, 'Tespit TPR': 1.0, 'Yanlış alarm FPR': 0.042, 'Doğruluk': 0.979, 'Görüntü AUROC': 1.0, 'Yeniden üretim n': 0, '|ΔF1@0.5| ort.': '—', '|ΔAP| ort.': '—'}
+
+yazıldı: reports\canli_test_v3deploy.json (401.5 s)

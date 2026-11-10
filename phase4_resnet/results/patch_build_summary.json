@@ -1,0 +1,35 @@
+{
+ "train": {
+  "n_images": 2748,
+  "n_patches": 10795,
+  "by_type": {
+   "tampered": 5496,
+   "clean_paired": 2748,
+   "clean_same": 2551
+  },
+  "n_images_with_repair": 2126,
+  "n_patches_changed_by_repair": 3867,
+  "changed_by_type": {
+   "tampered": 3865,
+   "clean_same": 2
+  },
+  "gib": 1.98,
+  "sec": 63.2
+ },
+ "val": {
+  "n_images": 487,
+  "n_patches": 1431,
+  "by_type": {
+   "tampered": 487,
+   "clean_paired": 487,
+   "clean_same": 457
+  },
+  "n_images_with_repair": 380,
+  "n_patches_changed_by_repair": 336,
+  "changed_by_type": {
+   "tampered": 336
+  },
+  "gib": 0.26,
+  "sec": 10.8
+ }
+}
