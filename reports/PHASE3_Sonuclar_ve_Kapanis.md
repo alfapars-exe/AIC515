@@ -19,7 +19,7 @@
 | PHASE3-d bölge görünümü | ✅ Kapandı | Render-only/content-only ayrıştırması; standart modeller ikisinin birlikteliğine (ve işaretçiye) tepki veriyor; işaretçisiz eğitim içeriğe kaydırıyor | T3 |
 | PHASE3-e kutu formülasyonu (YOLO) | ✅ Kapandı | Bkz. §2 | T2, T5 |
 | §6.4 "test edilmedi" ön işleme | ✅ Kapandı | Gri seviye tüm modellerde AUPRC −47…−67 % (en zararlı; YOLO −59 %); CLAHE ≤ ±3 % | T3, T6 |
-| Veri bias analizi | ✅ Kapandı | İşaretçi × üretici Cramér's V 0.61; split χ² p ≥ 0.31 | `dataset_curation.md` |
+| Veri bias analizi | ✅ Kapandı | İşaretçi × üretici Cramér's V 0.61; split χ² p ≥ 0.30 | `dataset_curation.md` |
 | W1 100 çift insan GT doğrulaması | ❌ Yapılamadı | İnsan emeği gerektirir; `phase2/gt/verification_sheet.csv` hazır (~45 dk) | — |
 | W7 TruFor ince ayar | ❌ Yapılamadı | Yayımlanan kodda eğitim betiği yok (README "TODO"); mimari bağımsızlık DeepLabV3+ ve YOLO ile gösterildi | — |
 | AIForge-Doc v2 harici test | ⏸ Kullanıcı erişimine bağlı | Repo `Scam-AI/AIForge-Doc-v2`, kapılı; token gated-repo izni gerekli | — |
@@ -30,7 +30,7 @@
 |---|---|---|---|
 | H5a kutu dedektörü box-GT'de U-Net'e eşit/üstün, ≥3× hızlı | AP50 ≥ 0.90; ±0.03 | Test box AUPRC 0.969±0.006 (U-Net 0.950), F1@τ* 0.946 (0.846), IoU 0.918 (0.789); AP50 0.880 (U-Net 0.873, s42/43). **Hız:** 98 ms vs U-Net 81 ms | **Doğruluk kısmı desteklendi; hız kısmı reddedildi** |
 | H5b piksel-GT'de belirgin düşük | pix AUPRC ≈ 0.35–0.45 | val 0.368±0.015 (U-Net box 0.374; U-Net pix 0.610) | **Desteklendi** (H1'in model-bağımsız teyidi) |
-| H5c küçük hedeflerde kare ≫ tam 1280 | <1 % alanda ΔAP ≥ 0.10 | Kare: AUPRC 0.969 vs 0.932, işaretçisiz AP 0.878 vs 0.756; **ama** kutu AP50 0.880 vs 0.960 (<1 %: 0.872 vs 0.933) — kareler arası kesik kutular NMS ile birleşmiyor | **Karışık** |
+| H5c küçük hedeflerde kare ≫ tam 1280 | <1 % alanda ΔAP ≥ 0.10 | Kare: AUPRC 0.969 vs 0.932, işaretçisiz AP 0.878 vs 0.756; **ama** kutu AP50 0.880 vs 0.960 (<1 %: 0.872 vs 0.933) — olası neden kare sınırında bölünen kutular (karesiz model de ~5 kutu/görüntü ürettiği için mekanizma kesin değil) | **Karışık** |
 | H5d held-out açığı YOLO'da daha küçük | ≤ 0.51 | Gemini-only YOLO Ideogram 0.752 vs Gemini 0.938 (açık 0.19; U-Net 0.50) — tek tohum | **Desteklendi (öncül)** |
 | H5e muhafazakâr aug ≥ varsayılan | conserv ≥ default | 0.969 vs 0.971 test AUPRC; AP50 0.882 vs 0.864 | **Desteklenmedi** (fark yok) |
 

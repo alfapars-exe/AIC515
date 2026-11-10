@@ -117,7 +117,7 @@ Ağırlıklar ve tahmin haritaları repoda yoktur (boyut/lisans); yukarıdaki ko
 | PHASE3-e kutu formülasyonu | YOLO11 n/s/m, kareli 1024 vs tam 1280, aug, authentic negatif | `phase3_yolo/` |
 | §6.4 "test edilmedi" (CLAHE, gri) | Test-zamanı koşulları tüm modellerde | `phase3/p3ext.py` |
 | W6 Faz 1 AUPRC şişkin | Kesin AUPRC: 0.947 → **0.805** (rgb), 0.939 → **0.792** (rgbfreq) | `phase3/phase1_exact_auprc.py` |
-| Veri bias analizi | işaretçi × üretici Cramér's V 0.61; split χ² p ≥ 0.31 | `phase3/dataset_curation.py` |
+| Veri bias analizi | işaretçi × üretici Cramér's V 0.61; split χ² p ≥ 0.30 | `phase3/dataset_curation.py` |
 | Literatür | 77 doğrulanmış kaynak (38 yeni) | `literature/references_v3.bib`, `lit_update_phase3.md` |
 | W1 insan GT doğrulaması | **Yapılamadı** — insan emeği gerektirir; `phase2/gt/verification_sheet.csv` hazır | — |
 | W7 TruFor ince ayar | **Yapılamadı** — yayımlanan kodda eğitim betiği yok; mimari bağımsızlık DeepLabV3+/YOLO ile | — |
