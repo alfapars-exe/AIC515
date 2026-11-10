@@ -32,16 +32,18 @@ def table(x):
     return x
 
 
-UNETS = ["PHASE2/unet_bbox_s42", "PHASE2/unet_pixel_eps8_morph_s42", "PHASE2/unet_glyph_v2_s42"]
+UNETS = ["PHASE2/unet_bbox_s42", "PHASE2/unet_pixel_eps8_morph_s42", "PHASE2/unet_glyph_v2_s42",
+         "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42", "PHASE2/dlv3p_bbox_s42"]  # Faz 3: YOLO11 + DeepLabV3+
 RES = ["PHASE1/resnet18_ft_best"]
 INPUTS = ["Sahte belge (forged)", "Authentic eş (negatif kontrol)", "Sahte, yeşil işaretçi onarılmış",
-          "Authentic + yalnız yeşil işaretçi (kısayol testi)"]
+          "Authentic + yalnız yeşil işaretçi (kısayol testi)",
+          "Yalnız yeniden-render (karakterler geri alınmış · Faz 3 sondası)", "Yalnız içerik (render ve işaretçi yok · Faz 3 sondası)"]
 
 # 1) rastgele eşli + işaretçili test örneği seç
 dd, cnt = c.predict("test (testing)", "hepsi", "hepsi", "hepsi", True, "var", 12, api_name="/sim_random")
 key = dd["value"] if isinstance(dd, dict) else dd
 print("seçilen örnek:", key, "·", cnt)
-# 2) dört senaryo
+# 2) altı senaryo (4 + Faz 3 bölge-görünümü sondaları)
 for inp in INPUTS:
     t = time.time()
     res = c.predict(key, inp, "Yok (ham PNG)", False, UNETS, RES, 112, api_name="/simulate")  # gr.State girdileri API'de yoktur
@@ -54,7 +56,7 @@ for inp in INPUTS:
 # 3) toplu test (dengeli)
 t = time.time()
 prog, per, agg, fig, files = c.predict("test (testing)", "hepsi", "hepsi", "hepsi", "hepsi", a.n, 42, "Sahte + authentic eşi (dengeli tespit)",
-                                      "Yok (ham PNG)", UNETS[:2], RES, 12, api_name="/batch_test")
+                                      "Yok (ham PNG)", UNETS[:2] + UNETS[3:4], RES, 12, api_name="/batch_test")
 OUT["toplu"] = dict(n=a.n, sure_s=round(time.time() - t, 1), ilerleme=prog, ozet=table(agg), ornekler=table(per))
 print(f"\n[toplu test] {time.time() - t:.1f}s\n{prog}")
 for r in table(agg):

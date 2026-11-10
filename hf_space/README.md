@@ -9,7 +9,7 @@ python_version: "3.12"
 app_file: app.py
 pinned: false
 license: cc-by-nc-sa-4.0
-short_description: AI belge sahteciligi lokalizasyonu (U-Net, ResNet-18)
+short_description: AI belge sahteciligi lokalizasyonu (U-Net, DLV3+, YOLO11)
 ---
 
 # AIC515 Görüntü İşleme · AIForge-Doc — Belge Sahteciliği Tespiti ve Lokalizasyonu
@@ -20,7 +20,7 @@ görüntülerinde sahteciliği **sınıflandırır** (ResNet-18) ve değiştiril
 **Sekmeler:** `0 · Simülasyon` (veri setinden örnek seç → GT analizi → yeşil işaretçi taraması → girdi senaryosu ve bozulma →
 ResNet-18 + U-Net'ler → bbox ve piksel-değişim GT'siyle metrikler, görüntü-düzeyi karar, yakın plan, indirilebilir rapor) ·
 `1 · Toplu test` (N örnekte aynı hat; TPR/FPR/AUROC, boru hattının kayıtlı sonuçlarıyla yeniden-üretim farkı) ·
-`2–7` girdi, 61 ön işleme işlemi (aşamalı pipeline), U-Net, ResNet-18, yeşil işaretçi, sonuçlar · `8 · XAI Analysis` › SHAP Analysis (tahmin → SHAP Partition/Gradient, authentic/blur/inpaint referansı → tespit bölgesi bazında açıklama, bölge kütlesi, modeller arası IoU/Spearman karşılaştırması, PNG/JSON/NPZ/MD dışa aktarım; ayrıntı `docs/XAI.md`) ve › Filter Visualization / Katman Filtreleri (SHAP'tan bağımsız: ilk conv katmanlarının checkpoint'teki gerçek kernel'leri, görüntüye uygulanmış aktivasyon haritaları conv/BN/aktivasyon, filtre↔harita çiftleri, orijinalle karşılaştırma; U-Net, DeepLabV3+, ResNet-18, YOLO11; ayrıntı `docs/XAI_FILTERS.md`).
+`2–7` girdi, 61 ön işleme işlemi (aşamalı pipeline), U-Net, ResNet-18, yeşil işaretçi, sonuçlar · `8 · XAI Analysis` › SHAP Analysis (tahmin → **tam görüntü SHAP** — orijinal görüntünün tamamı, tek hedef ve tek referans, E[f]+ΣSHAP=f(x) doğrulamalı; döşemeli yerel mozaik ve pencere hedefleri ayrı; büyük yakınlaştırılabilir paneller, orijinal↔bindirme kaydırıcısı, katkı dağılımı, 300 dpi PNG/PDF — Partition/Gradient, authentic/blur/inpaint referansı → tespit bölgesi bazında açıklama, bölge kütlesi, modeller arası IoU/Spearman karşılaştırması, PNG/JSON/NPZ/MD dışa aktarım; ayrıntı `docs/XAI.md`) ve › Filter Visualization / Katman Filtreleri (SHAP'tan bağımsız: ilk conv katmanlarının checkpoint'teki gerçek kernel'leri, görüntüye uygulanmış tam görüntü natif çözünürlükte döşemeli aktivasyon haritaları conv/BN/aktivasyon, filtre↔harita çiftleri, orijinalle karşılaştırma; U-Net, DeepLabV3+, ResNet-18, YOLO11; ayrıntı `docs/XAI_FILTERS.md`).
 
 Donanım: **ZeroGPU** (NVIDIA RTX Pro 6000 Blackwell, istek başına; `@spaces.GPU`).
 
@@ -32,10 +32,17 @@ Storage Bucket** olarak bağlanır (`AI515_DATA_ROOT`, varsayılan `/data`); buc
 /data/data/AIForge-Doc-v1/{TrainingSet,TestingSet}/{images,masks,authentic}
 /data/models/*.pt            # PHASE 1: unet_rgb, unet_rgbfreq, resnet18_{ft,probe,scratch}
 /data/models/phase2/*.pt     # PHASE 2: unet_{bbox,pixel_eps8_morph,glyph_v2}_s{42,43,44} (+ geminionly)
+/data/models/phase2/*.pt     # PHASE 3: dlv3p_*_s42 (DeepLabV3+), unetjoint_*_s42 (kutu yardımcı kaybı), *_mr_s42 (işaretçisiz eğitim)
+/data/models/phase3_yolo/*.pt # PHASE 3: YOLO11 n/s/m kutu dedektörleri (kare 1024, tam görüntü 1280, yalnız Gemini)
 /data/dataset_audit/samples_forged.csv, splits.json
 ```
 Bucket bağlı değilse arayüz yine çalışır: kendi görüntünüzü yükleyebilirsiniz; model sekmeleri checkpoint bulunamadığında uyarı verir.
 Ham veri seti lisans gereği yeniden dağıtılmaz; bucket özel tutulmalıdır.
+
+## Faz 3 (YOLO11 ve sondalar)
+Lokalizasyon listelerinde U-Net'lerin yanında **DeepLabV3+**, **kutu yardımcı kayıplı U-Net**, **işaretçisiz eğitilmiş U-Net** ve **YOLO11 kutu dedektörleri** yer alır. YOLO çıktısı (1024 kare / 768 adım, kareler arası NMS) her kutunun güveniyle bir olasılık haritasına boyanır; böylece U-Net ile **aynı** metrikler, τ* eşikleri ve görüntü-düzeyi karar kullanılır (bildiri §IV-C). Simülasyona iki bölge-görünümü sondası (*yalnız yeniden-render*, *yalnız içerik*) ve iki bozulma (CLAHE, gri seviye) eklendi; `6 · Sonuçlar` sekmesi Faz 3 tablolarını gösterir. XAI SHAP analizinde YOLO11 kutu dedektörleri **tam görüntü** hedefleriyle (kutu güveni) açıklanır; pencere hedefleri piksel/patch modelleriyle sınırlıdır.
+
+Lisans notu: YOLO11 çıkarımı **Ultralytics** (AGPL-3.0) kütüphanesini kullanır.
 
 ## Ana bulgular (bkz. proje raporu)
 - Resmî test (812), 3 tohum, bbox-GT ile eğitilen U-Net: AUPRC 0.950 ± 0.011, F1@τ* 0.846 ± 0.015 (zero-shot TruFor F1 0.403).

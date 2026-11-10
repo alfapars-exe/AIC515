@@ -76,7 +76,7 @@ for inp in A.INPUT_TYPES:
     out, _ = run_sim(kp, inp=inp, res=[])
     df = out[2]
     scen[inp] = df
-    lab = "SAHTE" if inp in (A.INPUT_TYPES[0], A.INPUT_TYPES[2]) else "GERÇEK"
+    lab = "SAHTE" if inp in (A.INPUT_TYPES[0], A.INPUT_TYPES[2]) + tuple(A.INPUT_TYPES[5:6]) else "GERÇEK"  # Faz 3: yalnız-içerik = sahte
     check(f"Gerçek etiket: **{lab}**" in out[3], f"senaryo etiketi {inp}")
     print(" ", inp, "→", [(r["Model"][:20], r["Karar"], r["Görüntü skoru"], r["Kutu kapsama"]) for _, r in df.iterrows()])
 sb = lambda inp: float(scen[inp].iloc[0]["Görüntü skoru"])

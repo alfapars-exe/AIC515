@@ -55,10 +55,12 @@ def _pick(app, family, in_ch=None):
 # ------------------------------------------------------------------ kayıt
 def test_registry(app):
     specs = app.XAI_SPECS
+    # pencere adaptörleri: segmentasyon + ResNet; YOLO11 kutu dedektörleri yalnız tam görüntü hedefleriyle (xai/fullimage.py)
     assert len(specs) == len(app.list_unet_ckpts()) + len(app.list_resnet_ckpts())
     assert all(sp.status == "OK" for n, sp in specs.items() if n in app._REG)
     fams = {sp.family for sp in specs.values()}
-    assert fams <= {"unet", "resnet"}
+    assert fams <= {"unet", "resnet", "yolo"}
+    assert all(sp.family == "yolo" for n, sp in specs.items() if n.startswith("YOLO/"))
     unsup = {sp.name: sp.status for sp in app.XAI.UNSUPPORTED_MODELS}
     assert unsup["CLASSICAL/svm_rbf"] == "UNSUPPORTED" and unsup["CLASSICAL/random_forest"] == "UNSUPPORTED"
     rows = app.XAI.registry.inventory_rows(specs)

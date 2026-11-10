@@ -75,6 +75,7 @@ def main():
     ap.add_argument("--skip-models", action="store_true")
     ap.add_argument("--no-test-set", action="store_true", help="TestingSet'i yükleme")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--message", default="AIC515 app: aşamalı ön işleme + U-Net/ResNet arayüzü", help="Space commit mesajı")
     ap.add_argument("--public-space", action="store_true", help="Space'i herkese açık yap (varsayılan: mevcut ayar)")
     ap.add_argument("--hardware", default="zero-a10g", help="Space donanımı (ZeroGPU: zero-a10g; CPU: cpu-basic)")
     args = ap.parse_args()
@@ -118,7 +119,7 @@ def main():
                         private=None if not args.public_space else False)
         api.upload_folder(repo_id=args.space, repo_type="space", folder_path=str(SPACE_DIR), path_in_repo=".",
                           ignore_patterns=["_sample/*", "__pycache__/*", "*.pyc", "*.log", "deploy_hf.py", "space_logs.py", "space_status.py", "live_test.py"],
-                          commit_message="AIC515 app: aşamalı ön işleme + U-Net/ResNet arayüzü")
+                          commit_message=args.message)
         # ---------- 3) volume + değişken
         api.set_space_volumes(args.space, [Volume(type="bucket", source=args.bucket, mount_path=args.mount, read_only=True)])
         api.add_space_variable(args.space, "AI515_DATA_ROOT", args.mount, description="bucket mount kökü (data/, models/, dataset_audit/)")

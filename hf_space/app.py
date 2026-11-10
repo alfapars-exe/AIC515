@@ -20,7 +20,7 @@ Sekmeler
   Hugging Face Space :  ZeroGPU (@spaces.GPU); veri/modeller özel bucket'tan AI515_DATA_ROOT (/data) altına bağlanır.
 """
 from __future__ import annotations
-import os, sys, io, json, time, math, glob, random, tempfile, datetime
+import os, sys, io, re, json, time, math, glob, random, tempfile, datetime
 from pathlib import Path
 
 os.environ.setdefault("USERNAME", "user")  # torch inductor getpass sorunu (ENV_SETUP.md)
@@ -227,6 +227,7 @@ def green_marker_mask(rgb_u8: np.ndarray) -> np.ndarray:
 
 # ------------------------------------------------------------------ piksel-değişim GT türetimi (phase2/gt/make_gt.py: pixel_eps8_morph)
 K3 = np.ones((3, 3), np.uint8)
+KX = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))  # Faz 3 sondaları (scipy.ndimage varsayılan yapı elemanı)
 
 
 def derive_pixel_gt(forged_rgb: np.ndarray, auth_rgb: np.ndarray, eps: int = 8):
@@ -860,10 +861,24 @@ _REG: dict = {}          # ad → (model, in_ch, tür)
 _LOAD_ERR: dict = {}
 
 
+# [FAZ3] model kaydı: PHASE2/ (Faz 2 + Faz 3 segmentasyon), PHASE1/, YOLO/ (Faz 3 kutu dedektörleri)
+_HIDE = re.compile(r"(_e20$|geminionly_s4[34]$)")  # 20 epoch ve ek held-out tohumları arayüzde gösterilmez
+
+
 def list_unet_ckpts():
-    out = [f"PHASE2/{Path(p).stem}" for p in sorted(glob.glob(str(MODELS / "phase2" / "unet_*.pt")))]
+    ph2 = []
+    for pat in ("unet_*.pt", "dlv3p_*.pt", "unetjoint_*.pt"):
+        ph2 += sorted(glob.glob(str(MODELS / "phase2" / pat)))
+    out = [f"PHASE2/{Path(p).stem}" for p in ph2 if not _HIDE.search(Path(p).stem)]
     out += [f"PHASE1/{Path(p).stem}" for p in sorted(glob.glob(str(MODELS / "unet_*.pt")))]
+    out += [f"YOLO/{Path(p).stem}" for p in sorted(glob.glob(str(MODELS / "phase3_yolo" / "aiforge-*.pt")))
+            if not re.search(r"(_stem$|-s4[34]$)", Path(p).stem)]  # tohum tekrarları (s43/s44) ve katman dökümleri gizli
     return out
+
+
+def list_seg_ckpts():
+    """Piksel segmentasyon modelleri (XAI adaptörleri için; YOLO hariç)."""
+    return [n for n in list_unet_ckpts() if not n.startswith("YOLO/")]
 
 
 def list_resnet_ckpts():
@@ -874,6 +889,8 @@ def list_resnet_ckpts():
 
 def ckpt_path(name: str) -> Path:
     phase, stem = name.split("/", 1)
+    if phase == "YOLO":
+        return MODELS / "phase3_yolo" / f"{stem}.pt"
     return (MODELS / f"{stem}.pt") if phase == "PHASE1" else (MODELS / "phase2" / f"{stem}.pt")
 
 
@@ -881,6 +898,23 @@ def friendly(name: str) -> str:
     stem = name.split("/", 1)[-1]
     seed = stem.rsplit("_s", 1)[-1] if "_s4" in stem else ""
     gem = " · yalnız Gemini" if "geminionly" in stem else ""
+    if name.startswith("YOLO/"):
+        m = re.match(r"aiforge-(?P<d>[a-z_]+)-yolo11(?P<a>[nsm])-img(?P<i>\d+)-(?P<g>[a-z]+)-s(?P<s>\d+)", stem)
+        if not m:
+            return f"YOLO11 · {stem}"
+        d = m.group("d")
+        how = ("tam görüntü 1280" if d == "full" else "kare 1024") + (" · yalnız Gemini" if "geminionly" in d else "") + \
+              (" · +authentic kare" if "authneg" in d else "") + (" · varsayılan aug" if m.group("g") == "default" else "")
+        return f"YOLO11{m.group('a')} · kutu tespiti, {how} (Faz 3, s{m.group('s')})"
+    if stem.startswith("dlv3p_"):
+        g = "bbox-GT" if "bbox" in stem else ("piksel-GT" if "pixel" in stem else "glif-GT")
+        return f"DeepLabV3+ · {g} (Faz 3, s{seed})"
+    if stem.startswith("unetjoint_"):
+        g = "piksel-GT" if "pixel" in stem else "glif-GT"
+        return f"U-Net · {g} + kutu yardımcı kaybı (Faz 3, s{seed})"
+    if "_mr_" in stem:
+        g = "bbox-GT" if "bbox" in stem else ("piksel-GT" if "pixel" in stem else "glif-GT")
+        return f"U-Net · {g} · işaretçisiz eğitim (Faz 3, s{seed})"
     if stem.startswith("unet_bbox"):
         return f"U-Net · bbox-GT{gem} (s{seed})"
     if stem.startswith("unet_pixel"):
@@ -904,8 +938,20 @@ def _build_unet(name):
     if any(k.startswith("net.") for k in sd):  # PHASE1 UNetWrapper
         sd = {k[4:]: v for k, v in sd.items() if k.startswith("net.")}
     in_ch = int(sd["encoder.conv1.weight"].shape[1])
-    m = smp.Unet(encoder_name="resnet18", encoder_weights=None, in_channels=in_ch, classes=1)
+    stem = name.split("/", 1)[-1]
+    if stem.startswith("dlv3p_"):  # Faz 3: ikinci mimari
+        m = smp.DeepLabV3Plus(encoder_name="resnet18", encoder_weights=None, in_channels=in_ch, classes=1)
+    elif stem.startswith("unetjoint_"):  # Faz 3: kanal 0 = piksel/glif maske, kanal 1 = kutu yardımcı (çıkarımda kanal 0)
+        m = smp.Unet(encoder_name="resnet18", encoder_weights=None, in_channels=in_ch, classes=2)
+    else:
+        m = smp.Unet(encoder_name="resnet18", encoder_weights=None, in_channels=in_ch, classes=1)
     m.load_state_dict(sd)
+    if stem.startswith("unetjoint_"):  # kutu yardımcı başını at: yalnız kanal 0 (birebir aynı çıktı, tek kanal → XAI/çıkarım uyumlu)
+        c = m.segmentation_head[0]
+        h = nn.Conv2d(c.in_channels, 1, c.kernel_size, padding=c.padding)
+        with torch.no_grad():
+            h.weight.copy_(c.weight[:1]); h.bias.copy_(c.bias[:1])
+        m.segmentation_head[0] = h
     return m.to(DEVICE).eval(), in_ch
 
 
@@ -916,9 +962,20 @@ def _build_resnet(name):
     return m.to(DEVICE).eval()
 
 
+def _build_yolo(name):
+    os.environ.setdefault("YOLO_CONFIG_DIR", str(Path(tempfile.gettempdir()) / "Ultralytics"))
+    from ultralytics import YOLO  # yalnız YOLO seçildiğinde gerekir
+    m = YOLO(str(ckpt_path(name)))
+    if DEVICE is not None:
+        m.to(DEVICE)
+    return m
+
+
 def get_model(name):
     if name not in _REG:
-        if "resnet18" in name:
+        if name.startswith("YOLO/"):
+            _REG[name] = (_build_yolo(name), 3, "yolo")
+        elif "resnet18" in name:
             _REG[name] = (_build_resnet(name), 3, "resnet")
         else:
             m, c = _build_unet(name)
@@ -986,8 +1043,53 @@ def _unet_window_forward(model, in_ch, xb, amp=True):
     return torch.sigmoid(model(xb.float()).float())[:, 0]
 
 
+def _predict_yolo(name, rgb_u8, tile=1024, stride=768, conf=0.001, iou=0.6, batch=8):
+    """phase3_yolo/infer_to_maps.py protokolü: natif çözünürlükte 1024 kare / 768 adım (ya da '-full-' modelde tam görüntü 1280),
+    kareler arası NMS; her kutu güveniyle haritaya boyanır (örtüşmede maksimum) → U-Net ile aynı metrikler."""
+    from torchvision.ops import nms
+    model, _, _ = get_model(name)
+    stem = name.split("/", 1)[-1]
+    H0, W0 = rgb_u8.shape[:2]
+    t0 = time.time()
+    dev = 0 if (DEVICE is not None and DEVICE.type == "cuda") else "cpu"
+    kw = dict(conf=conf, iou=iou, verbose=False, device=dev, half=(dev != "cpu"))
+    bgr = cv2.cvtColor(rgb_u8, cv2.COLOR_RGB2BGR)
+    if "-full-" in stem:
+        r = model.predict(bgr, imgsz=1280, **kw)[0]
+        b = r.boxes.xyxy.float().cpu().numpy(); c = r.boxes.conf.float().cpu().numpy(); nw = 1
+    else:
+        ph, pw = max(0, tile - H0), max(0, tile - W0)
+        img = cv2.copyMakeBorder(bgr, 0, ph, 0, pw, cv2.BORDER_REPLICATE) if (ph or pw) else bgr
+        H, W = img.shape[:2]
+        wins = _windows(H, W, tile, stride); nw = len(wins)
+        bl, cl = [], []
+        for i in range(0, len(wins), batch):
+            chunk = wins[i:i + batch]
+            outs = model.predict([np.ascontiguousarray(img[y:y + tile, x:x + tile]) for (y, x) in chunk], imgsz=tile, **kw)
+            for (y, x), r in zip(chunk, outs):
+                bb = r.boxes.xyxy.float().cpu().numpy()
+                if len(bb):
+                    bl.append(bb + np.array([x, y, x, y], np.float32)); cl.append(r.boxes.conf.float().cpu().numpy())
+        if bl:
+            b = np.concatenate(bl); c = np.concatenate(cl)
+            keep = nms(torch.from_numpy(b), torch.from_numpy(c), iou).numpy(); b, c = b[keep], c[keep]
+        else:
+            b, c = np.zeros((0, 4), np.float32), np.zeros((0,), np.float32)
+    if len(b):
+        b[:, [0, 2]] = b[:, [0, 2]].clip(0, W0); b[:, [1, 3]] = b[:, [1, 3]].clip(0, H0)
+    p = np.zeros((H0, W0), np.float32)
+    for (x0, y0, x1, y1), s_ in sorted(zip(b.tolist(), c.tolist()), key=lambda t: t[1]):
+        ys_, xs_ = slice(int(y0), int(np.ceil(y1))), slice(int(x0), int(np.ceil(x1)))
+        p[ys_, xs_] = np.maximum(p[ys_, xs_], s_)
+    top = sorted(zip(c.tolist(), b.tolist()), reverse=True)[:10]
+    return p, dict(n_windows=nw, resized=0, sec=time.time() - t0, n_boxes=int(len(b)),
+                   boxes=[(round(s_, 3), [int(v) for v in bx]) for s_, bx in top])
+
+
 def _predict_unet(name, rgb_u8, win=512, stride=448, max_side=4096, batch=8):
     """infer_fullimage.py protokolü: 512 pencere, 448 adım, örtüşme ortalaması; uzun kenar > 4096 ise küçült → harita geri büyüt."""
+    if name.startswith("YOLO/"):
+        return _predict_yolo(name, rgb_u8)
     model, in_ch, _ = get_model(name)
     H0, W0 = rgb_u8.shape[:2]
     img, (h, w), _s = _unet_prepare(rgb_u8, win, max_side)
@@ -1201,9 +1303,11 @@ def image_threshold(model_name: str):
 
 # ================================================================== GİRDİ SENARYOLARI
 INPUT_TYPES = ["Sahte belge (forged)", "Authentic eş (negatif kontrol)", "Sahte, yeşil işaretçi onarılmış",
-               "Authentic + yalnız yeşil işaretçi (kısayol testi)"]
+               "Authentic + yalnız yeşil işaretçi (kısayol testi)",
+               "Yalnız yeniden-render (karakterler geri alınmış · Faz 3 sondası)",
+               "Yalnız içerik (render ve işaretçi yok · Faz 3 sondası)"]
 DEGRADATIONS = ["Yok (ham PNG)", "JPEG Q75", "JPEG Q50", "0.75× yeniden ölçekleme", "0.5× yeniden ölçekleme",
-                "Gauss bulanıklık σ=1", "Gauss gürültüsü σ=5"]
+                "Gauss bulanıklık σ=1", "Gauss gürültüsü σ=5", "CLAHE (L kanalı, Faz 3)", "Gri seviye (Faz 3)"]
 
 
 def degrade(img, kind):
@@ -1220,6 +1324,12 @@ def degrade(img, kind):
         return cv2.GaussianBlur(img, (0, 0), 1.0)
     if "gürültü" in kind:
         return clip_u8(img.astype(np.float32) + np.random.default_rng(0).normal(0, 5, img.shape))
+    if kind.startswith("CLAHE"):
+        lab = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
+        lab[..., 0] = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8)).apply(lab[..., 0])
+        return cv2.cvtColor(lab, cv2.COLOR_LAB2RGB)
+    if kind.startswith("Gri"):
+        return np.repeat(cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)[..., None], 3, axis=2)
     return img
 
 
@@ -1240,6 +1350,20 @@ def build_input(forged, auth, input_type):
     if input_type == INPUT_TYPES[1]:
         return auth, 0, "orijinal (değiştirilmemiş) belge"
     gm, rep, tra = marker_ops(forged, auth)
+    if input_type in INPUT_TYPES[4:6]:  # Faz 3 bölge-görünümü sondası (probes_p3.py tanımı; tek fark: işaretçi kalıntısı bbox halkasıyla sınırlanmaz)
+        r = derive_pixel_gt(forged, auth)
+        if r is None:
+            raise gr.Error("Bu senaryo aynı boyutta bir authentic eş gerektirir.")
+        pg = r[0]
+        if input_type == INPUT_TYPES[4]:
+            sel = cv2.dilate((pg | gm).astype(np.uint8), KX, iterations=2) > 0  # KX: 4-komşu haç = ndi.binary_dilation varsayılanı
+            out = forged.copy(); out[sel] = auth[sel]
+            return out, 0, (f"sahte belge; değişen karakterler ve işaretçi ({int(sel.sum())} px) authentic'e döndürüldü — "
+                            "yalnız üreticinin alanı yeniden çizme izi kalır, içerik değişmedi")
+        sel = (cv2.dilate((pg & ~gm).astype(np.uint8), KX, iterations=2) > 0) & ~gm
+        out = auth.copy(); out[sel] = forged[sel]
+        return out, 1, (f"orijinal belgeye yalnız değişen karakterler ({int(sel.sum())} px) yapıştırıldı — "
+                        "yeniden-render izi ve işaretçi yok, içerik sahte")
     if input_type == INPUT_TYPES[2]:
         return rep, 1, f"sahte belge, {int(gm.sum())} px işaretçi authentic'ten geri kopyalandı (içerik sahte kalır)"
     return tra, 0, f"orijinal belge + yalnız {int(gm.sum())} px yeşil işaretçi (hiçbir karakter değişmedi)"
@@ -1683,6 +1807,151 @@ def on_sample(key):
     return img, img, mask, auth, [], meta_md(meta, img, mask, auth) + "  \n" + _info_md(img, mask, auth), img, img, mask, auth
 
 
+
+# ------------------------------------------------------------------ 2 · Girdi › TASLAKLAR
+# Her taslak bir klasör: image.png · mask.png (ops.) · auth.png (ops.) · meta.json (ad, tarih, kaynak, pipeline adımları).
+# Konum: AI515_DRAFTS_DIR > yerelde <proje>/drafts > Space'te /data/drafts (yazılabilirse) > geçici klasör.
+def _drafts_dir() -> Path:
+    cands = [os.environ.get("AI515_DRAFTS_DIR")]
+    cands += [str(DATA_ROOT / "drafts"), str(Path(tempfile.gettempdir()) / "ai515_drafts")] if IN_SPACE else [str(ROOT / "drafts")]
+    for c in cands:
+        if not c:
+            continue
+        d = Path(c)
+        try:
+            d.mkdir(parents=True, exist_ok=True)
+            t = d / ".write_test"; t.write_text("ok"); t.unlink()
+            return d
+        except Exception:
+            continue
+    raise RuntimeError("Taslak klasörü oluşturulamadı.")
+
+
+DRAFTS = None
+_DRAFT_ID_RE = re.compile(r"^[A-Za-z0-9_\-]{1,80}$")
+
+
+def _drafts() -> Path:
+    global DRAFTS
+    if DRAFTS is None:
+        DRAFTS = _drafts_dir()
+    return DRAFTS
+
+
+def _slug(name: str) -> str:
+    tr = str.maketrans("çğıöşüÇĞİÖŞÜ ", "cgiosuCGIOSU_")
+    s = re.sub(r"[^A-Za-z0-9_\-]+", "", (name or "").translate(tr))[:40].strip("_-")
+    return s or "taslak"
+
+
+def _png_write(path: Path, arr: np.ndarray):
+    a = arr if arr.ndim == 2 else cv2.cvtColor(to_rgb(arr), cv2.COLOR_RGB2BGR)
+    ok, buf = cv2.imencode(".png", a)
+    if not ok:
+        raise gr.Error(f"PNG yazılamadı: {path.name}")
+    path.write_bytes(buf.tobytes())
+
+
+def _png_read(path: Path, gray=False):
+    if not path.exists():
+        return None
+    buf = np.frombuffer(path.read_bytes(), np.uint8)
+    a = cv2.imdecode(buf, cv2.IMREAD_GRAYSCALE if gray else cv2.IMREAD_COLOR)
+    return a if gray else cv2.cvtColor(a, cv2.COLOR_BGR2RGB)
+
+
+def draft_list():
+    """[(etiket, kimlik)] — en yeni önce."""
+    out = []
+    try:
+        root = _drafts()
+    except Exception:
+        return out
+    for d in root.iterdir():
+        mj = d / "meta.json"
+        if not (d.is_dir() and _DRAFT_ID_RE.match(d.name) and mj.exists()):
+            continue
+        try:
+            m = json.loads(mj.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        tags = [t for t, k in (("maske", "has_mask"), ("eş", "has_auth")) if m.get(k)]
+        n = len(m.get("steps") or [])
+        if n:
+            tags.append(f"{n} adım")
+        lbl = f"{m.get('name', d.name)} · {m.get('created', '')[:16].replace('T', ' ')} · {m.get('w')}×{m.get('h')}" + (f" · {', '.join(tags)}" if tags else "")
+        out.append((m.get("created", ""), lbl, d.name))
+    out.sort(reverse=True)
+    return [(lbl, i) for _, lbl, i in out]
+
+
+def _draft_dd(value=None):
+    ch = draft_list()
+    ids = [i for _, i in ch]
+    return gr.Dropdown(choices=ch, value=value if value in ids else (ids[0] if ids else None))
+
+
+def draft_save(name, orig, mask, auth, steps, up_img, up_mask, up_auth, sample_key):
+    """Girdi sekmesinde yüklü olanı (yoksa yükleme alanlarındakini) taslak olarak kaydeder."""
+    src = "yüklü girdi"
+    if orig is None:
+        if up_img is None:
+            raise gr.Error("Kaydedilecek görüntü yok: önce görüntü yükleyin ya da örnek seçin.")
+        orig, _, mask, auth, steps, *_ = on_upload(up_img, up_mask, up_auth)
+        src = "yükleme alanları"
+    did = f"{datetime.datetime.now():%Y%m%d_%H%M%S}_{_slug(name)}"
+    d, k = _drafts() / did, 1
+    while d.exists():
+        k += 1; d = _drafts() / f"{did}_{k}"
+    did = d.name
+    d.mkdir(parents=True)
+    _png_write(d / "image.png", orig)
+    if mask is not None:
+        _png_write(d / "mask.png", to_gray(mask))
+    if auth is not None:
+        _png_write(d / "auth.png", auth)
+    h, w = orig.shape[:2]
+    meta = dict(name=(name or "").strip() or did, created=datetime.datetime.now().isoformat(timespec="seconds"),
+                w=w, h=h, has_mask=mask is not None, has_auth=auth is not None,
+                sample_key=(sample_key or "").strip() or None, steps=list(steps or []), source=src)
+    (d / "meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2, default=float), encoding="utf-8")
+    msg = f"💾 Taslak kaydedildi: **{meta['name']}** ({w}×{h}" + (", maske" if meta["has_mask"] else "") + \
+          (", authentic eş" if meta["has_auth"] else "") + (f", {len(meta['steps'])} pipeline adımı" if meta["steps"] else "") + \
+          f") · kaynak: {src} · `{d}`"
+    return _draft_dd(did), msg
+
+
+def draft_load(did):
+    if not did or not _DRAFT_ID_RE.match(str(did)) or not (_drafts() / did / "meta.json").exists():
+        raise gr.Error("Geçerli bir taslak seçin.")
+    d = _drafts() / did
+    meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
+    img, mask, auth = _png_read(d / "image.png"), _png_read(d / "mask.png", gray=True), _png_read(d / "auth.png")
+    if img is None:
+        raise gr.Error("Taslağın görüntü dosyası eksik.")
+    steps = list(meta.get("steps") or [])
+    cur, note = img, ""
+    if steps:
+        try:
+            cur = replay(img, steps, auth)
+        except Exception as e:
+            steps, note = [], f"  \n⚠ Pipeline adımları yeniden uygulanamadı ({e}); orijinal görüntü yüklendi."
+    info = f"📂 **Taslak:** {meta.get('name', did)} · {meta.get('created', '')[:16].replace('T', ' ')}" + \
+           (f" · örnek `{meta['sample_key']}`" if meta.get("sample_key") else "") + "  \n" + _info_md(img, mask, auth) + note
+    status = f"📂 Yüklendi: **{meta.get('name', did)}**" + (f" ({len(steps)} pipeline adımı geri yüklendi)" if steps else "")
+    return (img, cur, mask, auth, steps, info, img, cur, mask, auth, steps_md(steps), img, mask, auth, status)
+
+
+def draft_delete(did):
+    if not did or not _DRAFT_ID_RE.match(str(did)):
+        raise gr.Error("Silinecek taslağı seçin.")
+    import shutil
+    d = _drafts() / did
+    if d.is_dir():
+        shutil.rmtree(d)
+    return _draft_dd(), f"🗑 Taslak silindi: `{did}`"
+
+
 def op_choices(cat):
     names = list(OPS[cat].keys())
     return gr.Dropdown(choices=names, value=names[0]), *param_updates(cat, names[0])
@@ -1890,6 +2159,9 @@ def run_green(cur, mask, auth):
 
 def results_markdown():
     parts = []
+    p3 = META / "phase3_tables.md"
+    if p3.exists():  # Faz 3: YOLO11, DeepLabV3+, işaretçisiz eğitim, sondalar (bildiri: paper/main.pdf)
+        parts.append(p3.read_text(encoding="utf-8") + "\n\n---\n")
     if RESULTS_MD.exists():
         parts.append("## Küçük-veri (smoke) baseline sonuçları\n")
         parts.append(RESULTS_MD.read_text(encoding="utf-8"))
@@ -1978,7 +2250,7 @@ def xai_setup():
                         windows=_windows, autocast=_autocast, device=DEVICE, unet_window_forward=_unet_window_forward,
                         unet_prepare=_unet_prepare, image_score=image_score, q_u8=q_u8, postprocess=postprocess,
                         default_tau=default_tau, image_threshold=image_threshold, friendly=friendly,
-                        list_unet=list_unet_ckpts, list_resnet=list_resnet_ckpts, green_marker_mask=green_marker_mask)
+                        list_unet=list_seg_ckpts, list_resnet=list_resnet_ckpts, green_marker_mask=green_marker_mask)
     XAI_SPECS = XAI.build_registry(XAI_DEPS, _REG)
     XAI_MGR = XAI.XAIManager(lambda: XAI_SPECS, gpu_explain)
 
@@ -2266,7 +2538,7 @@ footer {display:none !important}
 #aic-tip {position:fixed; z-index:10000; max-width:340px; padding:8px 11px; border-radius:6px; font-size:13px; line-height:1.45; background:#1f2937; color:#f9fafb; box-shadow:0 4px 14px rgba(0,0,0,.25); pointer-events:none; opacity:0; transition:opacity .12s; left:-9999px; top:0}
 #aic-tip.show {opacity:1}
 #aic-tip b {color:#fde68a}
-#tip-f_split [data-testid="block-info"]::after, #tip-f_source [data-testid="block-info"]::after, #tip-f_tool [data-testid="block-info"]::after, #tip-f_area [data-testid="block-info"]::after, #tip-f_marker [data-testid="block-info"]::after, #tip-f_mp [data-testid="block-info"]::after, #tip-f_pair [data-testid="block-info"]::after, #tip-b_filter [data-testid="block-info"]::after, #tip-b_rand [data-testid="block-info"]::after, #tip-dd_key [data-testid="block-info"]::after, #tip-rd_input [data-testid="block-info"]::after, #tip-dd_deg [data-testid="block-info"]::after, #tip-ck_pipe [data-testid="block-info"]::after, #tip-cg_unet [data-testid="block-info"]::after, #tip-cg_res [data-testid="block-info"]::after, #tip-sl_stride_sim [data-testid="block-info"]::after, #tip-b_sim [data-testid="block-info"]::after, #tip-b_to_tabs [data-testid="block-info"]::after, #tip-t_split [data-testid="block-info"]::after, #tip-t_source [data-testid="block-info"]::after, #tip-t_tool [data-testid="block-info"]::after, #tip-t_area [data-testid="block-info"]::after, #tip-t_marker [data-testid="block-info"]::after, #tip-t_mp [data-testid="block-info"]::after, #tip-t_n [data-testid="block-info"]::after, #tip-t_seed [data-testid="block-info"]::after, #tip-t_mode [data-testid="block-info"]::after, #tip-t_deg [data-testid="block-info"]::after, #tip-t_unet [data-testid="block-info"]::after, #tip-t_res [data-testid="block-info"]::after, #tip-b_batch [data-testid="block-info"]::after, #tip-in_img [data-testid="block-info"]::after, #tip-in_mask [data-testid="block-info"]::after, #tip-in_auth [data-testid="block-info"]::after, #tip-btn_load [data-testid="block-info"]::after, #tip-dd_sample [data-testid="block-info"]::after, #tip-btn_sample [data-testid="block-info"]::after, #tip-dd_cat [data-testid="block-info"]::after, #tip-dd_op [data-testid="block-info"]::after, #tip-sl1 [data-testid="block-info"]::after, #tip-sl2 [data-testid="block-info"]::after, #tip-sl3 [data-testid="block-info"]::after, #tip-dd_mode [data-testid="block-info"]::after, #tip-btn_prev [data-testid="block-info"]::after, #tip-btn_apply [data-testid="block-info"]::after, #tip-btn_undo [data-testid="block-info"]::after, #tip-btn_reset [data-testid="block-info"]::after, #tip-dd_preset [data-testid="block-info"]::after, #tip-btn_preset [data-testid="block-info"]::after, #tip-dd_unet [data-testid="block-info"]::after, #tip-rd_src [data-testid="block-info"]::after, #tip-rd_gt [data-testid="block-info"]::after, #tip-sl_thr [data-testid="block-info"]::after, #tip-ck_otsu [data-testid="block-info"]::after, #tip-sl_morph [data-testid="block-info"]::after, #tip-btn_unet [data-testid="block-info"]::after, #tip-btn_cmp [data-testid="block-info"]::after, #tip-dd_rn [data-testid="block-info"]::after, #tip-rd_src2 [data-testid="block-info"]::after, #tip-sl_stride [data-testid="block-info"]::after, #tip-btn_rn [data-testid="block-info"]::after, #tip-btn_green [data-testid="block-info"]::after, #tip-x_src [data-testid="block-info"]::after, #tip-x_up_img [data-testid="block-info"]::after, #tip-x_up_auth [data-testid="block-info"]::after, #tip-x_up_gt [data-testid="block-info"]::after, #tip-x_unet [data-testid="block-info"]::after, #tip-x_res [data-testid="block-info"]::after, #tip-b_xpred [data-testid="block-info"]::after, #tip-x_target [data-testid="block-info"]::after, #tip-x_k [data-testid="block-info"]::after, #tip-x_method [data-testid="block-info"]::after, #tip-x_ref [data-testid="block-info"]::after, #tip-x_evals [data-testid="block-info"]::after, #tip-b_xshap [data-testid="block-info"]::after, #tip-b_xcmp [data-testid="block-info"]::after, #tip-x_show [data-testid="block-info"]::after {content:" ⓘ"; opacity:.55; font-size:.9em}
+#tip-f_split [data-testid="block-info"]::after, #tip-f_source [data-testid="block-info"]::after, #tip-f_tool [data-testid="block-info"]::after, #tip-f_area [data-testid="block-info"]::after, #tip-f_marker [data-testid="block-info"]::after, #tip-f_mp [data-testid="block-info"]::after, #tip-f_pair [data-testid="block-info"]::after, #tip-b_filter [data-testid="block-info"]::after, #tip-b_rand [data-testid="block-info"]::after, #tip-dd_key [data-testid="block-info"]::after, #tip-rd_input [data-testid="block-info"]::after, #tip-dd_deg [data-testid="block-info"]::after, #tip-ck_pipe [data-testid="block-info"]::after, #tip-cg_unet [data-testid="block-info"]::after, #tip-cg_res [data-testid="block-info"]::after, #tip-sl_stride_sim [data-testid="block-info"]::after, #tip-b_sim [data-testid="block-info"]::after, #tip-b_to_tabs [data-testid="block-info"]::after, #tip-t_split [data-testid="block-info"]::after, #tip-t_source [data-testid="block-info"]::after, #tip-t_tool [data-testid="block-info"]::after, #tip-t_area [data-testid="block-info"]::after, #tip-t_marker [data-testid="block-info"]::after, #tip-t_mp [data-testid="block-info"]::after, #tip-t_n [data-testid="block-info"]::after, #tip-t_seed [data-testid="block-info"]::after, #tip-t_mode [data-testid="block-info"]::after, #tip-t_deg [data-testid="block-info"]::after, #tip-t_unet [data-testid="block-info"]::after, #tip-t_res [data-testid="block-info"]::after, #tip-b_batch [data-testid="block-info"]::after, #tip-in_img [data-testid="block-info"]::after, #tip-in_mask [data-testid="block-info"]::after, #tip-in_auth [data-testid="block-info"]::after, #tip-btn_load [data-testid="block-info"]::after, #tip-dd_sample [data-testid="block-info"]::after, #tip-btn_sample [data-testid="block-info"]::after, #tip-tx_draft [data-testid="block-info"]::after, #tip-dd_draft [data-testid="block-info"]::after, #tip-dd_cat [data-testid="block-info"]::after, #tip-dd_op [data-testid="block-info"]::after, #tip-sl1 [data-testid="block-info"]::after, #tip-sl2 [data-testid="block-info"]::after, #tip-sl3 [data-testid="block-info"]::after, #tip-dd_mode [data-testid="block-info"]::after, #tip-btn_prev [data-testid="block-info"]::after, #tip-btn_apply [data-testid="block-info"]::after, #tip-btn_undo [data-testid="block-info"]::after, #tip-btn_reset [data-testid="block-info"]::after, #tip-dd_preset [data-testid="block-info"]::after, #tip-btn_preset [data-testid="block-info"]::after, #tip-dd_unet [data-testid="block-info"]::after, #tip-rd_src [data-testid="block-info"]::after, #tip-rd_gt [data-testid="block-info"]::after, #tip-sl_thr [data-testid="block-info"]::after, #tip-ck_otsu [data-testid="block-info"]::after, #tip-sl_morph [data-testid="block-info"]::after, #tip-btn_unet [data-testid="block-info"]::after, #tip-btn_cmp [data-testid="block-info"]::after, #tip-dd_rn [data-testid="block-info"]::after, #tip-rd_src2 [data-testid="block-info"]::after, #tip-sl_stride [data-testid="block-info"]::after, #tip-btn_rn [data-testid="block-info"]::after, #tip-btn_green [data-testid="block-info"]::after, #tip-x_src [data-testid="block-info"]::after, #tip-x_up_img [data-testid="block-info"]::after, #tip-x_up_auth [data-testid="block-info"]::after, #tip-x_up_gt [data-testid="block-info"]::after, #tip-x_unet [data-testid="block-info"]::after, #tip-x_res [data-testid="block-info"]::after, #tip-b_xpred [data-testid="block-info"]::after, #tip-x_target [data-testid="block-info"]::after, #tip-x_k [data-testid="block-info"]::after, #tip-x_method [data-testid="block-info"]::after, #tip-x_ref [data-testid="block-info"]::after, #tip-x_evals [data-testid="block-info"]::after, #tip-b_xshap [data-testid="block-info"]::after, #tip-b_xcmp [data-testid="block-info"]::after, #tip-x_show [data-testid="block-info"]::after {content:" ⓘ"; opacity:.55; font-size:.9em}
 """
 
 
@@ -2309,6 +2581,11 @@ TIPS = {
     "tip-btn_load": "Yüklediğiniz görüntüleri (ve varsa maske ile authentic eşi) diğer sekmelerin girdisi yapar. Ön işleme pipeline'ı sıfırlanır.",
     "tip-dd_sample": 'Veri setinden doğrudan örnek seçimi (bölüm:kimlik). Filtrelerle daha hızlı seçim için <b>Simülasyon</b> sekmesini kullanıp örneği oradan aktarabilirsiniz.',
     "tip-btn_sample": "Seçilen örneği (sahte görüntü, GT maskesi ve varsa authentic eşi) yükler. Ön işleme pipeline'ı sıfırlanır.",
+    "tip-tx_draft": 'Taslağa vereceğiniz ad (boş bırakılırsa tarih kullanılır).',
+    "tip-btn_dsave": "O an yüklü olan girdiyi <b>taslak</b> olarak diske kaydeder: sahte görüntü, GT maskesi, authentic eş ve <b>Ön işleme</b> sekmesindeki pipeline adımları. Henüz <b>Yüklenenleri kullan</b>'a basılmadıysa yukarıdaki yükleme alanları kaydedilir.",
+    "tip-dd_draft": 'Daha önce kaydedilen taslaklar (en yeni üstte): ad · tarih · boyut · içerik.',
+    "tip-btn_dload": "Seçili taslağı tüm sekmelere girdi olarak yükler; kayıtlı pipeline adımları yeniden uygulanır.",
+    "tip-btn_ddel": 'Seçili taslağı kalıcı olarak siler.',
     "tip-dd_cat": 'Ders haftalarına göre gruplanmış ön işleme kategorileri (renk, histogram, eşikleme, gürültü, morfoloji, frekans domeni…).',
     "tip-dd_op": 'Seçili kategorideki işlem. Seçince parametreleri ve kısa açıklaması altta görünür.',
     "tip-sl1": 'Seçili işlemin parametresi; anlamı etikette ve işlem açıklamasında yazar. Değiştirip <b>Önizle</b> ile etkisini görün.',
@@ -2391,7 +2668,8 @@ xai_setup()
 _IDX = dataset_index()
 _UNETS = [n for n in list_unet_ckpts() if n in _REG or not _REG]
 _RESNETS = [n for n in list_resnet_ckpts() if n in _REG or not _REG]
-_DEF_UNETS = [n for n in ("PHASE2/unet_bbox_s42", "PHASE2/unet_pixel_eps8_morph_s42", "PHASE2/unet_glyph_v2_s42") if n in _UNETS] or _UNETS[:1]
+_DEF_UNETS = [n for n in ("PHASE2/unet_bbox_s42", "PHASE2/unet_pixel_eps8_morph_s42", "PHASE2/unet_glyph_v2_s42",
+                             "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42") if n in _UNETS] or _UNETS[:1]
 _DEF_RESNET = [n for n in ("PHASE1/resnet18_ft_best",) if n in _RESNETS]
 _SOURCES = ["hepsi"] + sorted(x for x in _IDX["source_dataset"].unique() if x)
 _TOOLS = ["hepsi"] + sorted(x for x in _IDX["tool"].unique() if x)
@@ -2428,7 +2706,7 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
                 dd_deg = gr.Dropdown(DEGRADATIONS, value=DEGRADATIONS[0], label="Test-zamanı bozulma", elem_id="tip-dd_deg")
                 ck_pipe = gr.Checkbox(False, label="Ön işleme sekmesindeki pipeline'ı da uygula", elem_id="tip-ck_pipe")
                 gr.Markdown("#### 3) Modeller")
-                cg_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS, label="U-Net (piksel lokalizasyonu)", elem_id="tip-cg_unet")
+                cg_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS, label="Lokalizasyon modelleri (U-Net · DeepLabV3+ · YOLO11 kutu tespiti)", elem_id="tip-cg_unet")
                 cg_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET, label="ResNet-18 (patch sınıflandırma)", elem_id="tip-cg_res")
                 sl_stride_sim = gr.Slider(56, 224, value=112, step=8, label="ResNet kayan pencere adımı (px)", elem_id="tip-sl_stride_sim")
                 b_sim = gr.Button("▶ Simülasyonu başlat", variant="primary", size="lg", elem_id="tip-b_sim")
@@ -2463,7 +2741,7 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
                     t_seed = gr.Number(42, label="Tohum", precision=0, elem_id="tip-t_seed")
                 t_mode = gr.Radio(BATCH_MODES, value=BATCH_MODES[1], label="Mod", elem_id="tip-t_mode")
                 t_deg = gr.Dropdown(DEGRADATIONS, value=DEGRADATIONS[0], label="Bozulma", elem_id="tip-t_deg")
-                t_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS[:2], label="U-Net", elem_id="tip-t_unet")
+                t_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS[:2], label="Lokalizasyon (U-Net · DeepLabV3+ · YOLO11)", elem_id="tip-t_unet")
                 t_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=[], label="ResNet-18", elem_id="tip-t_res")
                 b_batch = gr.Button("▶ Toplu testi başlat", variant="primary", size="lg", elem_id="tip-b_batch")
             with gr.Column(scale=2):
@@ -2483,6 +2761,15 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
                 btn_load = gr.Button("Yüklenenleri kullan", variant="primary", elem_id="tip-btn_load")
                 dd_sample = gr.Dropdown(choices=sample_choices(), label="örnek (bölüm:kimlik)", filterable=True, allow_custom_value=True, elem_id="tip-dd_sample")
                 btn_sample = gr.Button("Örneği yükle", elem_id="tip-btn_sample")
+                with gr.Accordion("💾 Taslaklar (sonra kullanmak için kaydet)", open=True):
+                    tx_draft = gr.Textbox(label="Taslak adı", placeholder="ör. cord fişi · indirim alanı", elem_id="tip-tx_draft")
+                    btn_dsave = gr.Button("💾 Taslak olarak kaydet", variant="secondary", elem_id="tip-btn_dsave")
+                    dd_draft = gr.Dropdown(choices=draft_list(), label="Kayıtlı taslaklar", filterable=True, elem_id="tip-dd_draft")
+                    with gr.Row():
+                        btn_dload = gr.Button("📂 Taslağı yükle", variant="primary", elem_id="tip-btn_dload")
+                        btn_drefresh = gr.Button("↻", scale=0, min_width=48)
+                        btn_ddel = gr.Button("🗑 Sil", variant="stop", scale=0, min_width=72, elem_id="tip-btn_ddel")
+                    draft_md = gr.Markdown(" ", elem_classes="small-md")
             with gr.Column(scale=1):
                 info_md = gr.Markdown("Görüntü yükleyin ya da örnek seçin.")
                 view_orig = gr.Image(label="Orijinal", type="numpy", height=360, interactive=False)
@@ -2520,7 +2807,7 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
     with gr.Tab("4 · U-Net lokalizasyonu"):
         with gr.Row():
             with gr.Column(scale=1):
-                dd_unet = gr.Dropdown(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS[0] if _DEF_UNETS else None, label="U-Net checkpoint", elem_id="tip-dd_unet")
+                dd_unet = gr.Dropdown(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS[0] if _DEF_UNETS else None, label="Model (U-Net · DeepLabV3+ · YOLO11)", elem_id="tip-dd_unet")
                 rd_src = gr.Radio(["Orijinal görüntü", "Pipeline çıktısı"], value="Orijinal görüntü", label="Model girdisi", elem_id="tip-rd_src")
                 rd_gt = gr.Radio(["resmî bbox maskesi", "piksel-değişim (authentic'ten türet, eps8_morph)"], value="resmî bbox maskesi", label="Değerlendirme GT'si", elem_id="tip-rd_gt")
                 sl_thr = gr.Slider(0.05, 0.95, value=default_tau(_DEF_UNETS[0], "bbox") if _DEF_UNETS else 0.5, step=0.05, label="eşik τ", elem_id="tip-sl_thr")
@@ -2595,7 +2882,7 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
                             with gr.Row():
                                 x_up_auth = gr.Image(label="Authentic eş (isteğe bağlı)", type="numpy", height=120, elem_id="tip-x_up_auth")
                                 x_up_gt = gr.Image(label="GT maskesi (isteğe bağlı)", type="numpy", height=120, image_mode="L", elem_id="tip-x_up_gt")
-                        x_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=_DEF_UNETS, label="U-Net", elem_id="tip-x_unet")
+                        x_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS if not n.startswith("YOLO/")], value=[n for n in _DEF_UNETS if not n.startswith("YOLO/")], label="U-Net / DeepLabV3+ (YOLO kutu dedektörü XAI dışı)", elem_id="tip-x_unet")
                         x_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET, label="ResNet-18", elem_id="tip-x_res")
                         gr.Markdown(xai_unsupported_md(), elem_classes="small-md")
                         b_xpred = gr.Button("① Tahmin yap", variant="primary", elem_id="tip-b_xpred")
@@ -2663,6 +2950,12 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
         lambda: steps_md([]), None, steps_box)
     btn_sample.click(on_sample, [dd_sample], [st_orig, st_cur, st_mask, st_auth, st_steps, info_md, view_orig, img_before, view_gt, view_auth]).then(
         lambda: steps_md([]), None, steps_box)
+    btn_dsave.click(draft_save, [tx_draft, st_orig, st_mask, st_auth, st_steps, in_img, in_mask, in_auth, dd_sample], [dd_draft, draft_md])
+    btn_dload.click(draft_load, [dd_draft], [st_orig, st_cur, st_mask, st_auth, st_steps, info_md, view_orig, img_before, view_gt, view_auth,
+                                             steps_box, in_img, in_mask, in_auth, draft_md]).then(lambda c: c, [st_cur], [img_after])
+    btn_ddel.click(draft_delete, [dd_draft], [dd_draft, draft_md])
+    btn_drefresh.click(lambda v: _draft_dd(v), [dd_draft], [dd_draft])
+    demo.load(lambda: _draft_dd(), None, [dd_draft])
 
     dd_cat.change(op_choices, [dd_cat], [dd_op, sl1, sl2, sl3, dd_mode, op_doc])
     dd_op.change(param_updates, [dd_cat, dd_op], [sl1, sl2, sl3, dd_mode, op_doc])
