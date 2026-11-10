@@ -1,0 +1,18 @@
+{
+  "run": "aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42",
+  "data": "tiles_geminionly",
+  "model": "yolo11s",
+  "imgsz": 1024,
+  "aug": "conserv",
+  "seed": 42,
+  "epochs": 30,
+  "best_epoch": 30,
+  "best_val_tile_map50": 0.9909,
+  "last_val_tile_map50": 0.9909,
+  "best_val_tile_map5095": 0.9499,
+  "time_min": 58.9,
+  "peak_gib": 4.8,
+  "ckpt_mb": 18.4,
+  "params_M": 9.43,
+  "dry_run": false
+}

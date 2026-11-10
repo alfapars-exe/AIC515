@@ -143,5 +143,50 @@
   "bbox": 0.05,
   "pixel_eps8_morph": 0.05,
   "glyph_v2": 0.45
+ },
+ "aiforge-tiles-yolo11s-img1024-conserv-s42": {
+  "bbox": 0.3,
+  "pixel_eps8_morph": 0.3,
+  "glyph_v2": 0.35
+ },
+ "aiforge-tiles-yolo11s-img1024-conserv-s43": {
+  "bbox": 0.35,
+  "pixel_eps8_morph": 0.35,
+  "glyph_v2": 0.4
+ },
+ "aiforge-tiles-yolo11s-img1024-conserv-s44": {
+  "bbox": 0.65,
+  "pixel_eps8_morph": 0.65,
+  "glyph_v2": 0.65
+ },
+ "aiforge-tiles-yolo11s-img1024-default-s42": {
+  "bbox": 0.3,
+  "pixel_eps8_morph": 0.3,
+  "glyph_v2": 0.3
+ },
+ "aiforge-tiles_authneg-yolo11s-img1024-conserv-s42": {
+  "bbox": 0.2,
+  "pixel_eps8_morph": 0.2,
+  "glyph_v2": 0.2
+ },
+ "aiforge-tiles-yolo11n-img1024-conserv-s42": {
+  "bbox": 0.25,
+  "pixel_eps8_morph": 0.25,
+  "glyph_v2": 0.3
+ },
+ "aiforge-tiles-yolo11m-img1024-conserv-s42": {
+  "bbox": 0.55,
+  "pixel_eps8_morph": 0.45,
+  "glyph_v2": 0.55
+ },
+ "aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42": {
+  "bbox": 0.15,
+  "pixel_eps8_morph": 0.15,
+  "glyph_v2": 0.15
+ },
+ "aiforge-full-yolo11s-img1280-conserv-s42": {
+  "bbox": 0.15,
+  "pixel_eps8_morph": 0.1,
+  "glyph_v2": 0.15
  }
 }

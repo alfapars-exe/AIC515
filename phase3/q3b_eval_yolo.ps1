@@ -1,6 +1,6 @@
 # q3b_eval_yolo.ps1 — Faz 3 YOLO değerlendirme + sondalar + tespit metriği + hız (q2 ve q3a bittikten sonra).
 . "$PSScriptRoot\env.ps1"
-while (-not ((Select-String -Path "$P3\logs\queue.log" -Pattern "^q2 finished" -Quiet) -and (Select-String -Path "$P3\logs\queue.log" -Pattern "^q3a finished" -Quiet))) { Start-Sleep 60 }
+while (-not ((Select-String -Path "$P3\logs\queue.log" -Pattern "^q2 finished" -Quiet) -and (Select-String -Path "$P3\logs\queue.log" -Pattern "DONE e_e20" -Quiet))) { Start-Sleep 60 }
 $B = "aiforge-tiles-yolo11s-img1024-conserv-s42", "aiforge-tiles-yolo11s-img1024-conserv-s43", "aiforge-tiles-yolo11s-img1024-conserv-s44"
 $ABL = "aiforge-tiles-yolo11s-img1024-default-s42", "aiforge-tiles_authneg-yolo11s-img1024-conserv-s42", "aiforge-tiles-yolo11n-img1024-conserv-s42", "aiforge-tiles-yolo11m-img1024-conserv-s42", "aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42"
 $FULL = "aiforge-full-yolo11s-img1280-conserv-s42"

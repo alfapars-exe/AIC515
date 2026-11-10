@@ -1,0 +1,22 @@
+# Faz 3 doğrulanmış yığın (RTX 5080, Windows 11, Python 3.11) — 9 Kasım 2026
+# torch/torchvision CUDA 12.8 tekerlekleri: pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cu128
+torch==2.11.0
+torchvision==0.26.0
+segmentation-models-pytorch==0.6.0
+timm
+# ultralytics torch'u CPU tekerleğiyle ezmesin diye --no-deps ile kurun: pip install ultralytics==8.4.208 ultralytics-thop --no-deps
+ultralytics==8.4.208
+ultralytics-thop
+opencv-python-headless
+numpy
+pandas
+scipy
+scikit-learn
+scikit-image
+matplotlib
+pyyaml
+psutil
+py-cpuinfo
+polars
+tabulate
+huggingface_hub

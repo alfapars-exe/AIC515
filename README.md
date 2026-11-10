@@ -1,6 +1,6 @@
 # AIC515 Görüntü İşleme — Dönem Projesi: AI-Generated Financial Document Forgery Localization (AIForge-Doc v1)
 
-**Durum (9 Kasım 2026):** PHASE 1–2 tamamlandı (20 Ekim). **PHASE 3 yürütülüyor** — YOLO11 kutu-tespit formülasyonu, ikinci mimari (DeepLabV3+), işaretçi-onarımlı yeniden eğitim, birleşik piksel+kutu kaybı, held-out üretici 3 seed, 20 epoch, bölge-görünümü (render/içerik) ayrıştırması, IEEE bildirisi (`paper/`). Ara sonuçlar ve plan: `phase3_yolo/README.md`, `phase3/`, otomatik tablolar `phase3/results/tables_p3.md`.
+**Durum (10 Kasım 2026):** PHASE 1–3 tamamlandı. IEEE bildirisi: `paper/main.pdf` (kaynak `paper/`). Faz 3 kapanış raporu: `reports/PHASE3_Sonuclar_ve_Kapanis.md`; hakem hazırlığı: `reports/Hakem_Hazirligi_Faz3.md`; otomatik tablolar: `phase3/results/tables_p3.md`.
 **Araştırma yönü:** *What Do Document Forgery Localizers Learn from Box Masks? Pixel-Change Ground Truth and Shortcut Audits for AI-Inpainted Financial Documents*. Ana sonuç: H1 doğrulandı (aynı tahminler bbox-GT AUPRC 0.923 → piksel-GT 0.374), H2 kısmen, H3/H4 yanlışlandı (bkz. `reports/PHASE2_Metodoloji_ve_Sonuclar.md`).
 
 
@@ -61,7 +61,51 @@
 | Bbox-dışı crop forged/authentic AUROC | 0.516 (pozitif kontrol 0.980) → **H4 yanlışlandı** |
 | Zero-shot TruFor / ADCD-Net (test, F1) | 0.403 / 0.182 |
 
-## PHASE 3 (9 Kasım 2026 — yürütülüyor)
+## PHASE 3 — sonuçlar (10 Kasım 2026)
+
+![Dual-GT](phase3/figures/fig_dual_gt_families.png)
+*Val pooled piksel AUPRC: eğitim maskesi (x) × değerlendirme GT'si (renk). U-Net 3 tohum, DeepLabV3+ 1 tohum, YOLO11s 3 tohum.*
+
+| Bulgu | Değer | Tohum |
+|---|---|---|
+| H1: aynı tahminler, box-GT → piksel-GT (U-Net box modeli, val) | 0.923 → 0.374 | 3 |
+| H1 tekrarı: DeepLabV3+ / YOLO11s | 0.939 → 0.382 / 0.965 → 0.368 | 1 / 3 |
+| Kutu dedektörü (YOLO11s kare 1024), test box AUPRC / F1@τ* | 0.969 / 0.946 (U-Net 0.950 / 0.846) | 3 |
+| İşaretçi onarımı ΔAP (U-Net box) → işaretçisiz yeniden eğitimde | −0.222 → +0.019 | 3 → 1 |
+| Test AP işaretçili / işaretçisiz (U-Net box) | 0.972 / 0.690 | 3 |
+| Held-out: Gemini-only → Ideogram AP (U-Net box / YOLO11s) | 0.412 / 0.752 | 3 / 1 |
+| Birleşik kayıp (piksel + 0.5·box), piksel-GT AUPRC | 0.610 → 0.622 | 1 |
+| Gri seviye test girdisi, relΔ AUPRC | −47 … −67 % | 1–3 |
+| Faz 1 AUPRC (kesin) | 0.947 → 0.805 | — |
+
+### Yeniden üretim (Windows, tek 16 GB GPU, ≈14 GPU-saat)
+```powershell
+conda activate docforensics            # Python 3.11
+pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cu128
+pip install -r phase3/requirements_phase3.txt --no-deps
+$env:P3_PYTHON = (Get-Command python).Source
+$env:VIZE_ROOT = (Get-Location).Path   # proje kökü
+python tools/download_dataset.py --out data/AIForge-Doc-v1      # HF kapılı erişim
+powershell -File run_everything.ps1 -SkipDownload                # Faz 1–2
+powershell -File phase3/q0_dataprep.ps1; powershell -File phase3/q1_unet_train.ps1
+powershell -File phase3/q2_yolo_train.ps1 -Epochs 30
+powershell -File phase3/q3a_eval_unet.ps1; powershell -File phase3/q3b_eval_yolo.ps1
+python phase3/synthesize_p3.py                                   # tablolar + şekiller
+```
+Ağırlıklar ve tahmin haritaları repoda yoktur (boyut/lisans); yukarıdaki komutlarla üretilir. Faz 2 checkpoint'leri yeni ortamda birebir aynı çıktıyı verir (`phase3/results/repro_check_env.json`).
+
+### Atıf
+```bibtex
+@misc{benli2026boxmasks,
+  author = {Harun Benli},
+  title  = {What Do Document Forgery Localizers Learn from Box Masks? Ground-Truth Geometry, a Hidden Marker Shortcut, and Box Detection on AI-Inpainted Financial Documents},
+  year   = {2026},
+  note   = {AIC515 Image Processing term project},
+  howpublished = {\url{https://github.com/alfapars-exe/AIC515}}
+}
+```
+
+### Faz 2'den devralınan işlerin kapanışı
 | Açık iş (PHASE 2 / Lab Rat inceleme) | Faz 3'teki karşılığı | Kod |
 |---|---|---|
 | W2 tek mimari | DeepLabV3+ (aynı ResNet-18 kodlayıcı) × 3 GT; YOLO11 kutu dedektörü | `phase3/train_unet_p3.py --arch dlv3p`, `phase3_yolo/` |

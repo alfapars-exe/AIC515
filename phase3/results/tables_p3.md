@@ -18,25 +18,37 @@
 | U-Net | marker-repaired+nm-GT | pix | 1 | 0.513 | 0.524 | 0.455 | 0.479 | 0.544 | 0.502 |
 | U-Net+box-aux | main | glyph | 1 | 0.370 | 0.441 | 0.636 | 0.638 | 0.391 | 0.466 |
 | U-Net+box-aux | main | pix | 1 | 0.647 | 0.642 | 0.518 | 0.544 | 0.622 | 0.580 |
+| YOLO11m | main | box | 1 | 0.960 | 0.942 | 0.224 | 0.418 | 0.356 | 0.493 |
+| YOLO11n | main | box | 1 | 0.944 | 0.907 | 0.219 | 0.404 | 0.366 | 0.468 |
+| YOLO11s | authneg | box | 1 | 0.967 | 0.948 | 0.223 | 0.421 | 0.361 | 0.495 |
+| YOLO11s | defaug | box | 1 | 0.967 | 0.945 | 0.221 | 0.421 | 0.373 | 0.495 |
+| YOLO11s | full1280 | box | 1 | 0.922 | 0.902 | 0.203 | 0.395 | 0.334 | 0.463 |
+| YOLO11s | main | box | 3 | 0.965 ± 0.003 | 0.947 ± 0.005 | 0.221 ± 0.003 | 0.420 ± 0.002 | 0.368 ± 0.015 | 0.494 ± 0.003 |
 
 ## T2. Resmî test (box GT; piksel GT 89 çift) + tespit AP
 
-| family | variant | train_gt | seeds | AUPRC_box_812 | AUPRC_box_740 | F1tau_box | IoUtau_box | AUPRC_pix_89 |
-|---|---|---|---|---|---|---|---|---|
-| DeepLabV3+ | main | box | 1 | 0.952 | 0.952 | 0.833 | 0.765 | 0.408 |
-| DeepLabV3+ | main | glyph | 1 | 0.368 | 0.365 | 0.494 | 0.353 | 0.389 |
-| DeepLabV3+ | main | pix | 1 | 0.585 | 0.583 | 0.590 | 0.457 | 0.667 |
-| U-Net | 20ep | box | 1 | 0.945 | 0.946 | 0.858 | 0.799 | 0.422 |
-| U-Net | 20ep | glyph | 1 | 0.480 | 0.475 | 0.403 | 0.265 | 0.477 |
-| U-Net | 20ep | pix | 1 | 0.609 | 0.606 | 0.602 | 0.466 | 0.638 |
-| U-Net | main | box | 3 | 0.950 ± 0.011 | 0.949 ± 0.012 | 0.846 ± 0.015 | 0.789 ± 0.018 | 0.427 ± 0.002 |
-| U-Net | main | glyph | 3 | 0.403 ± 0.011 | 0.403 ± 0.010 | 0.405 ± 0.007 | 0.266 ± 0.006 | 0.410 ± 0.017 |
-| U-Net | main | pix | 3 | 0.638 ± 0.015 | 0.640 ± 0.014 | 0.616 ± 0.013 | 0.480 ± 0.015 | 0.654 ± 0.016 |
-| U-Net | marker-repaired | box | 1 | 0.939 | 0.939 | 0.797 | 0.726 | 0.425 |
-| U-Net | marker-repaired+nm-GT | glyph | 1 | 0.402 | 0.404 | 0.405 | 0.266 | 0.354 |
-| U-Net | marker-repaired+nm-GT | pix | 1 | 0.564 | 0.562 | 0.537 | 0.405 | 0.570 |
-| U-Net+box-aux | main | glyph | 1 | 0.432 | 0.433 | 0.448 | 0.304 | 0.460 |
-| U-Net+box-aux | main | pix | 1 | 0.682 | 0.680 | 0.654 | 0.522 | 0.650 |
+| family | variant | train_gt | seeds | AUPRC_box_812 | AUPRC_box_740 | F1tau_box | IoUtau_box | AUPRC_pix_89 | AP50 | AP50_95 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| DeepLabV3+ | main | box | 1 | 0.952 | 0.952 | 0.833 | 0.765 | 0.408 | 0.833 | 0.577 |
+| DeepLabV3+ | main | glyph | 1 | 0.368 | 0.365 | 0.494 | 0.353 | 0.389 | — | — |
+| DeepLabV3+ | main | pix | 1 | 0.585 | 0.583 | 0.590 | 0.457 | 0.667 | — | — |
+| U-Net | 20ep | box | 1 | 0.945 | 0.946 | 0.858 | 0.799 | 0.422 | — | — |
+| U-Net | 20ep | glyph | 1 | 0.480 | 0.475 | 0.403 | 0.265 | 0.477 | — | — |
+| U-Net | 20ep | pix | 1 | 0.609 | 0.606 | 0.602 | 0.466 | 0.638 | — | — |
+| U-Net | main | box | 3 | 0.950 ± 0.011 | 0.949 ± 0.012 | 0.846 ± 0.015 | 0.789 ± 0.018 | 0.427 ± 0.002 | 0.712 ± 0.279 | 0.453 ± 0.224 |
+| U-Net | main | glyph | 3 | 0.403 ± 0.011 | 0.403 ± 0.010 | 0.405 ± 0.007 | 0.266 ± 0.006 | 0.410 ± 0.017 | 0.011 | 0.002 |
+| U-Net | main | pix | 3 | 0.638 ± 0.015 | 0.640 ± 0.014 | 0.616 ± 0.013 | 0.480 ± 0.015 | 0.654 ± 0.016 | 0.107 ± 0.027 | 0.053 ± 0.014 |
+| U-Net | marker-repaired | box | 1 | 0.939 | 0.939 | 0.797 | 0.726 | 0.425 | 0.805 | 0.486 |
+| U-Net | marker-repaired+nm-GT | glyph | 1 | 0.402 | 0.404 | 0.405 | 0.266 | 0.354 | — | — |
+| U-Net | marker-repaired+nm-GT | pix | 1 | 0.564 | 0.562 | 0.537 | 0.405 | 0.570 | — | — |
+| U-Net+box-aux | main | glyph | 1 | 0.432 | 0.433 | 0.448 | 0.304 | 0.460 | — | — |
+| U-Net+box-aux | main | pix | 1 | 0.682 | 0.680 | 0.654 | 0.522 | 0.650 | 0.143 | 0.072 |
+| YOLO11m | main | box | 1 | 0.969 | 0.969 | 0.947 | 0.920 | 0.418 | 0.897 | 0.800 |
+| YOLO11n | main | box | 1 | 0.963 | 0.964 | 0.926 | 0.891 | 0.413 | 0.871 | 0.738 |
+| YOLO11s | authneg | box | 1 | 0.971 | 0.971 | 0.943 | 0.913 | 0.425 | 0.874 | 0.774 |
+| YOLO11s | defaug | box | 1 | 0.971 | 0.972 | 0.951 | 0.922 | 0.397 | 0.864 | 0.765 |
+| YOLO11s | full1280 | box | 1 | 0.932 | 0.932 | 0.909 | 0.872 | 0.430 | 0.960 | 0.881 |
+| YOLO11s | main | box | 3 | 0.969 ± 0.006 | 0.969 ± 0.007 | 0.946 ± 0.007 | 0.918 ± 0.006 | 0.404 ± 0.042 | 0.880 ± 0.002 | 0.780 ± 0.003 |
 
 ## T3. Sondalar (val çiftleri; işaretçili alt küme için AP; seed-ortalaması + grup bootstrap CI)
 
@@ -47,12 +59,13 @@
 | DeepLabV3+|main|pixel_eps8_morph | 1 | 380 | 0.730 [0.711, 0.749] | 0.597 | 0.555 [0.523, 0.585] | 0.400 | 0.628 [0.604, 0.651] | 0.484 | 0.172 [0.151, 0.195] | 0.072 | -0.175 [-0.208, -0.146] | 0.934 | 0.763 | 0.828 | 0.548 | 0.677 | 0.071 | 0.277 [0.251, 0.303] | 0.189 | 0.437 [0.407, 0.466] | 0.420 | 0.700 [0.680, 0.720] | +0.026 [+0.018, +0.033] | -0.258 [-0.286, -0.228] |
 | U-Net+box-aux|main|glyph_v2 | 1 | 380 | 0.622 [0.605, 0.640] | 0.381 | 0.470 [0.443, 0.496] | 0.245 | 0.546 [0.525, 0.567] | 0.338 | 0.111 [0.096, 0.127] | 0.030 | -0.153 [-0.181, -0.126] | 0.880 | 0.753 | 0.811 | 0.577 | 0.666 | 0.062 | 0.237 [0.215, 0.258] | 0.114 | 0.333 [0.306, 0.360] | 0.270 | 0.595 [0.576, 0.614] | +0.017 [+0.010, +0.023] | -0.278 [-0.308, -0.248] |
 | U-Net+box-aux|main|pixel_eps8_morph | 1 | 380 | 0.771 [0.757, 0.785] | 0.589 | 0.597 [0.564, 0.628] | 0.377 | 0.668 [0.647, 0.688] | 0.482 | 0.142 [0.122, 0.164] | 0.035 | -0.174 [-0.206, -0.145] | 0.952 | 0.789 | 0.873 | 0.574 | 0.699 | 0.067 | 0.274 [0.245, 0.302] | 0.172 | 0.421 [0.390, 0.452] | 0.436 | 0.734 [0.715, 0.752] | +0.036 [+0.028, +0.043] | -0.304 [-0.334, -0.273] |
-| U-Net|main|bbox | 1 | 380 | 0.988 [0.982, 0.992] | 0.958 | 0.764 [0.725, 0.797] | 0.635 | 0.895 [0.874, 0.913] | 0.806 | 0.154 [0.134, 0.179] | 0.041 | -0.224 [-0.261, -0.190] | 0.972 | 0.833 | 0.902 | 0.631 | 0.728 | 0.220 | 0.391 [0.356, 0.426] | 0.338 | 0.552 [0.517, 0.587] | 0.870 | 0.940 [0.922, 0.956] | -0.006 [-0.014, +0.001] | -0.430 [-0.465, -0.395] |
-| U-Net|main|glyph_v2 | 1 | 380 | 0.527 [0.510, 0.546] | 0.337 | 0.409 [0.380, 0.435] | 0.208 | 0.456 [0.436, 0.478] | 0.291 | 0.116 [0.100, 0.135] | 0.024 | -0.118 [-0.143, -0.095] | 0.886 | 0.752 | 0.821 | 0.577 | 0.681 | 0.051 | 0.208 [0.188, 0.229] | 0.104 | 0.328 [0.301, 0.354] | 0.244 | 0.511 [0.493, 0.530] | +0.039 [+0.033, +0.046] | -0.198 [-0.222, -0.175] |
-| U-Net|main|pixel_eps8_morph | 1 | 380 | 0.739 [0.722, 0.756] | 0.565 | 0.497 [0.464, 0.527] | 0.318 | 0.618 [0.592, 0.640] | 0.442 | 0.123 [0.104, 0.144] | 0.037 | -0.242 [-0.274, -0.210] | 0.925 | 0.759 | 0.828 | 0.558 | 0.681 | 0.055 | 0.201 [0.178, 0.223] | 0.170 | 0.366 [0.337, 0.396] | 0.426 | 0.697 [0.677, 0.717] | +0.030 [+0.023, +0.036] | -0.373 [-0.403, -0.342] |
+| U-Net|main|bbox | 3 | 380 | 0.988 [0.982, 0.992] | 0.939 | 0.766 [0.731, 0.797] | 0.595 | 0.905 [0.886, 0.922] | 0.795 | 0.176 [0.155, 0.201] | 0.041 | -0.222 [-0.256, -0.190] | 0.971 | 0.837 | 0.903 | 0.637 | 0.733 | 0.237 | 0.415 [0.381, 0.447] | 0.348 | 0.557 [0.521, 0.589] | 0.864 | 0.933 [0.915, 0.950] | +0.000 [-0.004, +0.005] | -0.388 [-0.421, -0.355] |
+| U-Net|main|glyph_v2 | 3 | 380 | 0.522 [0.505, 0.541] | 0.325 | 0.398 [0.372, 0.425] | 0.195 | 0.461 [0.442, 0.481] | 0.283 | 0.123 [0.108, 0.141] | 0.023 | -0.123 [-0.146, -0.103] | 0.902 | 0.763 | 0.834 | 0.579 | 0.683 | 0.050 | 0.212 [0.192, 0.231] | 0.096 | 0.320 [0.295, 0.344] | 0.239 | 0.507 [0.489, 0.527] | +0.036 [+0.031, +0.041] | -0.213 [-0.235, -0.191] |
+| U-Net|main|pixel_eps8_morph | 3 | 380 | 0.747 [0.731, 0.762] | 0.538 | 0.500 [0.468, 0.529] | 0.282 | 0.635 [0.611, 0.656] | 0.420 | 0.134 [0.117, 0.155] | 0.031 | -0.247 [-0.279, -0.218] | 0.942 | 0.762 | 0.858 | 0.554 | 0.681 | 0.045 | 0.211 [0.189, 0.233] | 0.150 | 0.367 [0.338, 0.396] | 0.406 | 0.706 [0.685, 0.725] | +0.026 [+0.020, +0.032] | -0.370 [-0.398, -0.342] |
 | U-Net|marker-repaired+nm-GT|glyph_v2 | 1 | 380 | 0.510 [0.491, 0.530] | 0.321 | 0.510 [0.491, 0.531] | 0.314 | 0.345 [0.321, 0.369] | 0.186 | 0.119 [0.103, 0.138] | 0.029 | +0.001 [-0.008, +0.009] | 0.876 | 0.875 | 0.688 | 0.660 | 0.822 | 0.081 | 0.265 [0.244, 0.286] | 0.185 | 0.422 [0.399, 0.445] | 0.237 | 0.501 [0.482, 0.522] | +0.036 [+0.029, +0.043] | -0.185 [-0.209, -0.161] |
 | U-Net|marker-repaired+nm-GT|pixel_eps8_morph | 1 | 380 | 0.648 [0.625, 0.670] | 0.444 | 0.686 [0.667, 0.705] | 0.503 | 0.256 [0.235, 0.281] | 0.108 | 0.131 [0.113, 0.152] | 0.033 | +0.038 [+0.021, +0.057] | 0.869 | 0.899 | 0.592 | 0.638 | 0.834 | 0.096 | 0.315 [0.288, 0.340] | 0.289 | 0.530 [0.506, 0.555] | 0.338 | 0.627 [0.606, 0.650] | +0.012 [+0.003, +0.021] | -0.225 [-0.248, -0.202] |
 | U-Net|marker-repaired|bbox | 1 | 380 | 0.939 [0.920, 0.957] | 0.889 | 0.958 [0.942, 0.970] | 0.894 | 0.603 [0.563, 0.640] | 0.424 | 0.162 [0.138, 0.185] | 0.050 | +0.019 [+0.002, +0.036] | 0.947 | 0.957 | 0.695 | 0.713 | 0.872 | 0.356 | 0.542 [0.506, 0.579] | 0.590 | 0.752 [0.724, 0.780] | 0.828 | 0.899 [0.877, 0.921] | -0.017 [-0.029, -0.006] | -0.297 [-0.332, -0.265] |
+| YOLO11s|main|bbox | 1 | 380 | 0.956 [0.951, 0.960] | 0.958 | 0.894 [0.881, 0.905] | 0.886 | 0.815 [0.791, 0.834] | 0.607 | 0.101 [0.085, 0.118] | 0.003 | -0.062 [-0.075, -0.051] | 0.996 | 0.988 | 0.848 | 0.865 | 0.858 | 0.446 | 0.696 [0.662, 0.728] | 0.383 | 0.678 [0.649, 0.704] | 0.864 | 0.947 [0.940, 0.954] | -0.025 [-0.036, -0.015] | -0.347 [-0.379, -0.313] |
 
 ## T3b. Test: işaretçili vs işaretçisiz görüntüler (box GT, görüntü-AP)
 
@@ -72,6 +85,12 @@
 | U-Net | marker-repaired+nm-GT | pix | 1 | 0.526 [0.507, 0.544] | 627 | 0.517 [0.473, 0.560] | 185 | 0.579 [0.523, 0.634] | 102 |
 | U-Net+box-aux | main | glyph | 1 | 0.468 [0.455, 0.480] | 627 | 0.383 [0.346, 0.422] | 185 | 0.423 [0.375, 0.474] | 102 |
 | U-Net+box-aux | main | pix | 1 | 0.689 [0.676, 0.701] | 627 | 0.538 [0.488, 0.586] | 185 | 0.595 [0.532, 0.662] | 102 |
+| YOLO11m | main | box | 1 | 0.954 [0.951, 0.957] | 627 | 0.882 [0.860, 0.899] | 185 | 0.894 [0.869, 0.914] | 102 |
+| YOLO11n | main | box | 1 | 0.946 [0.940, 0.950] | 627 | 0.812 [0.780, 0.841] | 185 | 0.794 [0.749, 0.839] | 102 |
+| YOLO11s | authneg | box | 1 | 0.951 [0.948, 0.954] | 627 | 0.877 [0.851, 0.899] | 185 | 0.889 [0.863, 0.911] | 102 |
+| YOLO11s | defaug | box | 1 | 0.953 [0.950, 0.957] | 627 | 0.873 [0.846, 0.893] | 185 | 0.863 [0.830, 0.894] | 102 |
+| YOLO11s | full1280 | box | 1 | 0.930 [0.923, 0.937] | 627 | 0.756 [0.712, 0.795] | 185 | 0.850 [0.814, 0.883] | 102 |
+| YOLO11s | main | box | 3 | 0.954 [0.951, 0.957] | 627 | 0.878 [0.857, 0.895] | 185 | 0.886 [0.861, 0.907] | 102 |
 
 ## T4. Held-out üretici (val+test; Ideogram vs kaynak-eşlenmiş Gemini; görüntü-AP)
 
@@ -89,18 +108,155 @@
 | U-Net | main | glyph | False | 3 | pix | 41 | 0.365 [0.276, 0.440] | 0.389 [0.364, 0.414] | 0.024 |
 | U-Net | main | pix | False | 3 | box | 126 | 0.423 [0.367, 0.481] | 0.574 [0.557, 0.590] | 0.151 |
 | U-Net | main | pix | False | 3 | pix | 41 | 0.454 [0.350, 0.550] | 0.571 [0.540, 0.603] | 0.117 |
+| YOLO11s | geminionly | box | True | 1 | box | 126 | 0.752 [0.703, 0.806] | 0.938 [0.929, 0.946] | 0.186 |
+| YOLO11s | geminionly | box | True | 1 | pix | 41 | 0.422 [0.357, 0.494] | 0.330 [0.308, 0.355] | -0.092 |
+| YOLO11s | main | box | False | 3 | box | 126 | 0.872 [0.846, 0.895] | 0.945 [0.938, 0.951] | 0.073 |
+| YOLO11s | main | box | False | 3 | pix | 41 | 0.443 [0.382, 0.507] | 0.336 [0.313, 0.361] | -0.107 |
 
 ## T5. YOLO ablasyonları ve maliyet
 
-| run | epochs | best_epoch | train_min | params_M | val_tile_mAP50 |
+| run | epochs | best_epoch | train_min | params_M | val_tile_mAP50 | AP50_val | AP5095_val | AP50_val_lt1pct | AP50_test | AP5095_test | AP50_test_lt1pct | val_AUPRC_box | val_AUPRC_pix | ms_per_img |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | 30 | 26 | 57.0 | 9.43 | 0.9812 | 0.879 | 0.781 | 0.854 | 0.882 | 0.782 | 0.872 | 0.967 | 0.384 | 98 |
+| aiforge-tiles-yolo11s-img1024-conserv-s43 | 30 | 26 | 59.3 | 9.43 | 0.9876 | 0.873 | 0.781 | 0.845 | 0.878 | 0.781 | 0.857 | 0.961 | 0.365 | — |
+| aiforge-tiles-yolo11s-img1024-conserv-s44 | 30 | 23 | 53.4 | 9.43 | 0.9882 | 0.868 | 0.769 | 0.825 | 0.879 | 0.777 | 0.862 | 0.966 | 0.355 | — |
+| aiforge-full-yolo11s-img1280-conserv-s42 | 30 | 27 | 33.1 | 9.43 | 0.9601 | 0.957 | 0.879 | 0.915 | 0.960 | 0.881 | 0.933 | 0.922 | 0.334 | 303 |
+| aiforge-tiles-yolo11s-img1024-default-s42 | 30 | 28 | 43.4 | 9.43 | 0.9859 | 0.867 | 0.758 | 0.838 | 0.864 | 0.765 | 0.849 | 0.967 | 0.373 | — |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s42 | 30 | 22 | 53.5 | 9.43 | 0.9875 | 0.889 | 0.777 | 0.848 | 0.874 | 0.774 | 0.863 | 0.967 | 0.361 | — |
+| aiforge-tiles-yolo11n-img1024-conserv-s42 | 30 | 28 | 31.6 | 2.6 | 0.9599 | 0.849 | 0.723 | 0.776 | 0.871 | 0.738 | 0.846 | 0.944 | 0.366 | 81 |
+| aiforge-tiles-yolo11m-img1024-conserv-s42 | 30 | 23 | 87.1 | 20.05 | 0.982 | 0.897 | 0.800 | 0.868 | 0.897 | 0.800 | 0.882 | 0.960 | 0.356 | 76 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42 | 30 | 30 | 58.9 | 9.43 | 0.9909 | 0.865 | 0.765 | 0.807 | 0.855 | 0.760 | 0.813 | 0.957 | 0.344 | — |
+
+## T5b. Hız (GPU boş, 100 test görüntüsü, ms/görüntü)
+
+| model | family | ms_per_img | params_M | mean_MP | gpu |
 |---|---|---|---|---|---|
-| aiforge-tiles-yolo11s-img1024-conserv-s42 | 30 | 26 | 57.0 | 9.43 | 0.9812 |
-| aiforge-tiles-yolo11s-img1024-conserv-s43 | 30 | 26 | 59.3 | 9.43 | 0.9876 |
-| aiforge-tiles-yolo11s-img1024-conserv-s44 | 30 | 23 | 53.4 | 9.43 | 0.9882 |
-| aiforge-full-yolo11s-img1280-conserv-s42 | 30 | 27 | 33.1 | 9.43 | 0.9601 |
-| aiforge-tiles-yolo11s-img1024-default-s42 | 30 | 28 | 43.4 | 9.43 | 0.9859 |
-| aiforge-tiles_authneg-yolo11s-img1024-conserv-s42 | 30 | 22 | 53.5 | 9.43 | 0.9875 |
-| aiforge-tiles-yolo11n-img1024-conserv-s42 | 30 | 28 | 31.6 | 2.6 | 0.9599 |
+| unet_bbox_s42 | seg | 80.91 | 14.33 | 3.14 | NVIDIA GeForce RTX 5080 |
+| dlv3p_bbox_s42 | seg | 122.02 | 12.33 | 3.14 | NVIDIA GeForce RTX 5080 |
+| unetjoint_pixel_eps8_morph_s42 | seg | 82.87 | 14.33 | 3.14 | NVIDIA GeForce RTX 5080 |
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | yolo | 98.1 | 9.43 | 3.14 | NVIDIA GeForce RTX 5080 |
+| aiforge-tiles-yolo11n-img1024-conserv-s42 | yolo | 80.53 | 2.6 | 3.14 | NVIDIA GeForce RTX 5080 |
+| aiforge-tiles-yolo11m-img1024-conserv-s42 | yolo | 76.3 | 20.05 | 3.14 | NVIDIA GeForce RTX 5080 |
+| aiforge-full-yolo11s-img1280-conserv-s42 | yolo | 303.01 | 9.43 | 3.14 | NVIDIA GeForce RTX 5080 |
+
+## T5c. Tespit metriği (val, tüm aileler, alan/üretici kırılımı)
+
+| model | family | group | n | AP50 | AP50_95 | Recall50_bestF1 | mean_boxes_per_img |
+|---|---|---|---|---|---|---|---|
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | yolo | all | 487 | 0.8787 | 0.781 | 0.9671 | 5.82 |
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | yolo | area_<1% | 231 | 0.854 | 0.7247 | 0.9481 | 10.06 |
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | yolo | area_1-5% | 254 | 0.9287 | 0.8445 | 0.9921 | 2.0 |
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.0 |
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | yolo | tool_gemini | 446 | 0.8869 | 0.7947 | 0.9731 | 4.51 |
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | yolo | tool_ideogram | 41 | 0.8465 | 0.6303 | 0.9268 | 20.0 |
+| aiforge-tiles-yolo11s-img1024-conserv-s43 | yolo | all | 487 | 0.873 | 0.7808 | 0.9692 | 5.21 |
+| aiforge-tiles-yolo11s-img1024-conserv-s43 | yolo | area_<1% | 231 | 0.8447 | 0.7188 | 0.9654 | 8.57 |
+| aiforge-tiles-yolo11s-img1024-conserv-s43 | yolo | area_1-5% | 254 | 0.9125 | 0.8453 | 0.9803 | 2.19 |
+| aiforge-tiles-yolo11s-img1024-conserv-s43 | yolo | area_5-20% | 2 | 1.0 | 0.9505 | 1.0 | 1.0 |
+| aiforge-tiles-yolo11s-img1024-conserv-s43 | yolo | tool_gemini | 446 | 0.8851 | 0.7996 | 0.9709 | 4.11 |
+| aiforge-tiles-yolo11s-img1024-conserv-s43 | yolo | tool_ideogram | 41 | 0.8251 | 0.6003 | 0.9756 | 17.24 |
+| aiforge-tiles-yolo11s-img1024-conserv-s44 | yolo | all | 487 | 0.8675 | 0.769 | 0.9774 | 5.24 |
+| aiforge-tiles-yolo11s-img1024-conserv-s44 | yolo | area_<1% | 231 | 0.8251 | 0.6897 | 0.9654 | 8.86 |
+| aiforge-tiles-yolo11s-img1024-conserv-s44 | yolo | area_1-5% | 254 | 0.9229 | 0.8538 | 0.9882 | 1.98 |
+| aiforge-tiles-yolo11s-img1024-conserv-s44 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.0 |
+| aiforge-tiles-yolo11s-img1024-conserv-s44 | yolo | tool_gemini | 446 | 0.8808 | 0.789 | 0.9776 | 4.22 |
+| aiforge-tiles-yolo11s-img1024-conserv-s44 | yolo | tool_ideogram | 41 | 0.8004 | 0.5678 | 0.9512 | 16.34 |
+| aiforge-tiles-yolo11s-img1024-default-s42 | yolo | all | 487 | 0.8671 | 0.758 | 0.9671 | 5.88 |
+| aiforge-tiles-yolo11s-img1024-default-s42 | yolo | area_<1% | 231 | 0.8377 | 0.6896 | 0.9437 | 9.45 |
+| aiforge-tiles-yolo11s-img1024-default-s42 | yolo | area_1-5% | 254 | 0.9138 | 0.8322 | 0.9843 | 2.67 |
+| aiforge-tiles-yolo11s-img1024-default-s42 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.0 |
+| aiforge-tiles-yolo11s-img1024-default-s42 | yolo | tool_gemini | 446 | 0.8771 | 0.7801 | 0.9709 | 4.7 |
+| aiforge-tiles-yolo11s-img1024-default-s42 | yolo | tool_ideogram | 41 | 0.8224 | 0.5386 | 0.9268 | 18.71 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s42 | yolo | all | 487 | 0.8891 | 0.7768 | 0.9733 | 2.81 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s42 | yolo | area_<1% | 231 | 0.8484 | 0.7065 | 0.9524 | 3.92 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s42 | yolo | area_1-5% | 254 | 0.9316 | 0.8499 | 0.9843 | 1.81 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s42 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.0 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s42 | yolo | tool_gemini | 446 | 0.8952 | 0.7955 | 0.9641 | 2.44 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s42 | yolo | tool_ideogram | 41 | 0.824 | 0.5756 | 0.9268 | 6.8 |
+| aiforge-tiles-yolo11n-img1024-conserv-s42 | yolo | all | 487 | 0.8486 | 0.7226 | 0.9035 | 7.26 |
+| aiforge-tiles-yolo11n-img1024-conserv-s42 | yolo | area_<1% | 231 | 0.7764 | 0.6288 | 0.8571 | 12.13 |
+| aiforge-tiles-yolo11n-img1024-conserv-s42 | yolo | area_1-5% | 254 | 0.9217 | 0.8152 | 0.9528 | 2.89 |
+| aiforge-tiles-yolo11n-img1024-conserv-s42 | yolo | area_5-20% | 2 | 1.0 | 0.901 | 1.0 | 1.5 |
+| aiforge-tiles-yolo11n-img1024-conserv-s42 | yolo | tool_gemini | 446 | 0.8596 | 0.7462 | 0.917 | 5.57 |
+| aiforge-tiles-yolo11n-img1024-conserv-s42 | yolo | tool_ideogram | 41 | 0.7202 | 0.4591 | 0.8537 | 25.68 |
+| aiforge-tiles-yolo11m-img1024-conserv-s42 | yolo | all | 487 | 0.8973 | 0.7996 | 0.9713 | 5.58 |
+| aiforge-tiles-yolo11m-img1024-conserv-s42 | yolo | area_<1% | 231 | 0.8678 | 0.7483 | 0.9567 | 8.94 |
+| aiforge-tiles-yolo11m-img1024-conserv-s42 | yolo | area_1-5% | 254 | 0.9259 | 0.8468 | 0.9843 | 2.55 |
+| aiforge-tiles-yolo11m-img1024-conserv-s42 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.0 |
+| aiforge-tiles-yolo11m-img1024-conserv-s42 | yolo | tool_gemini | 446 | 0.9058 | 0.8204 | 0.9641 | 4.47 |
+| aiforge-tiles-yolo11m-img1024-conserv-s42 | yolo | tool_ideogram | 41 | 0.8081 | 0.5671 | 0.9268 | 17.61 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42 | yolo | all | 487 | 0.8653 | 0.7655 | 0.9507 | 3.28 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42 | yolo | area_<1% | 231 | 0.8075 | 0.6718 | 0.9091 | 4.56 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42 | yolo | area_1-5% | 254 | 0.9393 | 0.8668 | 0.9764 | 2.14 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42 | yolo | area_5-20% | 2 | 1.0 | 0.9505 | 1.0 | 1.0 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42 | yolo | tool_gemini | 446 | 0.8792 | 0.788 | 0.9574 | 2.89 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42 | yolo | tool_ideogram | 41 | 0.7298 | 0.4924 | 0.7561 | 7.56 |
+| aiforge-full-yolo11s-img1280-conserv-s42 | yolo | all | 487 | 0.9574 | 0.8795 | 0.924 | 5.85 |
+| aiforge-full-yolo11s-img1280-conserv-s42 | yolo | area_<1% | 231 | 0.9148 | 0.7887 | 0.8615 | 10.72 |
+| aiforge-full-yolo11s-img1280-conserv-s42 | yolo | area_1-5% | 254 | 0.9896 | 0.9547 | 0.9843 | 1.45 |
+| aiforge-full-yolo11s-img1280-conserv-s42 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.5 |
+| aiforge-full-yolo11s-img1280-conserv-s42 | yolo | tool_gemini | 446 | 0.974 | 0.9107 | 0.9574 | 3.01 |
+| aiforge-full-yolo11s-img1280-conserv-s42 | yolo | tool_ideogram | 41 | 0.6975 | 0.4775 | 0.5854 | 36.76 |
+| unet_bbox_s42 | unet | all | 487 | 0.8853 | 0.606 | 0.8912 | 2.15 |
+| unet_bbox_s42 | unet | area_<1% | 231 | 0.8194 | 0.5538 | 0.8009 | 2.43 |
+| unet_bbox_s42 | unet | area_1-5% | 254 | 0.9516 | 0.6627 | 0.9724 | 1.9 |
+| unet_bbox_s42 | unet | area_5-20% | 2 | 1.0 | 0.5535 | 1.0 | 1.5 |
+| unet_bbox_s42 | unet | tool_gemini | 446 | 0.9181 | 0.6381 | 0.9372 | 1.9 |
+| unet_bbox_s42 | unet | tool_ideogram | 41 | 0.4968 | 0.2503 | 0.6341 | 4.9 |
+| unet_bbox_s43 | unet | all | 487 | 0.8561 | 0.5827 | 0.8871 | 2.0 |
+| unet_bbox_s43 | unet | area_<1% | 231 | 0.7935 | 0.5261 | 0.8182 | 2.11 |
+| unet_bbox_s43 | unet | area_1-5% | 254 | 0.9279 | 0.6532 | 0.9528 | 1.9 |
+| unet_bbox_s43 | unet | area_5-20% | 2 | 0.505 | 0.505 | 0.5 | 1.5 |
+| unet_bbox_s43 | unet | tool_gemini | 446 | 0.8815 | 0.6178 | 0.9148 | 1.88 |
+| unet_bbox_s43 | unet | tool_ideogram | 41 | 0.503 | 0.2173 | 0.5854 | 3.29 |
+| unet_bbox_s44 | unet | all | 487 | 0.3373 | 0.1777 | 0.7413 | 4.0 |
+| unet_bbox_s44 | unet | area_<1% | 231 | 0.3682 | 0.216 | 0.671 | 3.87 |
+| unet_bbox_s44 | unet | area_1-5% | 254 | 0.3008 | 0.1367 | 0.8071 | 4.11 |
+| unet_bbox_s44 | unet | area_5-20% | 2 | 0.505 | 0.505 | 0.5 | 4.0 |
+| unet_bbox_s44 | unet | tool_gemini | 446 | 0.3531 | 0.1891 | 0.7646 | 3.69 |
+| unet_bbox_s44 | unet | tool_ideogram | 41 | 0.1815 | 0.0671 | 0.4146 | 7.34 |
+| unet_pixel_eps8_morph_s42 | unet | all | 487 | 0.1181 | 0.0627 | 0.3388 | 20.68 |
+| unet_pixel_eps8_morph_s42 | unet | area_<1% | 231 | 0.2251 | 0.1208 | 0.4545 | 18.4 |
+| unet_pixel_eps8_morph_s42 | unet | area_1-5% | 254 | 0.0418 | 0.0166 | 0.2283 | 22.81 |
+| unet_pixel_eps8_morph_s42 | unet | area_5-20% | 2 | 0.0 | 0.0 | 0.0 | 12.5 |
+| unet_pixel_eps8_morph_s42 | unet | tool_gemini | 446 | 0.1129 | 0.0596 | 0.3229 | 19.28 |
+| unet_pixel_eps8_morph_s42 | unet | tool_ideogram | 41 | 0.3062 | 0.1648 | 0.4878 | 35.85 |
+| unet_pixel_eps8_morph_s43 | unet | all | 487 | 0.0688 | 0.0313 | 0.2546 | 21.67 |
+| unet_pixel_eps8_morph_s43 | unet | area_<1% | 231 | 0.136 | 0.065 | 0.3463 | 17.82 |
+| unet_pixel_eps8_morph_s43 | unet | area_1-5% | 254 | 0.0226 | 0.0065 | 0.1654 | 25.25 |
+| unet_pixel_eps8_morph_s43 | unet | area_5-20% | 2 | 0.0 | 0.0 | 0.0 | 13.0 |
+| unet_pixel_eps8_morph_s43 | unet | tool_gemini | 446 | 0.0672 | 0.031 | 0.2466 | 21.39 |
+| unet_pixel_eps8_morph_s43 | unet | tool_ideogram | 41 | 0.1456 | 0.058 | 0.3659 | 24.73 |
+| unet_pixel_eps8_morph_s44 | unet | all | 487 | 0.0889 | 0.0417 | 0.1109 | 19.26 |
+| unet_pixel_eps8_morph_s44 | unet | area_<1% | 231 | 0.1779 | 0.0865 | 0.4329 | 14.17 |
+| unet_pixel_eps8_morph_s44 | unet | area_1-5% | 254 | 0.0215 | 0.0074 | 0.1811 | 23.93 |
+| unet_pixel_eps8_morph_s44 | unet | area_5-20% | 2 | 0.0 | 0.0 | 0.0 | 13.0 |
+| unet_pixel_eps8_morph_s44 | unet | tool_gemini | 446 | 0.0834 | 0.0405 | 0.1099 | 18.85 |
+| unet_pixel_eps8_morph_s44 | unet | tool_ideogram | 41 | 0.2994 | 0.1458 | 0.3659 | 23.73 |
+| unet_glyph_v2_s42 | unet | all | 487 | 0.0104 | 0.0043 | 0.0205 | 60.34 |
+| unet_glyph_v2_s42 | unet | area_<1% | 231 | 0.0114 | 0.0046 | 0.0173 | 40.74 |
+| unet_glyph_v2_s42 | unet | area_1-5% | 254 | 0.0002 | 0.0001 | 0.0433 | 78.43 |
+| unet_glyph_v2_s42 | unet | area_5-20% | 2 | 0.0 | 0.0 | 0.0 | 27.5 |
+| unet_glyph_v2_s42 | unet | tool_gemini | 446 | 0.0103 | 0.0042 | 0.009 | 60.26 |
+| unet_glyph_v2_s42 | unet | tool_ideogram | 41 | 0.0061 | 0.0027 | 0.0488 | 61.24 |
+| dlv3p_bbox_s42 | unet | all | 487 | 0.8512 | 0.6 | 0.8871 | 2.96 |
+| dlv3p_bbox_s42 | unet | area_<1% | 231 | 0.7552 | 0.4927 | 0.7835 | 3.48 |
+| dlv3p_bbox_s42 | unet | area_1-5% | 254 | 0.9594 | 0.7136 | 0.9803 | 2.51 |
+| dlv3p_bbox_s42 | unet | area_5-20% | 2 | 1.0 | 0.702 | 1.0 | 1.5 |
+| dlv3p_bbox_s42 | unet | tool_gemini | 446 | 0.8791 | 0.631 | 0.935 | 2.63 |
+| dlv3p_bbox_s42 | unet | tool_ideogram | 41 | 0.4967 | 0.2408 | 0.5854 | 6.59 |
+| unet_bbox_mr_s42 | unet | all | 487 | 0.777 | 0.4738 | 0.8378 | 2.83 |
+| unet_bbox_mr_s42 | unet | area_<1% | 231 | 0.6936 | 0.4288 | 0.7316 | 3.17 |
+| unet_bbox_mr_s42 | unet | area_1-5% | 254 | 0.8763 | 0.5322 | 0.937 | 2.52 |
+| unet_bbox_mr_s42 | unet | area_5-20% | 2 | 1.0 | 0.5545 | 1.0 | 1.0 |
+| unet_bbox_mr_s42 | unet | tool_gemini | 446 | 0.8098 | 0.5045 | 0.8722 | 2.58 |
+| unet_bbox_mr_s42 | unet | tool_ideogram | 41 | 0.4234 | 0.1662 | 0.7073 | 5.51 |
+| unetjoint_pixel_eps8_morph_s42 | unet | all | 487 | 0.1343 | 0.0685 | 0.4066 | 12.62 |
+| unetjoint_pixel_eps8_morph_s42 | unet | area_<1% | 231 | 0.2333 | 0.1222 | 0.5152 | 11.29 |
+| unetjoint_pixel_eps8_morph_s42 | unet | area_1-5% | 254 | 0.0524 | 0.0234 | 0.3071 | 13.82 |
+| unetjoint_pixel_eps8_morph_s42 | unet | area_5-20% | 2 | 0.0 | 0.0 | 0.0 | 14.5 |
+| unetjoint_pixel_eps8_morph_s42 | unet | tool_gemini | 446 | 0.1296 | 0.0677 | 0.3946 | 11.83 |
+| unetjoint_pixel_eps8_morph_s42 | unet | tool_ideogram | 41 | 0.3743 | 0.1437 | 0.3902 | 21.24 |
 
 ## T6. Dayanıklılık (relΔ pooled AUPRC, kendi GT'sinde)
 
@@ -117,6 +273,7 @@
 | U-Net | marker-repaired+nm-GT | pix | -75.7% | -0.7% | -53.8% | -50.3% | -51.5% |
 | U-Net+box-aux | main | glyph | -31.4% | -1.2% | -62.3% | -18.3% | -20.1% |
 | U-Net+box-aux | main | pix | -42.7% | -0.6% | -63.5% | -19.8% | -31.6% |
+| YOLO11s | main | box | -1.4% | -1.2% | -58.6% | -48.5% | -0.7% |
 
 ## T7. Kontroller (val; image-level AUROC forged vs kontrol; bayrak oranı @0.5 (>0.1 % piksel); FP@τ*)
 
