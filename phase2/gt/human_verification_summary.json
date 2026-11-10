@@ -1,0 +1,349 @@
+{
+ "form": "verification_human.xlsx",
+ "n_rows": 100,
+ "n_complete": 100,
+ "distribution": {
+  "bbox_verdict": {
+   "OK": {
+    "k": 99,
+    "p_ci95": [
+     0.99,
+     0.9455,
+     0.9982
+    ]
+   },
+   "PARTIAL": {
+    "k": 1,
+    "p_ci95": [
+     0.01,
+     0.0018,
+     0.0545
+    ]
+   },
+   "WRONG": {
+    "k": 0,
+    "p_ci95": [
+     0.0,
+     0.0,
+     0.037
+    ]
+   }
+  },
+  "eps8_verdict": {
+   "OK": {
+    "k": 36,
+    "p_ci95": [
+     0.36,
+     0.2727,
+     0.4576
+    ]
+   },
+   "PARTIAL": {
+    "k": 64,
+    "p_ci95": [
+     0.64,
+     0.5424,
+     0.7273
+    ]
+   },
+   "WRONG": {
+    "k": 0,
+    "p_ci95": [
+     0.0,
+     0.0,
+     0.037
+    ]
+   }
+  },
+  "glyph_v2_verdict": {
+   "OK": {
+    "k": 42,
+    "p_ci95": [
+     0.42,
+     0.328,
+     0.5179
+    ]
+   },
+   "PARTIAL": {
+    "k": 54,
+    "p_ci95": [
+     0.54,
+     0.4426,
+     0.6344
+    ]
+   },
+   "WRONG": {
+    "k": 4,
+    "p_ci95": [
+     0.04,
+     0.0157,
+     0.0984
+    ]
+   }
+  },
+  "outside_change": {
+   "no": {
+    "k": 99,
+    "p_ci95": [
+     0.99,
+     0.9455,
+     0.9982
+    ]
+   },
+   "yes": {
+    "k": 0,
+    "p_ci95": [
+     0.0,
+     0.0,
+     0.037
+    ]
+   },
+   "unclear": {
+    "k": 1,
+    "p_ci95": [
+     0.01,
+     0.0018,
+     0.0545
+    ]
+   }
+  },
+  "green_marker": {
+   "no": {
+    "k": 50,
+    "p_ci95": [
+     0.5,
+     0.4038,
+     0.5962
+    ]
+   },
+   "yes": {
+    "k": 48,
+    "p_ci95": [
+     0.48,
+     0.3846,
+     0.5768
+    ]
+   },
+   "unsure": {
+    "k": 2,
+    "p_ci95": [
+     0.02,
+     0.0055,
+     0.07
+    ]
+   }
+  }
+ },
+ "weighted_fulltrain": {
+  "bbox_verdict": {
+   "OK": 0.9905,
+   "PARTIAL": 0.0095,
+   "WRONG": 0.0
+  },
+  "eps8_verdict": {
+   "OK": 0.3317,
+   "PARTIAL": 0.6683,
+   "WRONG": 0.0
+  },
+  "glyph_v2_verdict": {
+   "OK": 0.3831,
+   "PARTIAL": 0.5742,
+   "WRONG": 0.0427
+  },
+  "outside_change": {
+   "no": 0.9905,
+   "yes": 0.0,
+   "unclear": 0.0095
+  },
+  "green_marker": {
+   "no": 0.4727,
+   "yes": 0.5051,
+   "unsure": 0.0222
+  }
+ },
+ "human_vs_vlm": {
+  "eps8_verdict": {
+   "unweighted": {
+    "n": 96,
+    "pct_agree": 0.4688,
+    "kappa": 0.0688,
+    "kappa_ci95": [
+     -0.0803,
+     0.2093
+    ],
+    "crosstab{human:{other:n}}": {
+     "OK": {
+      "OK": 26,
+      "PARTIAL": 7,
+      "WRONG": 1
+     },
+     "PARTIAL": {
+      "OK": 43,
+      "PARTIAL": 19,
+      "WRONG": 0
+     }
+    }
+   },
+   "linear_weighted": {
+    "n": 96,
+    "pct_agree": 0.4688,
+    "kappa": 0.0567,
+    "kappa_ci95": [
+     -0.0925,
+     0.1961
+    ],
+    "crosstab{human:{other:n}}": {
+     "OK": {
+      "OK": 26,
+      "PARTIAL": 7,
+      "WRONG": 1
+     },
+     "PARTIAL": {
+      "OK": 43,
+      "PARTIAL": 19,
+      "WRONG": 0
+     }
+    }
+   }
+  },
+  "glyph_v2_verdict": {
+   "unweighted": {
+    "n": 96,
+    "pct_agree": 0.5938,
+    "kappa": 0.2356,
+    "kappa_ci95": [
+     0.0662,
+     0.402
+    ],
+    "crosstab{human:{other:n}}": {
+     "OK": {
+      "OK": 28,
+      "PARTIAL": 11
+     },
+     "PARTIAL": {
+      "OK": 24,
+      "PARTIAL": 29
+     },
+     "WRONG": {
+      "OK": 3,
+      "PARTIAL": 1
+     }
+    }
+   },
+   "linear_weighted": {
+    "n": 96,
+    "pct_agree": 0.5938,
+    "kappa": 0.2122,
+    "kappa_ci95": [
+     0.046,
+     0.3757
+    ],
+    "crosstab{human:{other:n}}": {
+     "OK": {
+      "OK": 28,
+      "PARTIAL": 11
+     },
+     "PARTIAL": {
+      "OK": 24,
+      "PARTIAL": 29
+     },
+     "WRONG": {
+      "OK": 3,
+      "PARTIAL": 1
+     }
+    }
+   }
+  },
+  "outside_change": {
+   "n": 96,
+   "pct_agree": 0.7917,
+   "kappa": -0.018,
+   "kappa_ci95": [
+    -0.055,
+    0.0
+   ],
+   "crosstab{human:{other:n}}": {
+    "no": {
+     "no": 76,
+     "unclear": 15,
+     "yes": 4
+    },
+    "unclear": {
+     "no": 1,
+     "unclear": 0,
+     "yes": 0
+    }
+   }
+  },
+  "green_marker": {
+   "n": 96,
+   "pct_agree": 0.4062,
+   "kappa": 0.1094,
+   "kappa_ci95": [
+    -0.0168,
+    0.2309
+   ],
+   "crosstab{human:{other:n}}": {
+    "no": {
+     "no": 14,
+     "unsure": 20,
+     "yes": 13
+    },
+    "unsure": {
+     "no": 0,
+     "unsure": 0,
+     "yes": 2
+    },
+    "yes": {
+     "no": 10,
+     "unsure": 12,
+     "yes": 25
+    }
+   }
+  }
+ },
+ "human_vs_vlm_note": "VLM glif kararı hangi glif sürümüne bakılarak verildiyse ona göre yorumlanmalı; insan formu glyph_v2'yi değerlendirir.",
+ "green_human_vs_objective": {
+  "n": 96,
+  "pct_agree": 0.7083,
+  "kappa": 0.4286,
+  "kappa_ci95": [
+   0.2855,
+   0.5794
+  ],
+  "crosstab{human:{other:n}}": {
+   "no": {
+    "no": 21,
+    "yes": 26
+   },
+   "unsure": {
+    "no": 0,
+    "yes": 2
+   },
+   "yes": {
+    "no": 0,
+    "yes": 47
+   }
+  }
+ },
+ "outside_human_vs_autoflag": {
+  "flag": {
+   "no": 3,
+   "unclear": 0
+  },
+  "no_flag": {
+   "no": 96,
+   "unclear": 1
+  }
+ },
+ "eps8_human_vs_lowcoverage_flag": {
+  "flag": {
+   "OK": 1,
+   "PARTIAL": 6
+  },
+  "no_flag": {
+   "OK": 35,
+   "PARTIAL": 58
+  }
+ }
+}

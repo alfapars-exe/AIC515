@@ -20,9 +20,9 @@
 | PHASE3-e kutu formülasyonu (YOLO) | ✅ Kapandı | Bkz. §2 | T2, T5 |
 | §6.4 "test edilmedi" ön işleme | ✅ Kapandı | Gri seviye tüm modellerde AUPRC −47…−67 % (en zararlı; YOLO −59 %); CLAHE ≤ ±3 % | T3, T6 |
 | Veri bias analizi | ✅ Kapandı | İşaretçi × üretici Cramér's V 0.61; split χ² p ≥ 0.30 | `dataset_curation.md` |
-| W1 100 çift insan GT doğrulaması | ❌ Yapılamadı | İnsan emeği gerektirir; `phase2/gt/verification_sheet.csv` hazır (~45 dk) | — |
+| W1 100 çift GT doğrulaması | ⚠ Kısmen | İkinci bağımsız denetim tamamlandı (değerlendirici türü doğrulanmadı → insan etiketlemesi sayılmaz): kutu 99/100 OK; piksel GT 36 OK / 64 PARTIAL / 0 WRONG — PARTIAL'ların 61'i değişmeyen, yeniden çizilmiş metni fazladan kapsamaktan (WildReceipt 39/39, XFUND 0/11); glyph_v2 42/54/4; VLM ile uyum zayıf (κ = 0.07 [−0.08, 0.21]), VLM 43 çiftte daha iyimser. Bildiri sınırlaması güncellendi | `phase2/gt/human_verification_summary.md` |
 | W7 TruFor ince ayar | ❌ Yapılamadı | Yayımlanan kodda eğitim betiği yok (README "TODO"); mimari bağımsızlık DeepLabV3+ ve YOLO ile gösterildi | — |
-| AIForge-Doc v2 harici test | ⏸ Kullanıcı erişimine bağlı | Repo `Scam-AI/AIForge-Doc-v2`, kapılı; token gated-repo izni gerekli | — |
+| AIForge-Doc v2 harici test | ✅ Kapandı | 567 sızıntısız çift (v1 test karşılığı, kaynak belge eğitimde yok), yeniden eğitim/kalibrasyon yok: box U-Net 0.950 → 0.520±0.018 AUPRC; YOLO11s 0.887±0.006 (görüntü AUROC 0.919); işaretçisiz box U-Net 0.712 ve kalıntısız spesifikasyonlarda kayıpsız (+0.003, tek tohum). Kaybın çoğu v1'de işaretçi taşıyan spesifikasyonlarda (§6) | `phase3_v2/results/v2_tables.md` |
 
 ## 2. YOLO11 hipotez kararları (plan: `phase3_yolo/README.md`)
 
@@ -55,3 +55,43 @@ Ek: YOLO işaretçiye daha az bağımlı (onarım Δ −0.062 vs U-Net −0.222)
 - **Yeni senaryolar:** *Yalnız yeniden-render* (değişen karakterler + işaretçi authentic'e döndürülür; etiket GERÇEK) ve *yalnız içerik* (authentic'e yalnız değişen karakterler yapıştırılır; etiket SAHTE) — `probes_p3.py` tanımı (4-komşu haç, 2 px genişletme); tek fark işaretçi kalıntısının bbox halkasıyla sınırlanmaması. Yeni bozulmalar: CLAHE (L kanalı), gri seviye.
 - **Sonuçlar sekmesi** Faz 3 sentez tablolarını (`meta/phase3_tables.md`) gösterir. XAI SHAP sekmesi piksel segmentasyon modelleriyle sınırlıdır (YOLO için tam görüntü hedefleri ayrı bir çalışmada geliştiriliyor).
 - **Canlı test** (`hf_space/live_test.py` → `reports/canli_test_p3.json`): 6 senaryo × 6 model + 24 çiftli toplu test ZeroGPU'da tamamlandı; toplu testte YOLO11s F1 bbox 0.948, IoU 0.910, AP bbox 0.939, piksel-GT F1 0.534 (U-Net bbox s42: 0.925 / 0.871 / 0.964 / 0.528). Bağımlılıklar: `ultralytics==8.4.208` (AGPL-3.0), `segmentation-models-pytorch==0.6.0`, `packages.txt` (libgl1).
+
+## 6. AIForge-Doc v2 (GPT-Image-2) — harici test, yeniden eğitim yok
+
+567 çiftlik birincil küme: v1 karşılığı test bölümünde, kaynak belgesi v1 eğitiminde hiç görülmemiş. v2'de yalnız düzenlenen kutu geri yapıştırılır; yeşil işaretçi kalıntısı yoktur (3066 görüntünün 0'ı). Eşikler v1 doğrulamadan, değişmeden. ΔAP: aynı spesifikasyonun v1 test görüntüsünden v2 görüntüsüne görüntü-başı AP değişimi; v1 görüntüsünde işaretçi kalıntısı olan (397) ve olmayan (170) çiftler ayrı.
+
+| model (v1'de eğitildi)        |   box AUPRC |   piksel AUPRC |   glif AUPRC |   görüntü AUROC |   ΔAP v1 kalıntılı |   ΔAP v1 kalıntısız |
+|:------------------------------|------------:|---------------:|-------------:|----------------:|-------------------:|--------------------:|
+| U-Net box (3 tohum)           |       0.52  |          0.272 |        0.209 |           0.717 |             -0.49  |              -0.169 |
+| U-Net piksel (3)              |       0.227 |          0.246 |        0.252 |           0.693 |             -0.398 |              -0.172 |
+| U-Net glif (3)                |       0.147 |          0.192 |        0.304 |           0.688 |             -0.171 |              -0.112 |
+| DeepLabV3+ box                |       0.539 |          0.28  |        0.218 |           0.724 |             -0.375 |              -0.141 |
+| U-Net box, işaretçisiz eğitim |       0.712 |          0.392 |        0.296 |           0.835 |             -0.19  |               0.003 |
+| U-Net piksel, işaretçisiz     |       0.353 |          0.43  |        0.416 |           0.826 |             -0.106 |              -0.078 |
+| U-Net glif, işaretçisiz       |       0.214 |          0.287 |        0.446 |           0.764 |             -0.076 |              -0.065 |
+| U-Net box, yalnız Gemini      |       0.449 |          0.248 |        0.175 |           0.742 |             -0.54  |              -0.189 |
+| YOLO11s kare (3)              |       0.887 |          0.354 |        0.244 |           0.919 |             -0.149 |              -0.033 |
+| YOLO11s tam 1280              |       0.697 |          0.328 |        0.215 |           0.8   |             -0.202 |              -0.083 |
+| YOLO11s yalnız Gemini         |       0.843 |          0.338 |        0.229 |           0.865 |             -0.212 |              -0.055 |
+| YOLO11s +authentic kare       |       0.863 |          0.345 |        0.241 |           0.937 |             -0.191 |              -0.055 |
+
+**Okuma:** box U-Net v1'de 0.95 iken v2'de 0.52'ye düşüyor; kaybın çoğu v1'de işaretçi taşıyan spesifikasyonlarda. İşaretçisiz eğitilen box U-Net kalıntısız spesifikasyonlarda hiç kaybetmiyor (tek tohum); kareli YOLO11s 0.89'da kalıyor.
+
+**Tüm v2 (3066 çift) görüntü AUROC** — 'seen': kaynak belge v1 eğitiminde vardı; README zero-shot taban çizgileri: TruFor 0.599, DocTamper 0.585, insan 0.501.
+
+| model                                     | subset   |   n_pairs |   auroc_top1pct |
+|:------------------------------------------|:---------|----------:|----------------:|
+| unet_bbox_s42                             | all      |      3066 |           0.742 |
+| unet_bbox_s42                             | primary  |       567 |           0.736 |
+| unet_bbox_s42                             | seen     |      2494 |           0.743 |
+| unet_pixel_eps8_morph_s42                 | all      |      3066 |           0.712 |
+| unet_pixel_eps8_morph_s42                 | primary  |       567 |           0.712 |
+| unet_pixel_eps8_morph_s42                 | seen     |      2494 |           0.712 |
+| unet_glyph_v2_s42                         | all      |      3066 |           0.703 |
+| unet_glyph_v2_s42                         | primary  |       567 |           0.694 |
+| unet_glyph_v2_s42                         | seen     |      2494 |           0.705 |
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | all      |      3066 |           0.912 |
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | primary  |       567 |           0.915 |
+| aiforge-tiles-yolo11s-img1024-conserv-s42 | seen     |      2494 |           0.911 |
+
+Yöntem: `phase3_v2/v2_eval.py` (prep → infer → eval; sızıntı kuralı koşmadan önce sabitlendi), `v2_report.py`, `v2_marker_split.py`, kuyruk `run_v2.ps1`. GT varyantları v1 ile birebir (`make_gt.process_pair`). Veri: tam paket (authentic dahil) Google Drive'dan; CC BY-NC-SA 4.0, yeniden dağıtılmaz.

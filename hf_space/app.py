@@ -2162,6 +2162,9 @@ def results_markdown():
     p3 = META / "phase3_tables.md"
     if p3.exists():  # Faz 3: YOLO11, DeepLabV3+, işaretçisiz eğitim, sondalar (bildiri: paper/main.pdf)
         parts.append(p3.read_text(encoding="utf-8") + "\n\n---\n")
+    v2 = META / "v2_tables.md"
+    if v2.exists():  # AIForge-Doc v2 (GPT-Image-2) harici test: v1 modelleri, yeniden eğitim yok
+        parts.append(v2.read_text(encoding="utf-8") + "\n\n---\n")
     if RESULTS_MD.exists():
         parts.append("## Küçük-veri (smoke) baseline sonuçları\n")
         parts.append(RESULTS_MD.read_text(encoding="utf-8"))
@@ -3030,7 +3033,7 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
             "- Tam görüntü çıkarımı 512 px pencere / 448 px adım / örtüşme ortalaması; uzun kenar > 4096 px ise 4096'ya küçültülür.\n"
             "- Metrikler boru hattıyla aynı tanımla hesaplanır: 8-bit nicemlenmiş olasılık, 256 kutulu histogram, tüm pikseller (alt-örnekleme yok).\n"
             "- Görüntü-düzeyi skor = olasılık haritasının en yüksek %1 piksel ortalaması; eşik val'de Youden-J ile seçildi.\n"
-            "- Veri seti: AIForge-Doc v1 (Scam.AI, CC BY-NC-SA 4.0, kapılı).")
+            "- Veri seti: AIForge-Doc v1 (Scam.AI, CC BY-NC-SA 4.0, kapılı); harici test: AIForge-Doc v2 (GPT-Image-2, aynı lisans), yalnız sonuç tabloları.")
 
     # ---------------------------------------------------------------- 8 · XAI ANALYSIS (SHAP + Filter Visualization)
     with gr.Tab("8 · XAI Analysis"):

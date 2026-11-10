@@ -63,7 +63,7 @@ def agree(a, b, cats, weighted=False, B=1000, seed=0):
     return {"n": int(len(a)), "pct_agree": round(float((a == b).mean()), 4),
             "kappa": round(kappa(a, b, cats, weighted), 4),
             "kappa_ci95": [round(float(np.nanpercentile(ks, 2.5)), 4), round(float(np.nanpercentile(ks, 97.5)), 4)],
-            "crosstab(rows=human)": pd.crosstab(pd.Series(a, name="human"), pd.Series(b, name="other")).to_dict()}
+            "crosstab{human:{other:n}}": pd.crosstab(pd.Series(a, name="human"), pd.Series(b, name="other")).to_dict(orient="index")}
 
 
 def main():
@@ -95,7 +95,7 @@ def main():
                                      for c, al in ALLOWED.items()}
 
     # 3) insan–VLM
-    v = pd.read_csv(os.path.join(HERE, "verification_sheet_vlm.csv"), dtype=str).fillna("")
+    v = pd.read_csv(os.path.join(HERE, "verification_sheet_vlm.csv"), dtype=str, keep_default_na=False)  # "n/a" metin olarak kalsın
     v["new_id"] = v["new_id"].str.zfill(9)
     m = full.merge(v, on="new_id", how="inner", suffixes=("", "_v"))
     m = m[m["vlm_parse_ok"].str.lower() == "true"]

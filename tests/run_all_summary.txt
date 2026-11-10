@@ -1,0 +1,4 @@
+app rc=1
+app_p3 rc=0
+xai_filters rc=0
+xai rc=1

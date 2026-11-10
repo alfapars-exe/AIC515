@@ -9,7 +9,7 @@ $DST = "C:\Users\PARS\Desktop\PROJELER\AI 515\AIC515_repo"
 $XD = @("data", "models", "TESLIM_PAKETI", "_to_delete", ".archify", "__pycache__", ".git",
         "preds", "preds_boxes", "hists", "cache", "marker_repaired", "yolo_data", "weights",
         "TruFor", "ADCD-Net", "adcd", "seed_sources", "TEKMER", "vlm_verification", "xfer",
-        "benign_pasteback", "fullimage_resample", "reencode_png",
+        "benign_pasteback", "fullimage_resample", "reencode_png", "drafts", "_v2_zip",
         "pixel_eps4", "pixel_eps8", "pixel_eps16", "pixel_eps8_morph", "pixel_eps8_morph_nm", "glyph", "glyph_v2", "glyph_v2_nm", "bbox_and_eps8")
 $XF = @("*.pt", "*.pth", "*.ckpt", "*.onnx", "*.npz", "*.npy", "*.zip", "*.tar", "*.gz", "*.parquet", "*.log", "*.done",
         "*.pdf.part", "token*", "*.env", ".env", "train_batch*.jpg", "val_batch*.jpg", "labels.jpg", "verification_grid.pdf")
