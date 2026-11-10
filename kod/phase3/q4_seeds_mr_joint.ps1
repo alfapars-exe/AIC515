@@ -29,4 +29,10 @@ $SEG = "unet_bbox_s42,unet_pixel_eps8_morph_s42,unet_glyph_v2_s42,unet_bbox_s43,
 $YOLO = "aiforge-tiles-yolo11s-img1024-conserv-s42,aiforge-tiles-yolo11s-img1024-conserv-s43,aiforge-tiles-yolo11s-img1024-conserv-s44,aiforge-full-yolo11s-img1280-conserv-s42,aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42,aiforge-tiles_authneg-yolo11s-img1024-conserv-s42"
 Step "v2_infer_mr_s4344" { Set-Location $P3V2; & $PY v2_eval.py infer --models $MR --subset primary; Set-Location $P3 }
 Step "v2_eval_primary_s4344" { Set-Location $P3V2; & $PY v2_eval.py eval --models "$SEG,$MR" --yolo $YOLO --subset primary; Set-Location $P3 }
+# 5) kutu düzeyi tespit ölçütü (AP50, AP50-95) — q3b ile aynı model listesi + yeni tohumlar; dosyalar baştan yazılır
+#    (eski modellerin tahmin haritaları diskte olduğundan satırları değişmez). 11.11.2026'da eklendi ve koşuldu.
+$DETY = "aiforge-tiles-yolo11s-img1024-conserv-s42,aiforge-tiles-yolo11s-img1024-conserv-s43,aiforge-tiles-yolo11s-img1024-conserv-s44,aiforge-tiles-yolo11s-img1024-default-s42,aiforge-tiles_authneg-yolo11s-img1024-conserv-s42,aiforge-tiles-yolo11n-img1024-conserv-s42,aiforge-tiles-yolo11m-img1024-conserv-s42,aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42,aiforge-full-yolo11s-img1280-conserv-s42"
+$DETU = "unet_bbox_s42,unet_bbox_s43,unet_bbox_s44,unet_pixel_eps8_morph_s42,unet_pixel_eps8_morph_s43,unet_pixel_eps8_morph_s44,unet_glyph_v2_s42,dlv3p_bbox_s42,unet_bbox_mr_s42,unetjoint_pixel_eps8_morph_s42,$MR,$JT"
+Step "y_detmetrics_val_s4344"  { Set-Location $P3Y; & $PY detection_metrics.py --yolo $DETY --unet $DETU --split val; Set-Location $P3 }
+Step "y_detmetrics_test_s4344" { Set-Location $P3Y; & $PY detection_metrics.py --yolo $DETY --unet $DETU --split test; Set-Location $P3 }
 "$(Get-Date -Format s) q4 finished" | Out-File -Append "$P3LOG\queue.log"

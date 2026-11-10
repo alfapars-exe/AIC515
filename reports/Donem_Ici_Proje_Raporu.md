@@ -745,7 +745,7 @@ Girdi : model başına 8 bitlik haritalar P_n, referanslar G_n (kutu, piksel, gl
 
 Ölçütler bir modelin ne kadar başarılı olduğunu söyler, neye bakarak karar verdiğini söylemez. Kısayol sorusu doğrudan ikincisiyle ilgili olduğundan uygulamaya birbirinden bağımsız iki açıklanabilirlik aracı eklenmiştir: kararı girdi bölgelerine paylaştıran SHAP çözümlemesi ve ilk evrişim katmanlarının öğrendiği süzgeçleri gösteren katman filtresi görselleştirmesi. Adli lokalizasyonda açıklama sadakatinin ayrıca denetlenmesi gerektiği literatürde de vurgulanmaktadır [58].
 
-**SHAP.** Yöntem, işbirlikçi oyun kuramındaki Shapley değerine dayanır. Modelin skaler çıktısı $f$, öznitelik (burada görüntü bölgesi) kümesi $N$ ve $|N|=n$ için $i$. bölgenin katkısı, o bölgenin bütün olası alt kümelere eklenmesiyle oluşan çıktı farklarının ağırlıklı ortalamasıdır:
+**SHAP.** Yöntem [59], işbirlikçi oyun kuramındaki Shapley değerine dayanır. Modelin skaler çıktısı $f$, öznitelik (burada görüntü bölgesi) kümesi $N$ ve $|N|=n$ için $i$. bölgenin katkısı, o bölgenin bütün olası alt kümelere eklenmesiyle oluşan çıktı farklarının ağırlıklı ortalamasıdır:
 
 $$\phi_i=\sum_{S\subseteq N\setminus\{i\}}\frac{|S|!\,(n-|S|-1)!}{n!}\left[f(S\cup\{i\})-f(S)\right]$$
 
@@ -761,7 +761,7 @@ Açıklanan hedef her zaman modelin gerçek çıktısından türetilen skaler bi
 
 Tam çözünürlükte piksel düzeyi maskeleme pratik değildir. Bu nedenle maske, uzun kenarı 192 hücre olan bir ızgarada tanımlanır; her değerlendirmede ızgara tam çözünürlüğe taşınır ve görüntü, gösterge 1 olan hücrelerde özgün girdiden, diğerlerinde referanstan kurulur. Böylece tek hedef ve tek referansla görüntünün tamamı açıklanır. Bir sonuç yalnız üç koşul sağlandığında "tam görüntü SHAP (doğrulandı)" etiketini alır: harita boyutu görüntü boyutuna eşittir, hedef tam görüntü hedefidir ve $|\phi_0+\sum_i\phi_i-f(x)|<10^{-3}$. Pencere pencere hesaplanıp birleştirilen döşemeli mozaik ayrı bir seçenektir; pencerelerin taban değerleri farklı olduğundan tam görüntü SHAP olarak sunulmaz. Yöntem Algoritma 12'de verilmiştir.
 
-Açıklamaların sadakati üç ölçüyle sınanır. Silme eğrisi altındaki alan (AOPC) için pencere 16×16 bloğa bölünür, bloklar SHAP toplamına göre azalan sırada yüzde onluk adımlarla referansla değiştirilir ve çıktıdaki ortalama düşüş, $\mathrm{AOPC}=\frac{1}{K}\sum_{k=1}^{K}\left[f(x)-f(x_{(k)})\right]$, rastgele sırayla elde edilen düşüşle karşılaştırılır. İşaret etme oyununda en yüksek katkılı bloğun referans kutusuna değip değmediğine bakılır. Bölge kütlesi, pozitif katkı kütlesinin işaretçi piksellerinde ve kutu kenar halkasında toplanan payıdır; bu payın bölgenin alan payına oranı (yoğunlaşma katsayısı) birden çok büyükse karar o bölgeye yaslanıyor demektir.
+Açıklamaların sadakati üç ölçüyle sınanır. Silme eğrisi altındaki alan (AOPC) [60] için pencere 16×16 bloğa bölünür, bloklar SHAP toplamına göre azalan sırada yüzde onluk adımlarla referansla değiştirilir ve çıktıdaki ortalama düşüş, $\mathrm{AOPC}=\frac{1}{K}\sum_{k=1}^{K}\left[f(x)-f(x_{(k)})\right]$, rastgele sırayla elde edilen düşüşle karşılaştırılır. İşaret etme oyununda en yüksek katkılı bloğun referans kutusuna değip değmediğine bakılır. Bölge kütlesi, pozitif katkı kütlesinin işaretçi piksellerinde ve kutu kenar halkasında toplanan payıdır; bu payın bölgenin alan payına oranı (yoğunlaşma katsayısı) birden çok büyükse karar o bölgeye yaslanıyor demektir.
 
 **Algoritma 12. Tam görüntü SHAP (ızgara maskeli bölümleme açıklayıcısı)**
 
@@ -899,7 +899,7 @@ Table: Tablo 15. Yazılım ortamı.
 
 Kaynak: `requirements.txt`, `kod/hf_space/space_src/requirements.txt`, `kod/hf_space/space_src/README.md`, `phase3/results/repro_check_env.json`
 
-Hesaplama maliyeti düşüktür: küçük veri denemesinin toplam GPU eğitim süresi 23.5 dakika, Faz 2'nin 12 U-Net eğitimi 124 dakikadır (koşu başına yaklaşık 10–11 dakika, en yüksek GPU belleği 4.66 GiB). YOLO11 koşuları 32–87 dakika sürer. Faz 1–3 hattının baştan sona yeniden üretimi tek GPU'da yaklaşık 14 GPU saatidir.
+Hesaplama maliyeti düşüktür: küçük veri denemesinin toplam GPU eğitim süresi 23.5 dakika, Faz 2'nin 12 U-Net eğitimi 124 dakikadır (koşu başına yaklaşık 10–11 dakika, en yüksek GPU belleği 4.66 GiB). YOLO11 koşuları 32–87 dakika sürer. Faz 1–3 hattının baştan sona yeniden üretimi tek GPU'da yaklaşık 14 GPU saatidir. Ek tohum kuyruğu (dört U-Net eğitimi, değerlendirme, sondalar ve v2 testi; `kod/phase3/q4_seeds_mr_joint.ps1`) buna 2 saat 10 dakika ekler.
 
 ### 3.14 Kod düzeni ve yeniden üretilebilirlik
 
@@ -955,6 +955,7 @@ Table: Tablo 16. Betikler ve ürettikleri çıktılar.
 | `kod/phase2/stats/stats_analysis.py` | `phase2/stats/hypothesis_decisions.md`, `stats_summary.csv` |
 | `kod/phase3/make_marker_repaired.py` | Onarılmış görüntüler, işaretçisiz referanslar, `phase3/results/marker_residue.csv` |
 | `kod/phase3/train_unet_p3.py` | DeepLabV3+, birleşik kayıplı ve işaretçisiz U-Net ağırlıkları |
+| `kod/phase3/q4_seeds_mr_joint.ps1`, `kod/phase3/seed_extra_stats.py` | Ek tohumlar (43, 44): işaretçisiz kutu ve birleşik kayıplı piksel U-Net; tohum bazında AUPRC ve eşli AP farkları (`phase3/results/extra_seed_stats.md`) |
 | `kod/phase3_yolo/convert_to_yolo.py`, `kod/phase3_yolo/train_yolo.py` | `phase3_yolo/yolo_data/`, `phase3_yolo/runs/` |
 | `kod/phase3_yolo/infer_to_maps.py`, `kod/phase3_yolo/detection_metrics.py` | Kutu listeleri, güven haritaları, kutu AP tabloları |
 | `kod/phase3/probes_p3.py` | `phase3/results/probes_p3_summary_*.csv` |
@@ -970,7 +971,7 @@ Table: Tablo 16. Betikler ve ürettikleri çıktılar.
 | `kod/tools/xai_filter_report.py` | `reports/xai_filters/RAPOR.md` ve şekilleri |
 | `kod/tools/xai_fullimage_bench.py` | `reports/xai_fullimage/RAPOR_OLCUM.md` |
 | `kod/tests/run_all_tests.ps1` | `tests/run_all_*.log`, `tests/run_all_summary.txt` |
-| `kod/hf_space/live_test.py` | `reports/canli_test_v3deploy_log.txt` |
+| `kod/hf_space/live_test.py` | `reports/canli_test_v4deploy_log.txt`, `reports/canli_test_v4deploy_faz4_log.txt` |
 | `kod/tools/build_space.py` | `hf_space/` Space paketi |
 
 Kaynak: `kod/run_everything.ps1`, `kod/tests/run_all_tests.ps1`, `README.md`
@@ -988,7 +989,7 @@ Table: Tablo 17. Kullanılan ve kullanılmayan yöntemler.
 | U-Net (ResNet-18 kodlayıcı) | Kullanıldı (ana model) | Küçük alanlar için atlama bağlantıları; düşük eğitim maliyeti |
 | DeepLabV3+ | Kullanıldı (Faz 3) | Bulguların kod çözücü mimarisinden bağımsızlığını sınamak |
 | YOLO11 kutu dedektörü | Kullanıldı (Faz 3) | Referansın geometrisine birebir uyan formülasyon; kutu ölçütünün ne ölçtüğünü göstermek |
-| Birleşik piksel ve kutu kaybı | Kullanıldı (Faz 3, tek tohum) | İki denetim türünü birleştirmenin etkisi |
+| Birleşik piksel ve kutu kaybı | Kullanıldı (Faz 3; piksel modeli üç tohum, glif modeli tek tohum) | İki denetim türünü birleştirmenin etkisi |
 | TruFor, ADCD-Net | Yalnız sıfır-atış başvuru | Eşit koşul değildir; ayrı raporlanmıştır |
 | TruFor ince ayarı | Yapılamadı | Yayımlanan kodda eğitim betiği yok |
 | DTD, CAT-Net, FFDN (RGB ve DCT) | Kullanılmadı | Veri kayıpsız PNG; JPEG ve DCT ipucu bulunmuyor |
@@ -1171,9 +1172,9 @@ Table: Tablo 27. İşaretçi sondaları: kalıntı taşıyan 380 doğrulama çif
 | U-Net piksel-değişim | 3 | 0.747 | 0.538 | 0.500 | −0.247 [−0.279, −0.218] | 0.420 | 0.635 |
 | U-Net glif | 3 | 0.522 | 0.325 | 0.398 | −0.123 [−0.146, −0.103] | 0.283 | 0.461 |
 | DeepLabV3+ kutu | 1 | 0.982 | 0.920 | 0.807 | −0.174 [−0.206, −0.145] | 0.775 | 0.928 |
-| U-Net birleşik kayıp (piksel) | 1 | 0.771 | 0.589 | 0.597 | −0.174 [−0.206, −0.145] | 0.482 | 0.668 |
+| U-Net birleşik kayıp (piksel) | 3 | 0.795 | 0.558 | 0.600 | −0.194 [−0.226, −0.164] | 0.457 | 0.700 |
 | YOLO11s | 1 | 0.956 | 0.958 | 0.894 | −0.062 [−0.075, −0.051] | 0.607 | 0.815 |
-| U-Net kutu, işaretçisiz eğitim | 1 | 0.939 | 0.889 | 0.958 | +0.019 [+0.002, +0.036] | 0.424 | 0.603 |
+| U-Net kutu, işaretçisiz eğitim | 3 | 0.939 | 0.891 | 0.956 | +0.017 [+0.001, +0.033] | 0.442 | 0.617 |
 | U-Net piksel, işaretçisiz eğitim | 1 | 0.648 | 0.444 | 0.686 | +0.038 [+0.021, +0.057] | 0.108 | 0.256 |
 | U-Net glif, işaretçisiz eğitim | 1 | 0.510 | 0.321 | 0.510 | +0.001 [−0.008, +0.009] | 0.186 | 0.345 |
 
@@ -1190,14 +1191,16 @@ Table: Tablo 28. Resmî testte işaretçili ve işaretçisiz görüntülerde gö
 | U-Net kutu | 3 | 0.972 [0.966, 0.977] | 0.690 [0.640, 0.739] | 0.722 [0.657, 0.788] |
 | DeepLabV3+ kutu | 1 | 0.962 [0.954, 0.969] | 0.702 [0.650, 0.750] | 0.743 [0.677, 0.806] |
 | U-Net piksel-değişim | 3 | 0.639 [0.624, 0.652] | 0.503 [0.455, 0.550] | 0.559 [0.504, 0.622] |
-| U-Net kutu, işaretçisiz eğitim | 1 | 0.920 [0.904, 0.934] | 0.701 [0.649, 0.753] | 0.756 [0.690, 0.816] |
+| U-Net kutu, işaretçisiz eğitim | 3 | 0.914 [0.899, 0.927] | 0.711 [0.663, 0.758] | 0.762 [0.703, 0.821] |
 | YOLO11s | 3 | 0.954 [0.951, 0.957] | 0.878 [0.857, 0.895] | 0.886 [0.861, 0.907] |
 
 Kaynak: `phase3/results/tables_p3.md` (T3b)
 
-**İşaretçisiz yeniden eğitim.** Üç referans türü için birer U-Net, kalıntısı onarılmış eğitim görüntüleri ve işaretçisiz referanslarla yeniden eğitilmiştir (42 tohumu). Sonuç iki yönlüdür. Bağımlılık ortadan kalkar: onarılmış kutu modeli test anında kalıntı silindiğinde hiçbir şey kaybetmez (+0.019) ve yalnız kalıntı eklenmiş özgün görüntüde kutunun %42'sini işaretler (önce %80; piksel modelinde %42 yerine %11). Kutu ölçütündeki başarı ise büyük ölçüde korunur: doğrulama AUPRC 0.916 (önce 0.923), resmî test AUPRC 0.939 (önce 0.950), kalibre eşikte F1 0.797 (önce 0.846). İşaretçili test görüntülerinde AP 0.972'den 0.920'ye inerken işaretçisiz Gemini görüntülerinde benzer kalır (0.756 ve 0.722; güven aralıkları örtüşür). Dolayısıyla kalıntı, sunulduğunda kullanılan bir kısayoldur; yüksek kutu puanı için zorunlu değildir. Bu sonuçlar tek tohumludur ve öncül kanıt sayılmalıdır.
+**İşaretçisiz yeniden eğitim.** Üç referans türü için U-Net, kalıntısı onarılmış eğitim görüntüleri ve işaretçisiz referanslarla yeniden eğitilmiştir: kutu modeli üç tohumla (42, 43, 44), piksel-değişim ve glif modelleri tek tohumla (42). Sonuç iki yönlüdür. Bağımlılık ortadan kalkar: onarılmış kutu modeli test anında kalıntı silindiğinde hiçbir şey kaybetmez (+0.017 [+0.001, +0.033]) ve yalnız kalıntı eklenmiş özgün görüntüde kutunun %44'ünü işaretler (önce %80; piksel modelinde %42 yerine %11). Kutu ölçütündeki başarı ise büyük ölçüde korunur: doğrulama AUPRC 0.912 ± 0.006 (önce 0.923 ± 0.015), resmî test AUPRC 0.940 ± 0.003 (önce 0.950 ± 0.011), kalibre eşikte F1 0.799 (önce 0.846). Aynı görüntüler eşlenerek bakıldığında yeniden eğitimin bedeli görüntü başı AP'de yaklaşık 0.04'tür (doğrulama −0.038 [−0.054, −0.021], test −0.040 [−0.052, −0.029]). İşaretçili test görüntülerinde AP 0.972'den 0.914'e inerken işaretçisiz Gemini görüntülerinde benzer kalır (0.762 ve 0.722; güven aralıkları örtüşür). Dolayısıyla kalıntı, sunulduğunda kullanılan bir kısayoldur; yüksek kutu puanı için zorunlu değildir.
 
-**Yeniden çizim ve içerik ayrıştırması.** Üreticiler alanın tamamını yeniden çizdiğinden kutu içinde pek çok piksel eşiğin altında kalan küçük farklarla değişir. İki bileşeni ayırmak için yalnız yeniden çizimi ya da yalnız içerik değişimini taşıyan girdiler bütün doğrulama çiftlerinde sınanmıştır (Tablo 29, Şekil 27). Standart kutu modelinde kutu içi ortalama olasılık sahte girdide 0.86 iken yalnız yeniden çizimde 0.24'e, yalnız içerikte 0.35'e düşer; hiçbir bileşen tek başına gerçek sahteye verilen tepkiyi üretmez. Standart modeller yeniden çizim, değişen karakterler ve işaretçinin birlikteliğine tepki vermektedir. İşaretçi eğitimden çıkarıldığında modeller içeriğe kayar: yalnız içerik girdisinde AUROC kutu modelinde 0.733'ten 0.872'ye, piksel modelinde 0.681'den 0.834'e yükselir.
+Kutu modelinin sonucu üç tohumda tutarlıdır (tohum bazında doğrulama AUPRC 0.916, 0.916, 0.905). 43 ve 44 tohumları, öngörüleri ve yanlışlama ölçütleri koşudan önce yazılıp açık depoya gönderilen bir planla eklenmiştir (`reports/inceleme/deney_plani_ek_tohum_2026-11-10.md`); altı öngörünün altısı da tutmuştur (`phase3/results/extra_seed_stats.md`). İşaretçisiz piksel-değişim ve glif modelleri tek tohumludur ve öncül kanıt sayılmalıdır.
+
+**Yeniden çizim ve içerik ayrıştırması.** Üreticiler alanın tamamını yeniden çizdiğinden kutu içinde pek çok piksel eşiğin altında kalan küçük farklarla değişir. İki bileşeni ayırmak için yalnız yeniden çizimi ya da yalnız içerik değişimini taşıyan girdiler bütün doğrulama çiftlerinde sınanmıştır (Tablo 29, Şekil 27). Standart kutu modelinde kutu içi ortalama olasılık sahte girdide 0.86 iken yalnız yeniden çizimde 0.24'e, yalnız içerikte 0.35'e düşer; hiçbir bileşen tek başına gerçek sahteye verilen tepkiyi üretmez. Standart modeller yeniden çizim, değişen karakterler ve işaretçinin birlikteliğine tepki vermektedir. İşaretçi eğitimden çıkarıldığında modeller içeriğe kayar: yalnız içerik girdisinde AUROC kutu modelinde 0.733'ten 0.886'ya (üç tohum), piksel modelinde 0.681'den 0.834'e (tek tohum) yükselir.
 
 Table: Tablo 29. Yeniden çizim ve içerik ayrıştırması (bütün doğrulama çiftleri): kutu içi ortalama olasılık ve sahte türü girdiyi özgünden ayırma AUROC değeri.
 
@@ -1207,7 +1210,7 @@ Table: Tablo 29. Yeniden çizim ve içerik ayrıştırması (bütün doğrulama 
 | U-Net piksel-değişim | 3 | 0.406 | 0.045 | 0.150 | 0.942 | 0.554 | 0.681 |
 | DeepLabV3+ kutu | 1 | 0.869 | 0.281 | 0.416 | 0.972 | 0.644 | 0.755 |
 | YOLO11s | 1 | 0.864 | 0.446 | 0.383 | 0.996 | 0.865 | 0.858 |
-| U-Net kutu, işaretçisiz eğitim | 1 | 0.828 | 0.356 | 0.590 | 0.947 | 0.713 | 0.872 |
+| U-Net kutu, işaretçisiz eğitim | 3 | 0.823 | 0.345 | 0.583 | 0.957 | 0.724 | 0.886 |
 | U-Net piksel, işaretçisiz eğitim | 1 | 0.338 | 0.096 | 0.289 | 0.869 | 0.638 | 0.834 |
 
 Kaynak: `phase3/results/tables_p3.md` (T3)
@@ -1226,10 +1229,10 @@ Table: Tablo 30. Faz 3 model aileleri ve varyantları: doğrulama kümesinde ü�
 | DeepLabV3+ | Piksel-değişim | 1 | 0.537 | 0.583 | 0.432 |
 | DeepLabV3+ | Glif | 1 | 0.345 | 0.401 | 0.549 |
 | YOLO11s, karolu | Kutu | 3 | 0.965 ± 0.003 | 0.368 ± 0.015 | 0.221 ± 0.003 |
-| U-Net, işaretçisiz eğitim | Kutu | 1 | 0.916 | 0.389 | 0.266 |
+| U-Net, işaretçisiz eğitim | Kutu | 3 | 0.912 ± 0.006 | 0.373 ± 0.013 | 0.265 ± 0.001 |
 | U-Net, işaretçisiz eğitim | Piksel-değişim (işaretçisiz) | 1 | 0.513 | 0.544 | 0.455 |
 | U-Net, işaretçisiz eğitim | Glif (işaretçisiz) | 1 | 0.348 | 0.371 | 0.661 |
-| U-Net, birleşik kayıp | Piksel-değişim + kutu yardımcı | 1 | 0.647 | 0.622 | 0.518 |
+| U-Net, birleşik kayıp | Piksel-değişim + kutu yardımcı | 3 | 0.668 ± 0.019 | 0.633 ± 0.013 | 0.523 ± 0.009 |
 | U-Net, birleşik kayıp | Glif + kutu yardımcı | 1 | 0.370 | 0.391 | 0.636 |
 | U-Net, 20 epok | Kutu | 1 | 0.926 | 0.373 | 0.259 |
 | U-Net, 20 epok | Piksel-değişim | 1 | 0.568 | 0.594 | 0.488 |
@@ -1239,7 +1242,7 @@ Kaynak: `phase3/results/tables_p3.md` (T1)
 
 ![Şekil 28. Üç model ailesinde eğitim referansı (yatay eksen) ve puanlama referansı (renk) için doğrulama AUPRC değerleri: U-Net üç tohum, DeepLabV3+ tek tohum, YOLO11s üç tohum.](phase3/figures/fig_dual_gt_families.png)
 
-**Birleşik kayıp ve eğitim süresi.** Piksel-değişim maskesine kutu yardımcı kanalı eklemek, piksel modelini ölçülen hemen her eksende iyileştiren tek varyanttır: doğrulamada piksel-değişim ölçütü 0.610'dan 0.622'ye, kutu ölçütü 0.579'dan 0.647'ye, resmî testte kutu AUPRC 0.638'den 0.682'ye çıkar. Epok sayısını 20'ye çıkarmak ise tabloyu değiştirmez (kutu 0.926, piksel-değişim 0.594, glif 0.645); "10 epok az olabilir" kaygısı desteklenmemiştir. Her iki sonuç tek tohumludur.
+**Birleşik kayıp ve eğitim süresi.** Piksel-değişim maskesine kutu yardımcı kanalı eklemek, piksel modelini iyileştiren tek varyanttır ve bunu asıl olarak kutu ölçütünde yapar (üç tohum): doğrulamada kutu ölçütü 0.579 ± 0.014'ten 0.668 ± 0.019'a, resmî testte kutu AUPRC 0.638 ± 0.015'ten 0.702 ± 0.020'ye çıkar (eşli görüntü başı AP farkı +0.051 [+0.043, +0.058] ve +0.046 [+0.040, +0.052]). Piksel-değişim ölçütündeki kazanç küçüktür ve doğrulamayla sınırlıdır: 0.610 ± 0.012'den 0.633 ± 0.013'e (görüntü başı AP +0.011 [+0.005, +0.017]); eşi bulunan 89 test görüntüsünde fark yoktur (0.652 ± 0.003 ve 0.654 ± 0.016; +0.004 [−0.008, +0.015]). Birleşik model işaretçiye bağımlı kalır (onarım farkı −0.194; Tablo 27). Tek tohumla görülen kazanım böylece kutu ölçütünde doğrulanmış, piksel-değişim ölçütünde ise daraltılmıştır (`phase3/results/extra_seed_stats.md`). Epok sayısını 20'ye çıkarmak ise tabloyu değiştirmez (kutu 0.926, piksel-değişim 0.594, glif 0.645); "10 epok az olabilir" kaygısı desteklenmemiştir. 20 epok sonucu tek tohumludur.
 
 **Kutu dedektörü.** YOLO11s eğitimi düzenli yakınsar (Şekil 29); doğrulama karolarında mAP50 0.981'dir (Şekil 30). Karolu YOLO11s, kutu ölçütünde çalışmadaki en güçlü modeldir (Tablo 31): üç tohumda resmî test AUPRC 0.969 ± 0.006, kalibre eşikte F1 0.946 ve IoU 0.918'dir (U-Net: 0.950, 0.846, 0.789). Buna karşılık piksel-değişim ölçütünde doğrulama AUPRC değeri 0.368'dir; kutu U-Net'in 0.374'üyle aynı düzeydedir ve piksel modelinin 0.610'unun çok altındadır. Bu sonuç H1'in formülasyondan bağımsız teyididir: kutu ölçütü alan tespitini ölçmektedir ve bu işi en iyi yapan model, hangi piksellerin değiştiğini kutu U-Net'ten daha iyi bilmemektedir.
 
@@ -1253,8 +1256,8 @@ Table: Tablo 31. Resmî test (812 görüntü, kutu referansı): piksel ölçütl
 |---|---|---|---|---|---|---|---|
 | U-Net kutu | 3 | 0.950 ± 0.011 | 0.846 ± 0.015 | 0.789 ± 0.018 | 0.712 ± 0.279 | 0.453 ± 0.224 | 81 |
 | DeepLabV3+ kutu | 1 | 0.952 | 0.833 | 0.765 | 0.833 | 0.577 | 122 |
-| U-Net kutu, işaretçisiz eğitim | 1 | 0.939 | 0.797 | 0.726 | 0.805 | 0.486 | ölçülmedi |
-| U-Net piksel, birleşik kayıp | 1 | 0.682 | 0.654 | 0.522 | 0.143 | 0.072 | 83 |
+| U-Net kutu, işaretçisiz eğitim | 3 | 0.940 ± 0.003 | 0.799 ± 0.016 | 0.727 ± 0.015 | 0.804 ± 0.005 | 0.486 ± 0.007 | ölçülmedi |
+| U-Net piksel, birleşik kayıp | 3 | 0.702 ± 0.020 | 0.641 ± 0.012 | 0.506 ± 0.015 | 0.125 ± 0.020 | 0.064 ± 0.010 | 83 |
 | YOLO11s, karolu | 3 | 0.969 ± 0.006 | 0.946 ± 0.007 | 0.918 ± 0.006 | 0.880 ± 0.002 | 0.780 ± 0.003 | 98 |
 | YOLO11n, karolu | 1 | 0.963 | 0.926 | 0.891 | 0.871 | 0.738 | 81 |
 | YOLO11m, karolu | 1 | 0.969 | 0.947 | 0.920 | 0.897 | 0.800 | 76 |
@@ -1262,7 +1265,7 @@ Table: Tablo 31. Resmî test (812 görüntü, kutu referansı): piksel ölçütl
 
 Kaynak: `phase3/results/tables_p3.md` (T2, T5b), `phase3/results/speed_bench.csv`
 
-U-Net'in kutu düzeyi AP değerindeki büyük standart sapma tek bir tohumdan kaynaklanır: 42 ve 43 tohumlarında AP50 0.873 iken, kalibre eşiği 0.95 çıkan 44 tohumunda tahmin bölgesi parçalanır ve değer 0.391'e düşer. Dedektörde böyle bir kırılganlık yoktur.
+U-Net'in kutu düzeyi AP değerindeki büyük standart sapma tek bir tohumdan kaynaklanır: 42 ve 43 tohumlarında AP50 0.873 iken, kalibre eşiği 0.95 çıkan 44 tohumunda tahmin bölgesi parçalanır ve değer 0.391'e düşer. Dedektörde böyle bir kırılganlık yoktur; işaretçisiz eğitilen kutu U-Net'te de görülmez (üç tohumda AP50 0.804 ± 0.005).
 
 **Ablasyonlar ve H5 kararları.** Tek etkenli ablasyonların sonuçları Tablo 32'de, maliyet ve doğruluk ilişkisi Şekil 31'de verilmiştir. Beklentilerin yalnız bir kısmı tutmuştur.
 
@@ -1312,7 +1315,7 @@ Table: Tablo 33. Ayrı tutulan üretici: Ideogram ve kaynak eşlemeli Gemini gö
 
 Kaynak: `phase3/results/tables_p3.md` (T4)
 
-**Test zamanı bozulmaları.** Bölüm 3.3'te model girdisine uygulanmayan işlemlerin etkisi, eğitilmiş modellere test anında uygulanarak ölçülmüştür (Tablo 34, Şekil 32). Üç sonuç öne çıkar. Birincisi, piksel ve glif modelleri bulanıklık ve yeniden ölçeklemeye kutu modelinden daha kırılgandır (bulanıklıkta −%59 ve −%21): ince harf kenarlarına dayanan denetim, yüksek frekans bilgisine daha bağımlı modeller üretir. Birleşik kayıp bu kırılganlığı azaltır (−%43). İkincisi, kutu dedektörü bulanıklık, CLAHE ve yeniden ölçeklemeye neredeyse duyarsızdır (en çok %1.4) ama JPEG sıkıştırmasına kırılgandır (−%49). Üçüncüsü ve en önemlisi, girdinin gri düzeye çevrilmesi sınanan bütün modellerde AUPRC değerinin %47–67'sini götürür; işaretçisiz eğitilen modeller de buna dahildir. Renk, yeşil çizginin ötesinde kanıt taşımaktadır; "işaretçiden kurtulmak için gri düzeye çevirmek" bir çözüm değildir. CLAHE ise en çok %3 değişim yaratır.
+**Test zamanı bozulmaları.** Bölüm 3.3'te model girdisine uygulanmayan işlemlerin etkisi, eğitilmiş modellere test anında uygulanarak ölçülmüştür (Tablo 34, Şekil 32). Üç sonuç öne çıkar. Birincisi, piksel ve glif modelleri bulanıklık ve yeniden ölçeklemeye kutu modelinden daha kırılgandır (bulanıklıkta −%59 ve −%21): ince harf kenarlarına dayanan denetim, yüksek frekans bilgisine daha bağımlı modeller üretir. Birleşik kayıp bu kırılganlığı azaltır (−%46; üç tohum). İkincisi, kutu dedektörü bulanıklık, CLAHE ve yeniden ölçeklemeye neredeyse duyarsızdır (en çok %1.4) ama JPEG sıkıştırmasına kırılgandır (−%49). Üçüncüsü ve en önemlisi, girdinin gri düzeye çevrilmesi sınanan bütün modellerde AUPRC değerinin %47–67'sini götürür; işaretçisiz eğitilen modeller de buna dahildir. Renk, yeşil çizginin ötesinde kanıt taşımaktadır; "işaretçiden kurtulmak için gri düzeye çevirmek" bir çözüm değildir. CLAHE ise en çok %3 değişim yaratır.
 
 Table: Tablo 34. Test zamanı bozulmaları: her modelin kendi eğitim referansına göre havuzlanmış AUPRC değerindeki göreli değişim (doğrulama; üç tohumlu satırlarda ± standart sapma).
 
@@ -1323,8 +1326,8 @@ Table: Tablo 34. Test zamanı bozulmaları: her modelin kendi eğitim referansı
 | U-Net (3 tohum) | Glif | −%18.0 ± 0.8 | −%42.7 ± 5.4 | −%59.0 ± 6.8 | ölçülmedi | ölçülmedi |
 | DeepLabV3+ | Kutu | −%11.9 | −%7.1 | −%13.6 | −%1.3 | −%46.7 |
 | DeepLabV3+ | Piksel-değişim | −%20.2 | −%38.7 | −%53.6 | +%0.8 | −%58.5 |
-| U-Net, birleşik kayıp | Piksel-değişim | −%19.8 | −%31.6 | −%42.7 | −%0.6 | −%63.5 |
-| U-Net, işaretçisiz eğitim | Kutu | −%31.6 | −%11.6 | −%27.8 | −%3.0 | −%61.5 |
+| U-Net, birleşik kayıp (3 tohum) | Piksel-değişim | −%20.7 ± 2.0 | −%30.8 ± 2.0 | −%46.0 ± 2.9 | −%0.8 ± 0.8 | −%66.3 ± 3.3 |
+| U-Net, işaretçisiz eğitim (3 tohum) | Kutu | −%32.6 ± 1.8 | −%14.0 ± 2.7 | −%25.9 ± 5.0 | −%2.1 ± 0.8 | −%59.6 ± 2.6 |
 | U-Net, işaretçisiz eğitim | Piksel-değişim | −%50.3 | −%51.5 | −%75.7 | −%0.7 | −%53.8 |
 | YOLO11s | Kutu | −%48.5 | −%0.7 | −%1.4 | −%1.2 | −%58.6 |
 
@@ -1332,7 +1335,7 @@ Kaynak: `phase3/results/tables_p3.md` (T6)
 
 ![Şekil 32. Faz 2 dayanıklılık deneyi (üç tohum): JPEG, yeniden ölçekleme ve bulanıklık altında AUPRC değişimi; solda kutu referansı, sağda piksel-değişim referansıyla puanlama.](phase2/experiments/figures/fig_robustness.png)
 
-Standart U-Net modellerinde gri düzeyin etkisi kutu referansına göre görüntü başı AP üzerinden ayrıca ölçülmüştür: kutu modeli 0.388, piksel modeli 0.370 AP kaybeder (üç tohum). İşaretçisiz eğitilen modeller JPEG sıkıştırmasına standart eşlerinden daha kırılgandır (−%32 ile −%50); işaretçi yokken modeller daha ince ve sıkıştırmayla daha kolay silinen izlere dayanmaktadır.
+Standart U-Net modellerinde gri düzeyin etkisi kutu referansına göre görüntü başı AP üzerinden ayrıca ölçülmüştür: kutu modeli 0.388, piksel modeli 0.370 AP kaybeder (üç tohum). İşaretçisiz eğitilen modeller JPEG sıkıştırmasına standart eşlerinden daha kırılgandır (−%33 ile −%50); işaretçi yokken modeller daha ince ve sıkıştırmayla daha kolay silinen izlere dayanmaktadır.
 
 **AIForge-Doc v2 harici testi.** v1 üzerinde eğitilen bütün modeller, yeniden eğitim ve yeniden kalibrasyon olmadan (eşikler v1 doğrulamasından) v2 birincil kümesinin 567 çiftine uygulanmıştır. v2 farklı bir üreticiyle (GPT-Image-2) üretilmiştir ve işaretçi kalıntısı taşımaz. Aynı düzenleme tarifinin v1 ve v2 görüntüleri karşılaştırılarak üretici değişiminin etkisi işaretçi kaybının etkisinden ayrılmıştır: v1 görüntüsü kalıntı taşıyan 397 çift ve taşımayan 170 çift ayrı raporlanmıştır (Tablo 35).
 
@@ -1344,7 +1347,7 @@ Table: Tablo 35. AIForge-Doc v2 birincil kümesi (567 çift), v1 üzerinde eğit
 | U-Net piksel-değişim | 3 | 0.227 | 0.246 | 0.693 | −0.398 | −0.172 |
 | U-Net glif | 3 | 0.147 | 0.192 | 0.688 | −0.171 | −0.112 |
 | DeepLabV3+ kutu | 1 | 0.539 | 0.280 | 0.724 | −0.375 | −0.141 |
-| U-Net kutu, işaretçisiz eğitim | 1 | 0.712 | 0.392 | 0.835 | −0.190 | +0.003 |
+| U-Net kutu, işaretçisiz eğitim | 3 | 0.711 ± 0.007 | 0.391 | 0.840 | −0.188 | −0.008 |
 | U-Net piksel, işaretçisiz eğitim | 1 | 0.353 | 0.430 | 0.826 | −0.106 | −0.078 |
 | U-Net kutu, yalnız Gemini | 1 | 0.449 | 0.248 | 0.742 | −0.540 | −0.189 |
 | YOLO11s, karolu | 3 | 0.887 ± 0.006 | 0.354 | 0.919 | −0.149 | −0.033 |
@@ -1352,9 +1355,9 @@ Table: Tablo 35. AIForge-Doc v2 birincil kümesi (567 çift), v1 üzerinde eğit
 | YOLO11s, yalnız Gemini | 1 | 0.843 | 0.338 | 0.865 | −0.212 | −0.055 |
 | YOLO11s, özgün negatif karo | 1 | 0.863 | 0.345 | 0.937 | −0.191 | −0.055 |
 
-Kaynak: `phase3_v2/results/v2_tables.md`, `reports/PHASE3_Sonuclar_ve_Kapanis.md`
+Kaynak: `phase3_v2/results/v2_tables.md`, `phase3_v2/results/T_v2_marker_split_agg.csv`, `reports/PHASE3_Sonuclar_ve_Kapanis.md`
 
-v1 testinde 0.950 alan kutu U-Net v2 üzerinde 0.520'ye, görüntü AUROC değeri 0.717'ye düşer; karolu dedektör 0.887 ve 0.919 değerlerini korur. Kutu U-Net, v1 görüntüsü kalıntı taşıyan tariflerde 0.49, taşımayanlarda 0.17 AP kaybeder. İşaretçisiz eğitilen kutu U-Net ise kalıntısız tariflerde hiçbir şey kaybetmez (+0.003) ve toplamda 0.712'ye ulaşır; v1 üzerinde standart modelin gerisindeyken v2 üzerinde belirgin biçimde önündedir. İşaretçisiz piksel ve glif modelleri de v2 üzerindeki en iyi piksel ve glif lokalizatörleridir (piksel-değişim 0.430; standart model 0.246). Bu sonuç, işaretçi bulgusunu veri tabanının dışından doğrulamaktadır: işaretçiyle eğitilen modeller en çok, tam da işaretçiyi taşıyan tariflerde kaybeder. Referans etkisi v2 üzerinde de sürer: bütün modeller piksel-değişim ölçütünde 0.13–0.43 aralığında kalır.
+v1 testinde 0.950 alan kutu U-Net v2 üzerinde 0.520'ye, görüntü AUROC değeri 0.717'ye düşer; karolu dedektör 0.887 ve 0.919 değerlerini korur. Kutu U-Net, v1 görüntüsü kalıntı taşıyan tariflerde 0.49, taşımayanlarda 0.17 AP kaybeder. İşaretçisiz eğitilen kutu U-Net ise kalıntısız tariflerde ölçülebilir bir kayıp göstermez (üç tohum ortalaması −0.008, %95 güven aralığı [−0.069, +0.053]; tohum bazında +0.003, −0.026, −0.002) ve toplamda 0.711 ± 0.007'ye ulaşır; v1 üzerinde standart modelin gerisindeyken v2 üzerinde belirgin biçimde önündedir. İşaretçisiz piksel ve glif modelleri de v2 üzerindeki en iyi piksel ve glif lokalizatörleridir (piksel-değişim 0.430; standart model 0.246). Bu sonuç, işaretçi bulgusunu veri tabanının dışından doğrulamaktadır: işaretçiyle eğitilen modeller en çok, tam da işaretçiyi taşıyan tariflerde kaybeder. Referans etkisi v2 üzerinde de sürer: bütün modeller piksel-değişim ölçütünde 0.13–0.43 aralığında kalır.
 
 v2'nin 3.066 çiftinin tamamında dedektörün görüntü AUROC değeri 0.912'dir; kaynak belgesi v1 eğitiminde görülmüş çiftlerde 0.911, görülmemiş birincil kümede 0.915'tir, yani belge örtüşmesinin etkisi yok denecek kadar azdır. Veri tabanı yazarlarının sıfır-atış TruFor için bildirdiği değer 0.599, DocTamper için 0.585'tir; dedektör v1 üzerinde eğitildiği için bu bir başvuru değeridir, eşit koşullu karşılaştırma değildir.
 
@@ -1390,7 +1393,7 @@ Table: Tablo 37. Tam görüntü SHAP ölçümleri: `testing:000000038` (864×129
 
 Kaynak: `reports/xai_fullimage/RAPOR_OLCUM.md`, `reports/xai_fullimage/RAPOR.md`
 
-**Katman filtreleri.** Kayıtlı 46 modelin tamamı filtre denetimlerinden geçmiştir: kayıtlı çekirdek modül ağırlığına eşittir, bağımsız evrişim modelin kendi evrişim çıktısını verir (CPU üzerinde en kötü göreli fark $10^{-6}$ düzeyinde, YOLO modellerinde sıfır), kanal katkılarının toplamı evrişim çıktısına eşittir ve ağırlık özetleri değişmemiştir. Döşemeli tam görüntü hesabı tek geçişle birebir aynı sonucu verir. Görselleştirmeden üç gözlem çıkmaktadır.
+**Katman filtreleri.** Kayıtlı 50 modelin tamamı (ek tohum ağırlıkları dahil) filtre denetimlerinden geçmiştir: kayıtlı çekirdek modül ağırlığına eşittir, bağımsız evrişim modelin kendi evrişim çıktısını verir (CPU üzerinde en kötü göreli fark $10^{-6}$ düzeyinde, YOLO modellerinde sıfır), kanal katkılarının toplamı evrişim çıktısına eşittir ve ağırlık özetleri değişmemiştir. Döşemeli tam görüntü hesabı tek geçişle birebir aynı sonucu verir. Görselleştirmeden üç gözlem çıkmaktadır.
 
 1. Bütün bölütleme ve sınıflandırma modelleri aynı ResNet-18 gövdesini paylaşır: ilk katman 64 adet 7×7 süzgeçtir. Şekil 33'teki çekirdekler, ImageNet ön eğitiminden gelen yönlü kenar, çizgi ve renk karşıtlığı örüntülerini göstermektedir; bunlar dersin kenar bulma ve frekans süzgeçleri konularının öğrenilmiş karşılıklarıdır. YOLO11s gövdesi farklıdır: ilk katmanı 32 adet 3×3 süzgeçtir.
 2. Belge görüntüsünde en güçlü yanıtlar metin kenarlarında oluşur (Şekil 34). Etkinleştirme sonrasında bazı haritalar tümüyle sıfırdır; bunlar renk karşıtlığı süzgeçleridir ve gri tonlu bir fiş üzerinde yanıt vermemeleri gerçek model davranışıdır.
@@ -1404,20 +1407,20 @@ Kaynak: `reports/xai_fullimage/RAPOR_OLCUM.md`, `reports/xai_fullimage/RAPOR.md`
 
 ### 4.7 Uygulama testleri ve canlı dağıtım
 
-Uygulamanın, raporlanan sonuçları değiştirmeden yeniden ürettiğini göstermek için otomatik testler, tarayıcı testi ve canlı Space testi yapılmıştır (Tablo 38). Yerel testler `kod/tests/run_all_tests.ps1` ile tek komutla çalışır; aşağıdaki değerler 10 Kasım 2026 tarihli son koşunun kayıtlarıdır. Otomatik testler Faz 4 modelleri uygulamaya eklendikten sonra yinelenmiştir (Bölüm 4.9); tarayıcı testi ve canlı Space testi bu eklemeden önceki sürüme aittir.
+Uygulamanın, raporlanan sonuçları değiştirmeden yeniden ürettiğini göstermek için otomatik testler, tarayıcı testi ve canlı Space testi yapılmıştır (Tablo 38). Yerel testler `kod/tests/run_all_tests.ps1` ile tek komutla çalışır; aşağıdaki değerler 11 Kasım 2026 tarihli son koşunun kayıtlarıdır (ek tohum ağırlıkları eklendikten sonra). Otomatik testler Faz 4 modelleri uygulamaya eklendikten sonra yinelenmiştir (Bölüm 4.9); tarayıcı testi bu eklemeden önceki sürüme aittir; canlı Space testi, Faz 4 sürümü 11 Kasım 2026'da dağıtıldıktan sonra yinelenmiştir.
 
 Table: Tablo 38. Uygulama testlerinin özeti.
 
 | Test | Kapsam | Sonuç |
 |---|---|---|
-| `kod/tests/test_app.py` | Ön işleme işlemleri, hazır ayarlar, örnek süzgeçleri, senaryolar, bozulmalar, simülasyon çıktıları, hatalı girdiler, toplu test, kayıtlı sonuçlarla yeniden üretim (35 örnek, 36 model yüklü, GPU) | 289 kontrol, 0 hata, 126 s |
-| `kod/tests/test_app_p3.py` | Faz 3 modellerinin listelenmesi ve yüklenmesi, yeni senaryolar ve bozulmalar, uygulama içi harita ile değerlendirme hattının kaydettiği haritanın karşılaştırması (3 görüntü × 9 model, GPU) | 0 hata, 46 s |
-| `kod/tests/test_xai_filters.py` | Sentetik çekirdek denetimi, evrişimsiz model reddi, 46 kayıtlı model, YOLO ilk katman dışa aktarımı, GPU ve CPU uyumu, görsel üretimi, döşemeli tam görüntü | 87 kontrol, 0 hata, 103.4 s |
-| `kod/tests/test_xai.py` | SHAP adaptörleri, toplamsallık, ağırlık bütünlüğü, kayıt ve karşılaştırma (15 test) | GPU: 15 geçti (39.3 s); CPU: 15 geçti |
+| `kod/tests/test_app.py` | Ön işleme işlemleri, hazır ayarlar, örnek süzgeçleri, senaryolar, bozulmalar, simülasyon çıktıları, hatalı girdiler, toplu test, kayıtlı sonuçlarla yeniden üretim (35 örnek, 36 model yüklü, GPU) | 289 kontrol, 0 hata, 144 s |
+| `kod/tests/test_app_p3.py` | Faz 3 modellerinin listelenmesi ve yüklenmesi, yeni senaryolar ve bozulmalar, uygulama içi harita ile değerlendirme hattının kaydettiği haritanın karşılaştırması (3 görüntü × 9 model, GPU) | 0 hata, 50 s |
+| `kod/tests/test_xai_filters.py` | Sentetik çekirdek denetimi, evrişimsiz model reddi, 50 kayıtlı model, YOLO ilk katman dışa aktarımı, GPU ve CPU uyumu, görsel üretimi, döşemeli tam görüntü | 91 kontrol, 0 hata, 134.0 s |
+| `kod/tests/test_xai.py` | SHAP adaptörleri, toplamsallık, ağırlık bütünlüğü, kayıt ve karşılaştırma (15 test) | GPU: 15 geçti (49.5 s); CPU: 15 geçti |
 | `kod/tools/capture_screens.py` | Gerçek tarayıcıda (Chromium) güncel arayüzün uçtan uca yürütülmesi: örnek seçimi, simülasyon, sekmelere aktarım, hazır ön işleme hattı, U-Net, 8 örnekli toplu test, sonuçlar, SHAP ve katman filtreleri | 8 adımın tümü hatasız; Şekil 10–16 bu koşunun çıktılarıdır (Faz 4 öncesi arayüz) |
-| `kod/hf_space/live_test.py` | Canlı Space üzerinde 6 senaryo × 6 model simülasyon ve 24 çiftli toplu test (ZeroGPU) | Tamamlandı, toplam 401.5 s (yeniden düzenlenen kodla yinelendi) |
+| `kod/hf_space/live_test.py` | Canlı Space üzerinde 6 senaryo × 6 model simülasyon ve 24 çiftli toplu test (ZeroGPU); ek koşuda Faz 4 sınıflandırıcılarıyla 6 senaryo × 8 model | Tamamlandı (11 Kasım 2026, Faz 4 sürümü): 393.4 s; ek koşu 380.9 s |
 
-Kaynak: `tests/run_all_summary.txt`, `tests/run_all_app.log`, `tests/run_all_app_p3.log`, `tests/run_all_xai_filters.log`, `tests/run_all_xai.log`, `tests/run_all_xai_cpu.log`, `app/ekran_*.png`, `reports/canli_test_v3deploy_log.txt`
+Kaynak: `tests/run_all_summary.txt`, `tests/run_all_app.log`, `tests/run_all_app_p3.log`, `tests/run_all_xai_filters.log`, `tests/run_all_xai.log`, `tests/run_all_xai_cpu.log`, `app/ekran_*.png`, `reports/canli_test_v4deploy_log.txt`, `reports/canli_test_v4deploy_faz4_log.txt`
 
 **Yeniden üretim.** Yerel testte kayıtlı sonucu bulunan dört görüntüde uygulamanın hesapladığı F1 ile değerlendirme hattının kayıtlı değeri arasındaki ortalama mutlak fark kutu, piksel-değişim ve glif modelleri için sırasıyla 0.0001, 0.0002 ve 0.0005'tir (en büyük 0.0007). Faz 3 modellerinde 27 karşılaştırmanın 25'inde görüntü skoru farkı en çok 0.0005'tir; kalan iki durum YOLO modellerine aittir (0.011 ve 0.043) ve yarı duyarlıklı hesap ile bastırma eşiğinin sınırındaki kutulardan kaynaklanır; haritada değişen piksel oranı en çok %0.12'dir.
 
@@ -1425,18 +1428,22 @@ Kaynak: `tests/run_all_summary.txt`, `tests/run_all_app.log`, `tests/run_all_app
 
 **Kod düzenlemesinin etkisi.** Testler, kodun `kod/` çatısı altına taşınmasından önce, taşınmasından sonra ve `app.py`'nin `appcore/` modüllerine bölünmesinden sonra ayrı ayrı koşulmuş; üç durumda da aynı kontrol sayıları ve aynı sonuçlar elde edilmiştir. Taşıma öncesi ve sonrası alınan yol dökümleri birebir aynıdır; sonuç tabloları ve model ağırlıkları değişmemiştir. Faz 4 modellerinin eklenmesiyle yüklenen model sayısı 34'ten 36'ya, kontrol sayısı 287'den 289'a çıkmıştır.
 
-**Canlı dağıtım.** Uygulama `infinayazilim/ai515` Space'ine ZeroGPU donanımıyla dağıtılmış ve dışarıdan, programlı istemciyle sınanmıştır. Tablo 39, test bölümünden rastgele seçilen 24 eşli örnekte (24 sahte ve 24 özgün; 89 saniye) dengeli tespit sonuçlarını vermektedir. Uygulamanın canlı ortamda hesapladığı F1 ve AP değerleri, aynı görüntülerde değerlendirme hattının kayıtlı sonuçlarıyla birebir aynıdır (ortalama mutlak fark 0.000). Örneklem küçük olduğundan mutlak değerler resmî test sonuçlarından sapabilir; ancak ana örüntü burada da görülür: kutu U-Net kutu ölçütünde 0.925, aynı tahminler piksel-değişim ölçütünde 0.528 F1 alır. ResNet-18'in yüksek yanlış alarm oranı sabit 0.5 eşiğinden kaynaklanır; sıralama gücü yüksektir (AUROC 0.990); canlı Space'teki bu sürümde eşik kalibre edilmemiştir. Kalibrasyon Faz 4'te yapılmıştır (Bölüm 4.9) ve şimdilik yalnız yerel uygulamadadır. Kodun `kod/` çatısı altında toplanması ve `app.py`'nin modüllere bölünmesinin ardından Space aynı gün yeniden dağıtılmış ve canlı test yinelenmiştir; toplu test değerleri önceki dağıtımla birebir aynıdır.
+**Canlı dağıtım.** Uygulama `infinayazilim/ai515` Space'ine ZeroGPU donanımıyla dağıtılmış ve dışarıdan, programlı istemciyle sınanmıştır. Faz 4 sürümü (tam veriyle eğitilen ResNet-18 modelleri ve kalibre görüntü eşikleri) 11 Kasım 2026'da dağıtılmış, canlı test aynı gün iki koşuyla yinelenmiştir: önceki dağıtımlarla aynı model kümesi (393 saniye) ve Faz 4 sınıflandırıcılarının eklendiği küme (381 saniye). Tablo 39, test bölümünden rastgele seçilen 24 eşli örnekte (24 sahte ve 24 özgün) dengeli tespit sonuçlarını vermektedir. Uygulamanın canlı ortamda hesapladığı F1 ve AP değerleri, aynı görüntülerde değerlendirme hattının kayıtlı sonuçlarıyla birebir aynıdır (ortalama mutlak fark 0.000); bölütleme ve dedektör satırları önceki dağıtımdaki değerlerle de aynıdır. Örneklem küçük olduğundan mutlak değerler resmî test sonuçlarından sapabilir; ancak ana örüntü burada da görülür: kutu U-Net kutu ölçütünde 0.925, aynı tahminler piksel-değişim ölçütünde 0.528 F1 alır.
 
-Table: Tablo 39. Canlı Space toplu testi (10 Kasım 2026): test bölümünden 24 sahte ve 24 özgün görüntü.
+ResNet-18 kararları bu sürümde kalibre eşikle verilmektedir (Bölüm 4.9). Kısıtlı veri modelinin yanlış alarm oranı, önceki dağıtımdaki 0.375'ten (sabit 0.5 eşiği) 0.083'e inmiştir. Tam veri modeli 24 özgün görüntünün hiçbirini işaretlemez ve sahtelerin 0.917'sini yakalar (AUROC 0.998). İşaretçisiz eğitilen tam veri modelinde doğru tespit oranı 0.583'tür; eşi bulunan 89 test sahtesinin tamamında değerlendirme hattının bu model için verdiği oran 0.719'dur ve 24 örneklik fark örnekleme aralığındadır, ancak eşiğin doygunluğa yakın olması (0.965) sınırdaki skorları (0.953–0.957) kaçırmaktadır. Tek örnekli senaryo testinde işaretçi bulgusu canlı ortamda da görülür: yalnız kalıntı eklenmiş özgün görüntüyü kısıtlı veri ve tam veri modelleri sahte sayarken (skor 0.952 ve 1.000) işaretçisiz eğitilen model özgün olarak sınıflandırır (0.529); aynı örnekte bu model sahte görüntünün kendisini de kaçırmıştır (skor 0.648).
+
+Table: Tablo 39. Canlı Space toplu testi (11 Kasım 2026, Faz 4 sürümü): test bölümünden 24 sahte ve 24 özgün görüntü; ResNet-18 satırlarında kalibre eşik.
 
 | Model | F1, kutu | AP, kutu | F1, piksel-değişim | AP, piksel-değişim | Doğru tespit oranı | Yanlış alarm oranı | Görüntü AUROC |
 |---|---|---|---|---|---|---|---|
-| ResNet-18, tam ince ayar | — | — | — | — | 1.000 | 0.375 | 0.990 |
+| ResNet-18, kısıtlı veri (Faz 1) | — | — | — | — | 0.917 | 0.083 | 0.990 |
+| ResNet-18, tam veri (tohum 42) | — | — | — | — | 0.917 | 0.000 | 0.998 |
+| ResNet-18, tam veri, işaretçisiz eğitim (tohum 42) | — | — | — | — | 0.583 | 0.000 | 0.967 |
 | U-Net kutu (tohum 42) | 0.925 | 0.964 | 0.528 | 0.410 | 1.000 | 0.042 | 0.988 |
 | U-Net piksel-değişim (tohum 42) | 0.739 | 0.730 | 0.635 | 0.609 | 1.000 | 0.083 | 1.000 |
 | YOLO11s, karolu (tohum 42) | 0.948 | 0.939 | 0.534 | 0.394 | 1.000 | 0.042 | 1.000 |
 
-Kaynak: `reports/canli_test_v3deploy_log.txt`, `reports/deploy_v3.txt` (önceki dağıtım: `reports/canli_test_v2deploy_log.txt`)
+Kaynak: `reports/canli_test_v4deploy_log.txt`, `reports/canli_test_v4deploy_faz4_log.txt` (önceki dağıtımlar: `reports/canli_test_v3deploy_log.txt`, `reports/deploy_v3.txt`, `reports/canli_test_v2deploy_log.txt`)
 
 ### 4.8 Tek örnek üzerinden uçtan uca gösterim
 
@@ -1527,7 +1534,7 @@ Kaynak: `phase4_resnet/results/breakdown_test.csv`, `phase4_resnet/results/table
 
 **Hipotez kararları.** Veri miktarının yama ayrımını belirgin iyileştireceği beklentisi (H6a; doğrulama AUROC en az 0.95) desteklenmiştir (0.983 ± 0.003). Kalibre karar kuralının yanlış alarmı düşüreceği beklentisi (H6b) desteklenmiştir; en yüksek birkaç yamanın ortalamasının tek en yüksek yamadan daha iyi olacağı önerisi ise desteklenmemiştir. İşaretçi onarımlı eğitimin kısayolu azaltacağı beklentisi (H6c) kısmen desteklenmiştir: kalıntısı onarılmış sahtelerdeki kayıp ortadan kalkmış, yalnız kalıntı eklenmiş özgün görüntülerdeki yanlış alarm ise yarıya inmekle birlikte yüksek kalmıştır.
 
-**Karşılaştırma, sınırlar ve uygulama durumu.** Aynı doğrulama protokolünde uygulamanın kayıtlı görüntü AUROC değerleri kutu U-Net için tohuma göre 0.838–0.921, YOLO11s için 0.961'dir (`kod/app/meta/image_tau.json`). Tam veri ResNet-18 (0.965) bu düzeydedir, ancak yalnız kaba bir yama ısı haritası üretir ve lokalizasyon ölçütü yoktur. Test bölümünde eşi bulunan özgün görüntü sayısı 89 olduğundan test yanlış alarm oranının aralığı geniştir (Wilson aralığı yaklaşık %0.2–9). Eşikler doygunluğa yakındır ve tohuma duyarlıdır (0.940–0.995). Dayanıklılık ve ayrı tutulan üretici deneyleri bu model için yapılmamıştır. Yerel uygulamaya tam veri modeli ve işaretçisiz eğitilen model (tohum 42) eklenmiş, varsayılan ResNet-18 tam veri modeli olmuş ve görüntü kararı kalibre eşikle verilir hâle gelmiştir (`kod/app/meta/resnet_image_tau.json`). Üç model ve 40 görüntüde uygulamanın skoru ile değerlendirme hattının skoru arasındaki en büyük fark 0.0014'tür ve kararların tamamı aynıdır (`phase4_resnet/results/app_repro_check.json`). Bu sürüm henüz canlı Space'e ve kod deposuna gönderilmemiştir; Bölüm 4.7'deki canlı test ile Şekil 10–16'daki ekran görüntüleri önceki sürüme aittir.
+**Karşılaştırma, sınırlar ve uygulama durumu.** Aynı doğrulama protokolünde uygulamanın kayıtlı görüntü AUROC değerleri kutu U-Net için tohuma göre 0.838–0.921, YOLO11s için 0.961'dir (`kod/app/meta/image_tau.json`). Tam veri ResNet-18 (0.965) bu düzeydedir, ancak yalnız kaba bir yama ısı haritası üretir ve lokalizasyon ölçütü yoktur. Test bölümünde eşi bulunan özgün görüntü sayısı 89 olduğundan test yanlış alarm oranının aralığı geniştir (Wilson aralığı yaklaşık %0.2–9). Eşikler doygunluğa yakındır ve tohuma duyarlıdır (0.940–0.995). Dayanıklılık ve ayrı tutulan üretici deneyleri bu model için yapılmamıştır. Yerel uygulamaya tam veri modeli ve işaretçisiz eğitilen model (tohum 42) eklenmiş, varsayılan ResNet-18 tam veri modeli olmuş ve görüntü kararı kalibre eşikle verilir hâle gelmiştir (`kod/app/meta/resnet_image_tau.json`). Üç model ve 40 görüntüde uygulamanın skoru ile değerlendirme hattının skoru arasındaki en büyük fark 0.0014'tür ve kararların tamamı aynıdır (`phase4_resnet/results/app_repro_check.json`). Bu sürüm 10 Kasım 2026'da kod deposuna, 11 Kasım 2026'da canlı Space'e gönderilmiştir; Bölüm 4.7'deki canlı test bu sürümle yinelenmiştir, Şekil 10–16'daki ekran görüntüleri ise önceki sürüme aittir.
 
 ## 5. Tartışma ve Sonuç
 
@@ -1535,7 +1542,7 @@ Kaynak: `phase4_resnet/results/breakdown_test.csv`, `phase4_resnet/results/table
 
 **İşaretçi bir kısayoldur, hikâyenin tamamı değildir.** Yalnız yeşil kalıntı çizgisini özgün bir görüntüye yapıştırmak standart kutu modelinin alanı bulması için yeterlidir ve modelin test puanı kalıntı taşıyan görüntülerde 0.97, taşımayanlarda 0.69'dur. Buna karşın işaretçisi onarılmış görüntülerle yeniden eğitilen model kutu puanının çoğunu korur. Kalıntı varken kullanılmakta, yokken yerini başka ipuçları almaktadır. Bu, veri tabanında bildirilen başarıların işaretçili görüntülerde zorluk açısından olduğundan iyi göründüğü, ama yalnız işaretçiden ibaret olmadığı anlamına gelir. Kalıntı Gemini sahtelerinin çoğunda bulunup Ideogram sahtelerinde hemen hiç bulunmadığından, v1 üzerindeki üreticiler arası aktarım sonuçları üretici ile işaretçiyi karıştırmaktadır. İşaretçi taşımayan v2 üzerindeki harici test bunu dışarıdan doğrular: işaretçiyle eğitilen modeller en çok işaretçiyi taşıyan tariflerde kaybeder, işaretçisiz eğitilen kutu modeli diğerlerinde hiçbir şey kaybetmez. Aynı bağımlılık, görüntü düzeyinde karar veren ResNet-18 sınıflandırıcısında da ölçülmüştür (Bölüm 4.9): tam veriyle eğitilen model, kalıntı onarıldığında sahtelerin yarısından fazlasını kaçırmaktadır.
 
-**Denetim türü ve model davranışı.** Piksel-değişim denetimi en sadık maskeleri ve sabit eşikte en az yanlış alarmı verir, ancak bulanıklık ve yeniden ölçeklemeye daha kırılgandır ve üretici açığını kapatmaz. Kutu yardımcı kanalı eklemek bu kırılganlığı azaltan tek varyanttır; sonuç tek tohumludur. Gri düzeye dönüşüm bütün modellere büyük zarar verir; ilk katman süzgeçleri ve SHAP bölge kütlesi, modellerin renk bilgisini ve kutu kenarını yoğun biçimde kullandığını göstermektedir.
+**Denetim türü ve model davranışı.** Piksel-değişim denetimi en sadık maskeleri ve sabit eşikte en az yanlış alarmı verir, ancak bulanıklık ve yeniden ölçeklemeye daha kırılgandır ve üretici açığını kapatmaz. Kutu yardımcı kanalı eklemek bu kırılganlığı azaltan tek varyanttır (üç tohum; bulanıklık kaybı −%59 yerine −%46). Gri düzeye dönüşüm bütün modellere büyük zarar verir; ilk katman süzgeçleri ve SHAP bölge kütlesi, modellerin renk bilgisini ve kutu kenarını yoğun biçimde kullandığını göstermektedir.
 
 **Ders açısından kazanımlar.** Klasik öznitelikler şans üstü ama zayıf kalmış, DCT özniteliklerinin kayıpsız PNG verisinde ayırt edici olmadığı görülmüştür. Ön eğitimli ResNet-18 yalnız gövdesi de güncellendiğinde belirgin üstünlük sağlamıştır. Aynı model tam veriyle eğitilip karar eşiği doğrulama kümesinde seçildiğinde görüntü düzeyi yanlış alarm oranı 0.242'den 0.021'e inmiş; sabit 0.5 eşiğinin, görüntü başına onlarca yamanın en yükseğini alan bir sınıflandırıcı için yanlış seçim olduğu görülmüştür. U-Net'in atlama bağlantıları 33 piksellik alanlarda etkili olmuş, DeepLabV3+ benzer başarıyı daha yavaş çıkarımla vermiş, YOLO11 ise referansın geometrisine en uygun formülasyon olarak kutu ölçütünde öne geçmiştir. Frekans kanalları eklemek RGB girdiyi geçememiştir. Ders kapsamındaki ön işleme adımlarının bu görevde girdiyi iyileştirmek yerine çoğunlukla adli izi zayıflattığı, test zamanı bozulma deneyleriyle sayısal olarak gösterilmiştir.
 
@@ -1545,14 +1552,14 @@ Kaynak: `phase4_resnet/results/breakdown_test.csv`, `phase4_resnet/results/table
 
 1. Piksel-değişim referansı otomatik türetilmiştir. İnsan eliyle doğrulanmış bir etiketleme yapılamamıştır; bu iş insan emeği gerektirmektedir ve doğrulama formu hazır beklemektedir. Yapılan iki denetim (dil modeli destekli ilk denetim ve değerlendirici türü doğrulanmamış ikinci denetim) birbirleriyle zayıf uyumludur. İkinci denetime göre referans değişimi kaçırmamakta, ancak alanın yeniden çizilen arka planını ve değişmeyen içeriğini de kapsayarak fazla işaretlemektedir.
 2. TruFor'un ince ayarı yapılamamıştır; yayımlanan kodda eğitim betiği bulunmamaktadır. Bu nedenle veri tabanında eğitilen modeller yalnız sıfır-atış başvuru modelleriyle karşılaştırılmıştır. Mimari bağımsızlık DeepLabV3+ ve YOLO11 ile gösterilmiştir.
-3. Faz 3'ün tek etkenli deneyleri (DeepLabV3+, işaretçisiz eğitim, birleşik kayıp, 20 epok, YOLO ablasyonları) tek tohumludur ve öncül kanıt sayılmalıdır. Üç tohumlu olanlar ana U-Net ızgarası, yalnız Gemini ile eğitilen U-Net modelleri ve ana YOLO11s modelidir.
+3. Faz 3'ün tek etkenli deneylerinin çoğu (DeepLabV3+, işaretçisiz piksel-değişim ve glif modelleri, birleşik kayıplı glif modeli, 20 epok, YOLO ablasyonları) tek tohumludur ve öncül kanıt sayılmalıdır. Üç tohumlu olanlar ana U-Net ızgarası, işaretçisiz kutu modeli, birleşik kayıplı piksel modeli, yalnız Gemini ile eğitilen U-Net modelleri, ana YOLO11s modeli ve ResNet-18 sınıflandırıcısıdır.
 4. Ayrı tutulan üretici deneyi 126 Ideogram görüntüsüne dayanır ve işaretçi ile üreticiyi ayıramaz; yalnız Gemini ile işaretçisiz eğitilmiş modeller eğitilmemiştir.
-5. Görüntü düzeyi tespit, test bölümünün özgün görüntüleri eşli olmadığından yalnız doğrulama çiftlerinde ölçülmüştür. Uygulamadaki görüntü düzeyi eşikler tek tohumla seçilmiştir. ResNet-18 eşiği Faz 4'te doğrulama kümesinde kalibre edilmiştir; ancak eşikler doygunluğa yakındır (0.94–0.995) ve tohuma duyarlıdır, test bölümünde eşi bulunan özgün görüntü sayısı yalnız 89'dur ve kalibre sürüm henüz canlı Space'e dağıtılmamıştır.
+5. Görüntü düzeyi tespit, test bölümünün özgün görüntüleri eşli olmadığından yalnız doğrulama çiftlerinde ölçülmüştür. Uygulamadaki görüntü düzeyi eşikler tek tohumla seçilmiştir. ResNet-18 eşiği Faz 4'te doğrulama kümesinde kalibre edilmiştir; ancak eşikler doygunluğa yakındır (0.94–0.995) ve tohuma duyarlıdır, test bölümünde eşi bulunan özgün görüntü sayısı yalnız 89'dur. Kalibre sürüm 11 Kasım 2026'da canlı Space'e dağıtılmıştır.
 6. Karolu dedektörde kutu AP değeri tam görüntü dedektörünün altındadır; karolar arası kutu birleştirme uygulanmamıştır. Dedektörün hız üstünlüğü beklentisi doğrulanmamıştır.
-7. v2 harici testinde işaretçisiz modeller tek tohumludur; v2 hem üreticiyi hem geri yapıştırma yöntemini değiştirdiğinden iki etki yalnız v1 kalıntı ayrımı üzerinden ayrıştırılabilmiştir. Veri tabanı tek bir belge ailesini (çoğunlukla fiş) ve iki dili ağırlıklı olarak kapsar.
+7. v2 harici testinde işaretçisiz piksel-değişim ve glif modelleri tek tohumludur (kutu modeli üç tohumludur); v2 hem üreticiyi hem geri yapıştırma yöntemini değiştirdiğinden iki etki yalnız v1 kalıntı ayrımı üzerinden ayrıştırılabilmiştir. Veri tabanı tek bir belge ailesini (çoğunlukla fiş) ve iki dili ağırlıklı olarak kapsar.
 8. SHAP sadakat ölçümleri sekiz girdide ve düşük bütçeyle yapılmıştır; nitel destek olarak değerlendirilmelidir.
 
-**Dönem sonu planı.** Final aşamasında bu rapor bir konferans bildirisine dönüştürülecektir. İngilizce bildiri taslağı IEEE konferans biçiminde hazırdır (`paper/`, dokuz sayfa) ve ResNet-18 ile ilgili Faz 4 sonuçları dışında bu rapordaki bütün ana sonuçları içermektedir. Gönderimden önce planlanan güçlendirmeler şunlardır: işaretçisiz kutu modeli ve birleşik kayıplı model için iki ek tohum; 100 çiftlik insan denetimi; işaretçi ile üreticiyi ayırmak için yalnız Gemini üzerinde işaretçisiz eğitim; karolu dedektörde karolar arası kutu birleştirme. Hedef, IEEE kapsamındaki bir sinyal ve görüntü işleme ya da adli bilişim konferansıdır; son başvuru tarihleri çağrı metinlerinden doğrulanacaktır.
+**Dönem sonu planı.** Final aşamasında bu rapor bir konferans bildirisine dönüştürülecektir. İngilizce bildiri taslağı IEEE konferans biçiminde hazırdır (`paper/`, on sayfa) ve Faz 4 sonuçları dahil bu rapordaki bütün ana sonuçları içermektedir. Planlanan güçlendirmelerden biri tamamlanmıştır: işaretçisiz kutu modeli ve birleşik kayıplı piksel modeli için iki ek tohum (Bölüm 4.3 ve 4.4). Gönderimden önce kalanlar şunlardır: 100 çiftlik insan denetimi; işaretçi ile üreticiyi ayırmak için yalnız Gemini üzerinde işaretçisiz eğitim; karolu dedektörde karolar arası kutu birleştirme. Hedef, IEEE kapsamındaki bir sinyal ve görüntü işleme ya da adli bilişim konferansıdır; son başvuru tarihleri çağrı metinlerinden doğrulanacaktır.
 
 **Sonuç.** Yapay zekâ ile iç-boyama yapılmış finansal belgelerde resmî kutu maskeleri, değişen pikselleri bulan lokalizatörleri değil, düzenlenen alanı bulan dedektörleri eğitmekte ve ödüllendirmektedir. Yalnız eğitim maskesini değiştirmek model sıralamasını tersine çevirir; etki iki bölütleme mimarisinde ve bir kutu dedektöründe yinelenir. Gemini sahtelerinin çoğunda kalan düzenleme işaretçisi, mevcut olduğunda kısayol olarak kullanılır; onsuz yeniden eğitim kutu puanının çoğunu korur ve işaretçisiz v2 kümesine çok daha iyi aktarılır. Ders açısından proje, klasik görüntü işlemeden derin bölütleme ve tespite uzanan bütün yöntemleri tek bir veri tabanında, kısıtlı veriden tam ölçeğe, ölçülebilir ve yeniden üretilebilir biçimde bir araya getirmiştir.
 
@@ -1614,8 +1621,10 @@ Kaynak: `phase4_resnet/results/breakdown_test.csv`, `phase4_resnet/results/table
 54. M. G. Kendall. A New Measure of Rank Correlation. Biometrika, 30(1–2), 81–93, 1938.
 55. K. He, G. Gkioxari, P. Dollár, R. Girshick. Mask R-CNN. IEEE International Conference on Computer Vision (ICCV), s. 2980–2988, 2017.
 56. P. Zhou, X. Han, V. I. Morariu, L. S. Davis. Learning Rich Features for Image Manipulation Detection. IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), s. 1053–1061, 2018.
-57. G. Cheng, X. Yuan, X. Yao, K. Yan, Q. Zeng, X. Xie, J. Han. Towards Large-Scale Small Object Detection: Survey and Benchmarks. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2023.
+57. G. Cheng, X. Yuan, X. Yao, K. Yan, Q. Zeng, X. Xie, J. Han. Towards Large-Scale Small Object Detection: Survey and Benchmarks. IEEE Transactions on Pattern Analysis and Machine Intelligence, 45(11), 13467–13488, 2023.
 58. S. Aoudi, S. A. P., N. Al Barghuthi, O. Alamir. Beyond Accuracy: Auditing Image Forgery Localization via Scene-Disjoint Evaluation and XAI Faithfulness. IEEE Access, 14, 53101–53115, 2026.
+59. S. M. Lundberg, S.-I. Lee. A Unified Approach to Interpreting Model Predictions. Advances in Neural Information Processing Systems (NeurIPS) 30, s. 4765–4774, 2017.
+60. W. Samek, A. Binder, G. Montavon, S. Lapuschkin, K.-R. Müller. Evaluating the Visualization of What a Deep Neural Network Has Learned. IEEE Transactions on Neural Networks and Learning Systems, 28(11), 2660–2673, 2017.
 
 ## Ek A. Sayı–kaynak izlenebilirlik tablosu
 
@@ -1644,7 +1653,10 @@ Table: Tablo 46. Rapordaki ana sayılar ve alındıkları dosyalar.
 | İşaretçi kalıntısı yaygınlığı | Çiftlerin %75.4'ü; Gemini %83.6, Ideogram %1.5 | `phase2/gt/vlm_verification_summary.json`, `reports/PHASE2_Metodoloji_ve_Sonuclar.md` |
 | İşaretçi onarımı AP farkı (U-Net kutu) | −0.222 [−0.256, −0.190] | `phase3/results/tables_p3.md` (T3) |
 | Özgün + işaretçi AP (U-Net kutu) | 0.905 | `phase3/results/tables_p3.md` (T3) |
-| İşaretçisiz eğitimde onarım farkı | +0.019 [+0.002, +0.036] | `phase3/results/tables_p3.md` (T3) |
+| İşaretçisiz eğitimde onarım farkı (üç tohum) | +0.017 [+0.001, +0.033] | `phase3/results/tables_p3.md` (T3) |
+| İşaretçisiz kutu U-Net, doğrulama ve test AUPRC (üç tohum) | 0.912 ± 0.006 ve 0.940 ± 0.003 | `phase3/results/tables_p3.md` (T1, T2) |
+| Birleşik kayıplı piksel U-Net, doğrulama AUPRC (kutu ve piksel-değişim; üç tohum) | 0.668 ± 0.019 ve 0.633 ± 0.013 | `phase3/results/tables_p3.md` (T1) |
+| Ek tohum öngörüleri (P1–P6) | Altısı da tuttu | `reports/inceleme/deney_plani_ek_tohum_2026-11-10.md`, `phase3/results/extra_seed_stats.md` |
 | Test AP, işaretçili ve işaretçisiz (U-Net kutu) | 0.972 ve 0.690 | `phase3/results/tables_p3.md` (T3b) |
 | DeepLabV3+ kutu modeli, kutu ve piksel-değişim AUPRC | 0.939 ve 0.382 | `phase3/results/tables_p3.md` (T1) |
 | YOLO11s test AUPRC, F1, IoU | 0.969 ± 0.006; 0.946; 0.918 | `phase3/results/tables_p3.md` (T2) |
@@ -1653,13 +1665,15 @@ Table: Tablo 46. Rapordaki ana sayılar ve alındıkları dosyalar.
 | Çıkarım süreleri | U-Net 81 ms; DeepLabV3+ 122 ms; YOLO11s 98 ms; tam görüntü 303 ms | `phase3/results/speed_bench.csv` |
 | Ayrı tutulan üretici (yalnız Gemini, Ideogram AP) | U-Net 0.412; YOLO11s 0.752 | `phase3/results/tables_p3.md` (T4) |
 | Gri düzey etkisi | AUPRC değerinde −%47 ile −%67 | `phase3/results/tables_p3.md` (T6), `reports/PHASE3_Sonuclar_ve_Kapanis.md` |
-| v2 harici test (kutu AUPRC) | U-Net 0.520 ± 0.018; YOLO11s 0.887 ± 0.006; işaretçisiz U-Net 0.712 | `phase3_v2/results/v2_tables.md` |
+| v2 harici test (kutu AUPRC) | U-Net 0.520 ± 0.018; YOLO11s 0.887 ± 0.006; işaretçisiz U-Net 0.711 ± 0.007 | `phase3_v2/results/v2_tables.md` |
+| v2, v1 kalıntısız tariflerde AP değişimi (işaretçisiz kutu U-Net; üç tohum) | −0.008 [−0.069, +0.053] | `phase3_v2/results/T_v2_marker_split_agg.csv` |
 | Referans denetimleri | İlk: 96 yanıt, 69 uygun, 26 kısmi, 1 hatalı; ikinci: 36 uygun, 64 kısmi; κ 0.07 | `phase2/gt/vlm_verification_summary.json`, `phase2/gt/human_verification_summary.md`, `phase2/gt/partial_note_check.json` |
 | SHAP işaretçi yoğunlaşması | 4.3–15.1 kat | `docs/xai_test_report.md` |
 | Tam görüntü SHAP toplamsallık hatası | En çok 1.1e-04 | `reports/xai_fullimage/RAPOR_OLCUM.md` |
-| Katman filtresi testleri | 87 kontrol, 0 hata; 46 model | `tests/run_all_xai_filters.log`, `reports/xai_filters/test_results.json` |
+| Katman filtresi testleri | 91 kontrol, 0 hata; 50 model | `tests/run_all_xai_filters.log`, `reports/xai_filters/test_results.json` |
 | Uygulama testleri | 289 kontrol, 0 hata; 36 model | `tests/run_all_app.log` |
-| Canlı Space toplu testi (U-Net kutu) | F1 0.925; AP 0.964; yeniden üretim farkı 0.000 | `reports/canli_test_v3deploy_log.txt` |
+| Canlı Space toplu testi (U-Net kutu) | F1 0.925; AP 0.964; yeniden üretim farkı 0.000 | `reports/canli_test_v4deploy_log.txt` |
+| Canlı Space, ResNet-18 tam veri (kalibre eşik; 24 çift): doğru tespit, yanlış alarm, AUROC | 0.917; 0.000; 0.998 | `reports/canli_test_v4deploy_faz4_log.txt` |
 | Dedektörün zararsız kontrolleri (görüntü AUROC, en yüksek kutu güveni; tohum 42) | Özgün 0.995; geri yapıştırma 0.992; yeniden örnekleme 0.994 | `phase3/results/T7b_yolo_controls.csv` |
 | v2 işaretçi kalıntısı (v1 ile aynı eşli kural) | Kutu dışında farklı piksel: 3.066 çiftin 0'ında; kural 1 çiftte, kutu içinde | `phase3_v2/results/v2_marker_paired_check.json` |
 | ResNet-18 tam veri: doğrulama yama AUROC | 0.983 ± 0.003 (kısıtlı veri modeli 0.926) | `phase4_resnet/results/patch_level_val.csv` |

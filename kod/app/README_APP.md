@@ -78,7 +78,7 @@ python kod\tools\capture_screens.py http://127.0.0.1:7860/   # rapor için günc
 python kod\hf_space\live_test.py --n 24                # canlı Space: 4 senaryo + 24 çift toplu test
 ```
 Son sonuçlar (10 Kasım 2026, kod `kod/` altına taşındıktan ve `app.py` modüllere bölündükten sonra, RTX 5080):
-`test_app` 289 kontrol / 0 hata (36 model; Faz 4 modelleri eklendikten sonra) · `test_app_p3` 0 hata · `test_xai_filters` 87 kontrol / 0 hata · `test_xai` 15/15.
+`test_app` 289 kontrol / 0 hata (36 model; Faz 4 modelleri eklendikten sonra) · `test_app_p3` 0 hata · `test_xai_filters` 91 kontrol / 0 hata (50 kayıtlı ağırlık; 11 Kasım 2026, ek tohumlar dahil) · `test_xai` 15/15.
 Not: GPU'da çıkarım bf16 yarı duyarlıkla yapıldığından (`appcore/models.py: _autocast`) SHAP adaptör testlerinin
 eşleşme toleransı CUDA'da 5e-3, CPU'da 1e-5'tir (`kod/tests/test_xai.py: _tol`).
 

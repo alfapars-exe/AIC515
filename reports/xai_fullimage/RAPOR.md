@@ -53,7 +53,7 @@ görüntüde 5 kanallı U-Net) uyarıyla atlanır, bütçe düşürülürse sonu
 
 | Test | Sonuç |
 |---|---|
-| `tests/test_xai_filters.py` (T1–T7) | **87 kontrol / 0 hata**. T7: 576×864 (1 döşeme), 1500×1100 (4), 2300×700 (3) görüntülerde 5 mimari ailesinde döşemeli ↔ tek geçiş (CPU) göreli max\|Δ\| = 0 (YOLO ≤ 6e-8), çıktı boyutu = ⌈orijinal/adım⌉, f>1 iken = tek geçişin f×f ortalaması (Δ = 0), GPU 2300×1700: 6 döşeme, 0.6–0.8 s, tepe 280–390 MB |
+| `tests/test_xai_filters.py` (T1–T7) | **87 kontrol / 0 hata** (11 Kasım 2026 koşusunda ek tohum ağırlıklarıyla 91 kontrol / 0 hata). T7: 576×864 (1 döşeme), 1500×1100 (4), 2300×700 (3) görüntülerde 5 mimari ailesinde döşemeli ↔ tek geçiş (CPU) göreli max\|Δ\| = 0 (YOLO ≤ 6e-8), çıktı boyutu = ⌈orijinal/adım⌉, f>1 iken = tek geçişin f×f ortalaması (Δ = 0), GPU 2300×1700: 6 döşeme, 0.6–0.8 s, tepe 280–390 MB |
 | SHAP uçtan uca (`xai_predict` → `xai_run`, 8 hedef türü, U-Net + ResNet + YOLO) | tüm tam görüntü sonuçları "doğrulandı" (harita = 576×864, toplamsallık hatası ≤ 1.4e-15); mozaik "tam görüntü SHAP DEĞİLDİR" etiketli, kapsama tam; pencere hedefleri ve ③ karşılaştırma değişmeden çalışıyor; PDF/300 dpi/NPY dosyaları üretiliyor |
 | Tarayıcı (yerel Gradio) | SHAP: tam görüntü panelleri, kaydırıcı, katkı dağılımı görüntülendi; tekerlek yakınlaştırma 1.56× → çift tık sıfırlama doğrulandı. Kernel: varsayılan "tam görüntü · natif, döşemeli", D bölümünde tam görüntü bindirmesi |
 | Ölçüm (`tools/xai_fullimage_bench.py`, 0.28–4.48 MP, max_evals 500) | ayrıntı aşağıda ve `RAPOR_OLCUM.md` |

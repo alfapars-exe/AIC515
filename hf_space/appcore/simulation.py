@@ -18,7 +18,7 @@ from .models import (  # noqa: F401
 )
 from .metrics import (  # noqa: F401
     default_tau, disp, heatmap_rgb, hist_metrics, image_score, image_threshold, overlay, postprocess, rectangularity,
-    ref_lookup
+    ref_lookup, resnet_decision
 )
 from .scenarios import (  # noqa: F401
     INPUT_TYPES, bbox_of, build_input, degrade, montage, show_df, zoom_box
@@ -139,14 +139,14 @@ def simulate(key, input_type, degradation, use_pipeline, steps, unet_sel, resnet
     gtp = gt_pixel if (gt_pixel is not None and same_geom) else None
     for n in resnet_sel:
         hm, info = res[n]
-        smax = max(s for s, _, _ in info["scores"])
-        dec = int(smax >= 0.5)
-        rows.append({"Model": friendly(n), "Görüntü skoru": smax, "Görüntü eşiği": "0.500", "Karar": "SAHTE" if dec else "GERÇEK",
+        smax, rthr, rcal = resnet_decision(n, info["scores"])
+        dec = int(smax >= rthr)
+        rows.append({"Model": friendly(n), "Görüntü skoru": smax, "Görüntü eşiği": f"{rthr:.3f}" + ("" if rcal else " (kalibre değil)"), "Karar": "SAHTE" if dec else "GERÇEK",
                      "Doğru": "✓" if dec == label else "✗", "Süre s": info["sec"]})
         ov = cv2.addWeighted(inp, 0.55, heatmap_rgb(hm), 0.45, 0)
         gallery.append((disp(overlay(ov, None, gtb > 127 if gtb is not None else None)), f"5 · {friendly(n)} — patch skor haritası (maks {smax:.2f})"))
         panels_zoom.append((f"{friendly(n)}\npatch skoru", ov))
-        verdicts.append((friendly(n), dec, smax, 0.5))
+        verdicts.append((friendly(n), dec, smax, rthr))
     for n in unet_sel:
         prob, info = res[n]
         row, binm, pbb = evaluate_unet(n, prob, label, gtb, gtp, meta, clean_forged)

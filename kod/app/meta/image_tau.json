@@ -143,5 +143,37 @@
   "auroc": 0.897,
   "n_pos": 487,
   "n_neg": 487
+ },
+ "unet_bbox_mr_s43": {
+  "thr": 0.1843,
+  "tpr": 0.85,
+  "fpr": 0.209,
+  "auroc": 0.895,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unet_bbox_mr_s44": {
+  "thr": 0.0972,
+  "tpr": 0.908,
+  "fpr": 0.279,
+  "auroc": 0.891,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unetjoint_pixel_eps8_morph_s43": {
+  "thr": 0.0492,
+  "tpr": 0.891,
+  "fpr": 0.162,
+  "auroc": 0.906,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "unetjoint_pixel_eps8_morph_s44": {
+  "thr": 0.0726,
+  "tpr": 0.856,
+  "fpr": 0.125,
+  "auroc": 0.912,
+  "n_pos": 487,
+  "n_neg": 487
  }
 }

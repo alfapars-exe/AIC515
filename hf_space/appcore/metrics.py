@@ -135,3 +135,16 @@ def image_threshold(model_name: str):
     if stem in IMG_TAU and isinstance(IMG_TAU[stem], dict):
         return float(IMG_TAU[stem]["thr"]), True
     return 0.5, False
+
+
+# [FAZ4] ResNet-18 görüntü kararı: skor = en yüksek k patch skorunun ortalaması (seçilen k = 1 → maks patch);
+# eşik val 487 sahte + 487 eşleşen authentic üzerinde Youden-J (kod/phase4_resnet/calibrate_p4.py).
+RESNET_TAU = _load_json(META / "resnet_image_tau.json")
+
+
+def resnet_decision(model_name: str, scores):
+    """(görüntü skoru, eşik, kalibre mi). scores: [(patch skoru, y, x)]. Kalibrasyon girdisi yoksa maks patch >= 0.5."""
+    e = RESNET_TAU.get(model_name.split("/", 1)[-1])
+    k, thr, cal = (int(e.get("k", 1)), float(e["thr"]), True) if isinstance(e, dict) else (1, 0.5, False)
+    top = sorted((float(s) for s, _, _ in scores), reverse=True)[:max(1, k)]
+    return float(np.mean(top)), thr, cal

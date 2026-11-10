@@ -16,7 +16,7 @@ _LOAD_ERR: dict = {}
 
 
 # [FAZ3] model kaydı: PHASE2/ (Faz 2 + Faz 3 segmentasyon), PHASE1/, YOLO/ (Faz 3 kutu dedektörleri)
-_HIDE = re.compile(r"(_e20$|geminionly_s4[34]$)")  # 20 epoch ve ek held-out tohumları arayüzde gösterilmez
+_HIDE = re.compile(r"(_e20$|geminionly_s4[34]$|_mr_s4[34]$|^unetjoint_.*_s4[34]$)")  # 20 epoch ve ek tohumlar (held-out, işaretçisiz, birleşik kayıp) arayüzde gösterilmez
 
 
 def list_unet_ckpts():

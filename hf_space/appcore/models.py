@@ -16,7 +16,7 @@ _LOAD_ERR: dict = {}
 
 
 # [FAZ3] model kaydı: PHASE2/ (Faz 2 + Faz 3 segmentasyon), PHASE1/, YOLO/ (Faz 3 kutu dedektörleri)
-_HIDE = re.compile(r"(_e20$|geminionly_s4[34]$)")  # 20 epoch ve ek held-out tohumları arayüzde gösterilmez
+_HIDE = re.compile(r"(_e20$|geminionly_s4[34]$|_mr_s4[34]$|^unetjoint_.*_s4[34]$)")  # 20 epoch ve ek tohumlar (held-out, işaretçisiz, birleşik kayıp) arayüzde gösterilmez
 
 
 def list_unet_ckpts():
@@ -38,6 +38,9 @@ def list_seg_ckpts():
 def list_resnet_ckpts():
     out = [f"PHASE1/{Path(p).stem}" for p in sorted(glob.glob(str(MODELS / "resnet18_*.pt")))]
     out += [f"PHASE2/{Path(p).stem}" for p in sorted(glob.glob(str(MODELS / "phase2" / "h4_resnet18*.pt")))]
+    # [FAZ4] tam veriyle yeniden eğitilmiş parça sınıflandırıcıları (tohum tekrarları s43/s44 arayüzde gizli)
+    out += [f"PHASE4/{Path(p).stem}" for p in sorted(glob.glob(str(MODELS / "phase4" / "resnet18_*.pt")))
+            if not re.search(r"(_s4[34]$|dryrun)", Path(p).stem)]
     return out
 
 
@@ -45,6 +48,8 @@ def ckpt_path(name: str) -> Path:
     phase, stem = name.split("/", 1)
     if phase == "YOLO":
         return MODELS / "phase3_yolo" / f"{stem}.pt"
+    if phase == "PHASE4":
+        return MODELS / "phase4" / f"{stem}.pt"
     return (MODELS / f"{stem}.pt") if phase == "PHASE1" else (MODELS / "phase2" / f"{stem}.pt")
 
 
@@ -60,6 +65,8 @@ def friendly(name: str) -> str:
         how = ("tam görüntü 1280" if d == "full" else "kare 1024") + (" · yalnız Gemini" if "geminionly" in d else "") + \
               (" · +authentic kare" if "authneg" in d else "") + (" · varsayılan aug" if m.group("g") == "default" else "")
         return f"YOLO11{m.group('a')} · kutu tespiti, {how} (Faz 3, s{m.group('s')})"
+    if stem.startswith("resnet18_ft_full"):  # [FAZ4] "_mr_" U-Net dalından ÖNCE ele alınmalı
+        return f"ResNet-18 · tam veri{' · işaretçisiz eğitim' if '_mr_' in stem else ''} (Faz 4, s{seed})"
     if stem.startswith("dlv3p_"):
         g = "bbox-GT" if "bbox" in stem else ("piksel-GT" if "pixel" in stem else "glif-GT")
         return f"DeepLabV3+ · {g} (Faz 3, s{seed})"
@@ -80,7 +87,7 @@ def friendly(name: str) -> str:
     if stem == "unet_rgbfreq_best":
         return "U-Net · RGB+FFT+Laplacian (PHASE1)"
     if stem.startswith("resnet18_"):
-        return {"resnet18_ft_best": "ResNet-18 · tam ince ayar", "resnet18_probe_best": "ResNet-18 · linear probe",
+        return {"resnet18_ft_best": "ResNet-18 · tam ince ayar (Faz 1, 400 örnek)", "resnet18_probe_best": "ResNet-18 · linear probe",
                 "resnet18_scratch_best": "ResNet-18 · sıfırdan"}.get(stem, stem)
     if stem.startswith("h4_resnet18"):
         return "ResNet-18 · H4 global-iz sondası" + (" (poz. kontrol)" if "poscontrol" in stem else "")

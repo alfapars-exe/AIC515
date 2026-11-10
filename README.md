@@ -1,6 +1,6 @@
 # AIC515 Görüntü İşleme — Dönem Projesi: AI-Generated Financial Document Forgery Localization (AIForge-Doc v1)
 
-**Durum (10 Kasım 2026):** PHASE 1–4 tamamlandı. IEEE bildirisi: `paper/main.pdf` (kaynak `paper/`, 9 sayfa). Dönem içi raporu: `reports/Donem_Ici_Proje_Raporu.pdf` (v5). Faz 3 kapanış raporu: `reports/PHASE3_Sonuclar_ve_Kapanis.md`; Faz 4 raporu: `reports/PHASE4_ResNet_Sonuclar.md`; hakem hazırlığı: `reports/Hakem_Hazirligi_Faz3.md`; son tutarlılık denetimi: `reports/inceleme/paper_check_2026-11-10_v2.md`; kuyruk kesintisi incelemesi: `reports/inceleme/debug_kuyruk_kesintisi_2026-11-09.md`; otomatik tablolar: `phase3/results/tables_p3.md`, `phase3_v2/results/v2_tables.md`, `phase4_resnet/results/tables_p4.md`.
+**Durum (11 Kasım 2026):** PHASE 1–4 tamamlandı. Ek tohumlar (43/44; işaretçisiz kutu U-Net ve birleşik kayıplı piksel U-Net) koşuldu, koşudan önce yazılan altı öngörünün altısı da tuttu (`reports/inceleme/deney_plani_ek_tohum_2026-11-10.md`). Faz 4 sürümü canlı Space'e dağıtıldı ve canlı test yinelendi (`reports/canli_test_v4deploy_log.txt`). IEEE bildirisi: `paper/main.pdf` (kaynak `paper/`, 10 sayfa; Faz 4 ve üç tohumlu sonuçlar dahil). Dönem içi raporu: `reports/Donem_Ici_Proje_Raporu.pdf` (v5). Faz 3 kapanış raporu: `reports/PHASE3_Sonuclar_ve_Kapanis.md`; Faz 4 raporu: `reports/PHASE4_ResNet_Sonuclar.md`; hakem hazırlığı: `reports/Hakem_Hazirligi_Faz3.md`; son tutarlılık denetimi: `reports/inceleme/paper_check_2026-11-10_v2.md`; kuyruk kesintisi incelemesi: `reports/inceleme/debug_kuyruk_kesintisi_2026-11-09.md`; otomatik tablolar: `phase3/results/tables_p3.md`, `phase3_v2/results/v2_tables.md`, `phase4_resnet/results/tables_p4.md`.
 **Araştırma yönü:** *What Do Document Forgery Localizers Learn from Box Masks? Pixel-Change Ground Truth and Shortcut Audits for AI-Inpainted Financial Documents*. Ana sonuç: H1 doğrulandı (aynı tahminler bbox-GT AUPRC 0.923 → piksel-GT 0.374), H2 kısmen, H3/H4 yanlışlandı (bkz. `reports/PHASE2_Metodoloji_ve_Sonuclar.md`).
 
 
@@ -19,7 +19,7 @@ Vize Proje/
 │  ├─ baselines/             Faz 1 (küçük veri): klasik öznitelik + SVM/RF, ResNet-18, U-Net; common/{data,metrics}.py
 │  ├─ phase2/                gt/ (GT türetimi) · controls/ · experiments/ (eğitim, tam görüntü çıkarım, değerlendirme, sondalar;
 │  │                         common/{p2data,p2metrics}.py) · stats/ · literature_baselines/ (TruFor, ADCD-Net çalıştırıcıları)
-│  ├─ phase3/                DeepLabV3+, işaretçi-onarımlı eğitim, birleşik kayıp, sondalar, sentez; q0–q3b kuyrukları, env.ps1
+│  ├─ phase3/                DeepLabV3+, işaretçi-onarımlı eğitim, birleşik kayıp, sondalar, sentez; q0–q4 kuyrukları (q4: ek tohumlar 43/44), env.ps1
 │  ├─ phase3_yolo/           YOLO11: veri dönüştürme, eğitim, kutu→harita çıkarımı, tespit ölçütleri
 │  ├─ phase3_v2/             AIForge-Doc v2 harici testi
 │  ├─ phase4_resnet/         Faz 4: ResNet-18 tam veri + işaretçi onarımı + görüntü düzeyi eşik kalibrasyonu
@@ -98,12 +98,13 @@ Vize Proje/
 | H1: aynı tahminler, box-GT → piksel-GT (U-Net box modeli, val) | 0.923 → 0.374 | 3 |
 | H1 tekrarı: DeepLabV3+ / YOLO11s | 0.939 → 0.382 / 0.965 → 0.368 | 1 / 3 |
 | Kutu dedektörü (YOLO11s kare 1024), test box AUPRC / F1@τ* | 0.969 / 0.946 (U-Net 0.950 / 0.846) | 3 |
-| İşaretçi onarımı ΔAP (U-Net box) → işaretçisiz yeniden eğitimde | −0.222 → +0.019 | 3 → 1 |
+| İşaretçi onarımı ΔAP (U-Net box) → işaretçisiz yeniden eğitimde | −0.222 → +0.017 | 3 → 3 |
+| İşaretçisiz yeniden eğitilen U-Net box: val / test box AUPRC (standart 0.923 / 0.950) | 0.912 ± 0.006 / 0.940 ± 0.003 | 3 |
 | Test AP işaretçili / işaretçisiz (U-Net box) | 0.972 / 0.690 | 3 |
 | Held-out: Gemini-only → Ideogram AP (U-Net box / YOLO11s) | 0.412 / 0.752 | 3 / 1 |
-| Birleşik kayıp (piksel + 0.5·box), piksel-GT AUPRC | 0.610 → 0.622 | 1 |
+| Birleşik kayıp (piksel + 0.5·box), val box-GT / piksel-GT AUPRC (test 89 çiftte piksel-GT farkı yok) | 0.579 → 0.668 / 0.610 → 0.633 | 3 |
 | Gri seviye test girdisi, relΔ AUPRC | −47 … −67 % | 1–3 |
-| AIForge-Doc v2 harici test (567 sızıntısız çift; yeniden eğitim ve kalibrasyon yok), box AUPRC: U-Net / işaretçisiz U-Net / YOLO11s | 0.520 / 0.712 / 0.887 | 3 / 1 / 3 |
+| AIForge-Doc v2 harici test (567 sızıntısız çift; yeniden eğitim ve kalibrasyon yok), box AUPRC: U-Net / işaretçisiz U-Net / YOLO11s | 0.520 / 0.711 / 0.887 | 3 / 3 / 3 |
 | Zararsız kontroller, kutu dedektörü: görüntü AUROC (en yüksek kutu güveni) özgün / geri yapıştırma / yeniden örnekleme | 0.995 / 0.992 / 0.994 | 1 |
 | Faz 1 AUPRC (kesin) | 0.947 → 0.805 | — |
 

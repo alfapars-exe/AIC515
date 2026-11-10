@@ -188,5 +188,25 @@
   "bbox": 0.15,
   "pixel_eps8_morph": 0.1,
   "glyph_v2": 0.15
+ },
+ "unet_bbox_mr_s43": {
+  "bbox": 0.45,
+  "pixel_eps8_morph": 0.95,
+  "glyph_v2": 0.95
+ },
+ "unet_bbox_mr_s44": {
+  "bbox": 0.45,
+  "pixel_eps8_morph": 0.95,
+  "glyph_v2": 0.95
+ },
+ "unetjoint_pixel_eps8_morph_s43": {
+  "bbox": 0.05,
+  "pixel_eps8_morph": 0.45,
+  "glyph_v2": 0.45
+ },
+ "unetjoint_pixel_eps8_morph_s44": {
+  "bbox": 0.05,
+  "pixel_eps8_morph": 0.45,
+  "glyph_v2": 0.45
  }
 }

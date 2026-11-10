@@ -92,7 +92,7 @@ def build_registry(deps: Deps, loaded: Optional[dict] = None) -> dict:
         reg[n] = ModelSpec(
             n, deps.friendly(n), "resnet", "patch-classification", 3, deps.resnet_patch,
             f"{deps.resnet_patch} px natif patch · ImageNet norm · kayan pencere adım {deps.resnet_stride}",
-            "sigmoid p(sahte) / patch", "görüntü kararı: maks patch ≥ 0.5",
+            "sigmoid p(sahte) / patch", "görüntü kararı: maks patch ≥ kalibre eşik (resnet_image_tau.json; yoksa 0.5)",
             "PartitionExplainer + maskers.Image", "GradientExplainer (fp32)", st, why)
     for n in deps.list_unet():
         in_ch = loaded[n][1] if n in loaded else None

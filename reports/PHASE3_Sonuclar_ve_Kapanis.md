@@ -3,19 +3,19 @@
 **Tarih:** 10 Kasım 2026 · **Yazar:** Harun Benli · **Donanım:** RTX 5080 16 GB · torch 2.11.0+cu128, smp 0.6.0, ultralytics 8.4.208
 **Bağlayıcı metin:** `paper/main.pdf` (IEEE bildirisi). Tüm sayılar `phase3/results/tables_p3.md` ve `phase3_yolo/results/*.csv`'den otomatik üretildi (`kod/phase3/synthesize_p3.py`).
 **Sonradan eklenen not (10 Kasım 2026, akşam):** Bu belge Faz 3'ün kapanış kaydıdır. Yazıldıktan sonra kaynak kod `kod/` çatısı altına taşındı (aşağıdaki betik yolları buna göre düzeltildi), Faz 4 tamamlandı (`reports/PHASE4_ResNet_Sonuclar.md`) ve bir tutarlılık denetimi yapıldı (`reports/inceleme/paper_check_2026-11-10_v2.md`). §5'teki test sayıları o günkü dağıtıma aittir; güncel değerler dönem içi raporunun §4.7'sindedir.
-**Tohum etiketi:** Aksi belirtilmedikçe Faz 3'teki tek-faktör deneyleri **tek tohumdur (42)** ve öncül kanıt sayılmalıdır. Üç tohumlu olanlar: Faz 2 U-Net ana ızgarası (3 GT × s42–44), Gemini-only held-out U-Net'ler (3 GT × s42–44), YOLO11s ana model (s42–44).
+**Tohum etiketi:** Aksi belirtilmedikçe Faz 3'teki tek-faktör deneyleri **tek tohumdur (42)** ve öncül kanıt sayılmalıdır. Üç tohumlu olanlar: Faz 2 U-Net ana ızgarası (3 GT × s42–44), Gemini-only held-out U-Net'ler (3 GT × s42–44), YOLO11s ana model (s42–44) ve 11 Kasım 2026 ekiyle işaretçisiz box U-Net ile birleşik kayıplı piksel U-Net (s42–44; bkz. §7).
 
 ## 1. Faz 2'den devralınan açık işler — kapanış tablosu
 
 | Açık iş | Durum | Sonuç (kısa) | Kanıt |
 |---|---|---|---|
 | W2 tek mimari | ✅ Kapandı | DeepLabV3+ H1'i tekrarlıyor: box modeli box-GT 0.939 → piksel-GT 0.382; her GT kendi modelini birinci sıralıyor (tek tohum) | T1 |
-| W4 işaretçisiz yeniden eğitim | ✅ Kapandı | İşaretçi bağımlılığı kalkıyor (onarım Δ −0.222 [3 tohum] → +0.019 [1 tohum]); box skoru büyük ölçüde korunuyor (val 0.916 vs 0.923, test 0.939 vs 0.950) (tek tohum) | T1–T3 |
+| W4 işaretçisiz yeniden eğitim | ✅ Kapandı | İşaretçi bağımlılığı kalkıyor (onarım Δ −0.222 [3 tohum] → +0.017 [3 tohum]); box skoru büyük ölçüde korunuyor (val 0.912 ± 0.006 vs 0.923, test 0.940 ± 0.003 vs 0.950). 11 Kasım ekiyle üç tohum; ilk sonuç (s42): +0.019, 0.916, 0.939 | T1–T3, §7 |
 | W5 piksel GT işaretçiyi içeriyor | ✅ Kapandı | `*_nm` GT varyantları üretildi ve eğitimde kullanıldı | `make_marker_repaired.py` |
 | W3 held-out tek tohum | ✅ Kapandı | 3 tohum: Gemini-only box U-Net Ideogram 0.412 vs Gemini 0.909; piksel denetimi açığı kapatmıyor (H3 reddi teyit) | T4 |
 | W6 Faz 1 AUPRC şişkin | ✅ Kapandı | Kesin AUPRC 0.805 (rgb) / 0.792 (rgbfreq); raporlanan 0.947/0.939 alt-örneklemeden | T8 |
 | W9/W10 tek tohum etiketleri, eksik kaynaklar | ✅ Kapandı | Errata eski raporlara eklendi; kaynakça 77 doğrulanmış kayıt (10 Kasım akşamı itibarıyla 79; `paper/refs.bib` ile özdeş) | `references_v3.bib` |
-| PHASE3-a birleşik kayıp | ✅ Kapandı | Piksel+0.5·box: pix-GT 0.610→0.622, box-GT 0.579→0.647, blur −59 %→−43 % (tek tohum) | T1, T6 |
+| PHASE3-a birleşik kayıp | ✅ Kapandı | Piksel+0.5·box (11 Kasım ekiyle üç tohum): box-GT 0.579→0.668, pix-GT 0.610→0.633 (yalnız doğrulamada; 89 test çiftinde fark yok), blur −59 %→−46 %. İlk sonuç (s42): 0.647, 0.622, −43 % | T1, T6, §7 |
 | PHASE3-b 20 epoch | ✅ Kapandı | Fayda yok (box 0.926, pix 0.594, glyph 0.645 vs 0.923/0.610/0.676) | T1 |
 | PHASE3-d bölge görünümü | ✅ Kapandı | Render-only/content-only ayrıştırması; standart modeller ikisinin birlikteliğine (ve işaretçiye) tepki veriyor; işaretçisiz eğitim içeriğe kaydırıyor | T3 |
 | PHASE3-e kutu formülasyonu (YOLO) | ✅ Kapandı | Bkz. §2 | T2, T5 |
@@ -23,7 +23,7 @@
 | Veri bias analizi | ✅ Kapandı | İşaretçi × üretici Cramér's V 0.61; split χ² p ≥ 0.30 | `dataset_curation.md` |
 | W1 100 çift GT doğrulaması | ⚠ Kısmen | İkinci bağımsız denetim tamamlandı (değerlendirici türü doğrulanmadı → insan etiketlemesi sayılmaz): kutu 99/100 OK; piksel GT 36 OK / 64 PARTIAL / 0 WRONG — PARTIAL sayılan 64 çiftin tamamında not fazla kapsamayı anlatıyor: maske, alanın yeniden çizilen arka planını ya da değişmeyen içeriğini de işaretliyor (WildReceipt 39/39, XFUND 0/11; önceki sürümdeki "61" sayısı notlardan bir kuralla yeniden üretilemediği için kaldırıldı); glyph_v2 42/54/4; VLM ile uyum zayıf (κ = 0.07 [−0.08, 0.21]), VLM 43 çiftte daha iyimser. Bildiri sınırlaması güncellendi | `phase2/gt/human_verification_summary.md` |
 | W7 TruFor ince ayar | ❌ Yapılamadı | Yayımlanan kodda eğitim betiği yok (README "TODO"); mimari bağımsızlık DeepLabV3+ ve YOLO ile gösterildi | — |
-| AIForge-Doc v2 harici test | ✅ Kapandı | 567 sızıntısız çift (v1 test karşılığı, kaynak belge eğitimde yok), yeniden eğitim/kalibrasyon yok: box U-Net 0.950 → 0.520±0.018 AUPRC; YOLO11s 0.887±0.006 (görüntü AUROC 0.919); işaretçisiz box U-Net 0.712 ve kalıntısız spesifikasyonlarda kayıpsız (+0.003, tek tohum). Kaybın çoğu v1'de işaretçi taşıyan spesifikasyonlarda (§6) | `phase3_v2/results/v2_tables.md` |
+| AIForge-Doc v2 harici test | ✅ Kapandı | 567 sızıntısız çift (v1 test karşılığı, kaynak belge eğitimde yok), yeniden eğitim/kalibrasyon yok: box U-Net 0.950 → 0.520±0.018 AUPRC; YOLO11s 0.887±0.006 (görüntü AUROC 0.919); işaretçisiz box U-Net 0.711 ± 0.007 ve kalıntısız spesifikasyonlarda kayıpsız (−0.008 [−0.069, +0.053]; üç tohum, 11 Kasım eki). Kaybın çoğu v1'de işaretçi taşıyan spesifikasyonlarda (§6) | `phase3_v2/results/v2_tables.md` |
 
 ## 2. YOLO11 hipotez kararları (plan: `phase3_yolo/README.md`)
 
@@ -67,7 +67,7 @@ Ek: YOLO işaretçiye daha az bağımlı (onarım Δ −0.062 vs U-Net −0.222)
 | U-Net piksel (3)              |       0.227 |          0.246 |        0.252 |           0.693 |             -0.398 |              -0.172 |
 | U-Net glif (3)                |       0.147 |          0.192 |        0.304 |           0.688 |             -0.171 |              -0.112 |
 | DeepLabV3+ box                |       0.539 |          0.28  |        0.218 |           0.724 |             -0.375 |              -0.141 |
-| U-Net box, işaretçisiz eğitim |       0.712 |          0.392 |        0.296 |           0.835 |             -0.19  |               0.003 |
+| U-Net box, işaretçisiz (3)    |       0.711 |          0.391 |        0.297 |           0.840 |             -0.188 |              -0.008 |
 | U-Net piksel, işaretçisiz     |       0.353 |          0.43  |        0.416 |           0.826 |             -0.106 |              -0.078 |
 | U-Net glif, işaretçisiz       |       0.214 |          0.287 |        0.446 |           0.764 |             -0.076 |              -0.065 |
 | U-Net box, yalnız Gemini      |       0.449 |          0.248 |        0.175 |           0.742 |             -0.54  |              -0.189 |
@@ -76,7 +76,7 @@ Ek: YOLO işaretçiye daha az bağımlı (onarım Δ −0.062 vs U-Net −0.222)
 | YOLO11s yalnız Gemini         |       0.843 |          0.338 |        0.229 |           0.865 |             -0.212 |              -0.055 |
 | YOLO11s +authentic kare       |       0.863 |          0.345 |        0.241 |           0.937 |             -0.191 |              -0.055 |
 
-**Okuma:** box U-Net v1'de 0.95 iken v2'de 0.52'ye düşüyor; kaybın çoğu v1'de işaretçi taşıyan spesifikasyonlarda. İşaretçisiz eğitilen box U-Net kalıntısız spesifikasyonlarda hiç kaybetmiyor (tek tohum); kareli YOLO11s 0.89'da kalıyor.
+**Okuma:** box U-Net v1'de 0.95 iken v2'de 0.52'ye düşüyor; kaybın çoğu v1'de işaretçi taşıyan spesifikasyonlarda. İşaretçisiz eğitilen box U-Net kalıntısız spesifikasyonlarda ölçülebilir kayıp göstermiyor (üç tohum: −0.008 [−0.069, +0.053]); kareli YOLO11s 0.89'da kalıyor.
 
 **Tüm v2 (3066 çift) görüntü AUROC** — 'seen': kaynak belge v1 eğitiminde vardı; README zero-shot taban çizgileri: TruFor 0.599, DocTamper 0.585, insan 0.501.
 
@@ -96,3 +96,18 @@ Ek: YOLO işaretçiye daha az bağımlı (onarım Δ −0.062 vs U-Net −0.222)
 | aiforge-tiles-yolo11s-img1024-conserv-s42 | seen     |      2494 |           0.911 |
 
 Yöntem: `kod/phase3_v2/v2_eval.py` (prep → infer → eval; sızıntı kuralı koşmadan önce sabitlendi), `v2_report.py`, `v2_marker_split.py`, `v2_marker_paired_check.py`, kuyruk `run_v2.ps1`. GT varyantları v1 ile birebir (`make_gt.process_pair`). Veri: tam paket (authentic dahil) Google Drive'dan; CC BY-NC-SA 4.0, yeniden dağıtılmaz.
+
+## 7. Ek (11 Kasım 2026): ek tohumlar 43 ve 44
+
+İki tek tohumlu sonuç — işaretçisi onarılmış görüntülerle eğitilen box U-Net ve birleşik kayıplı (piksel + 0.5·box) piksel U-Net — 43 ve 44 tohumlarıyla yinelendi. Plan, öngörüler ve yanlışlama ölçütleri koşudan önce yazıldı ve depoya gönderildi (commit 4668b08, 10 Kasım 21:55; kuyruk 21:57'de başladı): `reports/inceleme/deney_plani_ek_tohum_2026-11-10.md`. Kuyruk: `kod/phase3/q4_seeds_mr_joint.ps1` (eğitim, değerlendirme, sondalar, v2, tespit ölçütü). Tamamlayıcı istatistikler: `kod/phase3/seed_extra_stats.py` → `phase3/results/extra_seed_stats.md`.
+
+| Öngörü | Sonuç (3 tohum) | Karar |
+|---|---|---|
+| P1 işaretçisiz box U-Net val box AUPRC 0.89–0.94 | 0.916, 0.916, 0.905 (0.912 ± 0.006) | Tuttu |
+| P2 onarım ΔAP ≥ −0.05 | +0.017 [+0.001, +0.033] | Tuttu |
+| P3 v2 box AUPRC 0.62–0.78 ve standart modelin (0.520) üstünde | 0.712, 0.718, 0.703 (0.711 ± 0.007) | Tuttu |
+| P4 v1 kalıntısız tariflerde v1→v2 ΔAP sıfıra yakın | −0.008 [−0.069, +0.053] (tohum bazında +0.003, −0.026, −0.002) | Tuttu |
+| P5 birleşik piksel U-Net val box-GT AUPRC ≥ 0.61 | 0.668 ± 0.019 (standart 0.579 ± 0.014); eşli AP +0.051 [+0.043, +0.058] | Tuttu |
+| P6 birleşik piksel U-Net val pix-GT AUPRC ≥ 0.605; iyileşme iddiası için > 0.622 | 0.633 ± 0.013 (standart 0.610 ± 0.012); eşli AP +0.011 [+0.005, +0.017] | Tuttu |
+
+Daraltılan tek iddia: birleşik kaybın piksel-değişim ölçütündeki kazancı küçüktür ve doğrulamayla sınırlıdır; eşi bulunan 89 test görüntüsünde fark yoktur (0.652 ± 0.003 ve 0.654 ± 0.016; eşli AP +0.004 [−0.008, +0.015]). Yeniden eğitimin bedeli: işaretçisiz box U-Net, standart modele göre görüntü başı AP'de yaklaşık 0.04 kaybeder (val −0.038 [−0.054, −0.021], test −0.040 [−0.052, −0.029]). Bildiri, dönem içi raporu, README, hakem hazırlığı ve sunum üç tohumlu değerlerle güncellendi. İşaretçisiz piksel ve glif modelleri, birleşik kayıplı glif modeli, DeepLabV3+, 20 epok ve YOLO ablasyonları tek tohumlu kalmıştır.

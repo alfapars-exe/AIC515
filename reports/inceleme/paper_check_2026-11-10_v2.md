@@ -112,3 +112,45 @@ Sabah denetlenip değişmeyenlerden bu turda görüntü başı dosyalardan bağ�
 | Gizli anahtar | Eşitleme betiği her gönderimde tarıyor |
 | Veri ve ağırlıklar | Depoda yok; betiklerle yeniden üretiliyor. Üç şekil kuralla çelişiyor (MEDIUM-8) |
 | Koşuların commit kimliği | Yok: çalışma ağacı git deposu değil. Faz 4 koşuları betik özetini (SHA-256) kaydediyor; Faz 2–3 koşularında commit kimliği yok |
+
+## Ek — 11 Kasım 2026: bu denetimden sonra değişenler
+
+Bu bölüm denetimden sonra eklendi; yukarıdaki tablolar 10 Kasım akşamındaki durumu gösterir ve değiştirilmedi.
+
+**Kapanan maddeler.**
+
+| Madde | Yeni durum | Kanıt |
+|---|---|---|
+| MEDIUM-6 [Seed] v2 bölümünün en güçlü iddiası tek tohum | Kapandı | İşaretçisiz kutu U-Net 43 ve 44 tohumlarıyla yinelendi: v2 kutu AUPRC 0.711 ± 0.007; kalıntısız tariflerde −0.008 [−0.069, +0.053]. Öngörüler koşudan önce depoya gönderildi (commit 4668b08), altısı da tuttu: `reports/inceleme/deney_plani_ek_tohum_2026-11-10.md` |
+| Depo gönderimi ve lisans (karar bekliyordu) | Kapandı | Kod MIT lisansıyla gönderildi; örnek görüntü içeren üç şekil ve iki veri metni sütunu depodan çıkarıldı (commit 4668b08) |
+| Faz 4 cümlesi (karar bekliyordu) | Kapandı | Kullanıcı kararıyla Faz 4 bildiriye tam olarak eklendi: §V-I, §V-J, Tablo VII ve VIII, özet, katkılar, yöntem, tartışma |
+| Sayfa sınırı ve özet uzunluğu | Açık (mekâna bağlı) | Kullanıcı kararı: içerik önce, biçim sonra. Bildiri 10 sayfa, 64 atıflı kaynak; özet yaklaşık 321 kelime. Kısaltma sırası `reports/Hakem_Hazirligi_Faz3.md` içinde |
+| Yazar bloğu | Açık | Bölüm ya da enstitü adı kullanıcıdan bekleniyor |
+
+**Bu turda değişen sayıların denetimi (bildiri → kaynak).** Hepsi eşleşiyor.
+
+| Bildirideki ifade | Yer | Kaynak | Kaynak değer |
+|---|---|---|---|
+| İşaretçisiz kutu U-Net doğrulama AUPRC 0.912 ± .006, 0.373 ± .013, 0.265 ± .001 | Tablo I | `phase3/results/T1_dual_gt_val.csv` | 0.912 ± 0.006, 0.373 ± 0.013, 0.265 ± 0.001 |
+| Birleşik piksel U-Net 0.668 ± .019, 0.633 ± .013, 0.523 ± .009 | Tablo I | aynı | 0.668 ± 0.019, 0.633 ± 0.013, 0.523 ± 0.009 |
+| Kontrollerde 3.6–6.5 puan (işaretçisiz modeller) | §V-B | `phase3/results/T7_controls.csv` | kutu 0.8923 → 0.8329 ve 0.8564; piksel 0.8437 → 0.7790 ve 0.7830; glif 0.7834 → 0.7329 ve 0.7409 |
+| Birleşik modelde işaretlenen özgün oranı %10 | §V-B | aynı (`flag05`) | 0.1020 |
+| Onarım farkı +0.017 [0.001, 0.033]; kapsama %44; AUROC 0.720 | §V-C, Tablo II | `phase3/results/T3_probes.csv` | +0.017 [+0.001, +0.033]; 0.442; 0.720 |
+| Birleşik model satırı 0.795, 0.56, 0.600, −0.194, 0.46, 0.887 | Tablo II | aynı | 0.795, 0.558, 0.600, −0.194, 0.457, 0.887 |
+| Test AUPRC 0.940 ± 0.003 (önce 0.950 ± 0.011) | §V-C | `phase3/results/T2_test.csv` | 0.940 ± 0.003; 0.950 ± 0.011 |
+| Eşli AP farkı −0.038 [−0.054, −0.021] ve −0.040 [−0.052, −0.029] | §V-C | `phase3/results/extra_seed_stats.md` | aynı |
+| Kalıntılı test görüntülerinde 0.914; kalıntısız Gemini 0.762 | §V-C | `phase3/results/T3b_test_marker_subsets.csv` | 0.914 [0.899, 0.927]; 0.762 [0.703, 0.821] |
+| İşaretçisiz kutu satırı 0.82, 0.35, 0.58, 0.957, 0.724, 0.886 | Tablo III, §V-D | `phase3/results/T3_probes.csv`, `probes_p3_summary_unet*.csv` | 0.823, 0.345, 0.583, 0.957, 0.724, 0.886 |
+| Birleşik kayıp: 0.579 ± 0.014 → 0.668 ± 0.019; 0.638 ± 0.015 → 0.702 ± 0.020 | §V-F | T1, T2 | aynı |
+| Eşli AP +0.051 [0.043, 0.058], +0.046 [0.040, 0.052], +0.011 [0.005, 0.017], +0.004 [−0.008, 0.015] | §V-F | `phase3/results/extra_seed_stats.md` | aynı |
+| 89 test çiftinde 0.652 ± 0.003 ve 0.654 ± 0.016 | §V-F | `phase3/results/T2_test.csv` (`AUPRC_pix_89`) | aynı |
+| Bulanıklık −%59 → −%46 | §V-F | `phase3/results/T6_robustness.csv` | −59.1 ± 4.5; −46.0 ± 2.9 |
+| Görüntü AUROC 0.905 ± 0.008 ve 0.892 ± 0.006 | §V-F | `phase3/results/T7_controls.csv` | 0.9052 ± 0.0075; 0.8916 ± 0.0057 |
+| İşaretçisiz kutu U-Net AP@0.5 0.804 ± 0.005 | §V-G | `phase3_yolo/results/detection_test.csv` | 0.8047, 0.8094, 0.7986 |
+| v2: 0.711 ± 0.007; −0.008, [−0.07, 0.05] | §V-H | `phase3_v2/results/v2_tables.md`, `T_v2_marker_split_agg.csv` | 0.711 ± 0.007; −0.008 [−0.069, +0.053] |
+| Tablo VI satırı 0.711, 0.391, 0.840, −0.19, −0.01 | Tablo VI | aynı | 0.711, 0.391, 0.840, −0.188, −0.008 |
+| v2 kutu AUPRC kaybı %24 (işaretçisiz kutu modeli) | Sonuç | T2 ve v2 tabloları | (0.940 − 0.711) / 0.940 = %24.4 |
+
+**Yöntem cümlesi.** "Seeds 43 and 44 ... were run last, after six predictions with falsification thresholds had been committed to the public repository; all six held" ifadesi doğrulandı: plan dosyası ve kuyruk betiği 4668b08 numaralı commit'tedir (10 Kasım 21:55:51), kuyruk 21:57:21'de başlamıştır (`phase3/logs/queue.log`); değerlendirme planın 7. bölümündedir.
+
+**Derleme.** `paper/main.pdf`: 10 sayfa, 64 atıflı kaynak, taşan kutu ve uyarı yok (11 Kasım 2026).

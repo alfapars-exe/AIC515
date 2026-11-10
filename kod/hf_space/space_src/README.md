@@ -33,6 +33,8 @@ Storage Bucket** olarak bağlanır (`AI515_DATA_ROOT`, varsayılan `/data`); buc
 /data/models/*.pt            # PHASE 1: unet_rgb, unet_rgbfreq, resnet18_{ft,probe,scratch}
 /data/models/phase2/*.pt     # PHASE 2: unet_{bbox,pixel_eps8_morph,glyph_v2}_s{42,43,44} (+ geminionly)
 /data/models/phase2/*.pt     # PHASE 3: dlv3p_*_s42 (DeepLabV3+), unetjoint_*_s42 (kutu yardımcı kaybı), *_mr_s42 (işaretçisiz eğitim)
+/data/models/phase2/*.pt     # ek tohumlar: unet_bbox_mr_s{43,44}, unetjoint_pixel_eps8_morph_s{43,44} (yalnız Katman Filtreleri sekmesinde listelenir)
+/data/models/phase4/*.pt     # PHASE 4: resnet18_ft_full_s{42,43,44}, resnet18_ft_full_mr_s{42,43,44} (tam veri; işaretçi onarımlı eğitim)
 /data/models/phase3_yolo/*.pt # PHASE 3: YOLO11 n/s/m kutu dedektörleri (kare 1024, tam görüntü 1280, yalnız Gemini)
 /data/dataset_audit/samples_forged.csv, splits.json
 ```
@@ -48,5 +50,7 @@ Lisans notu: YOLO11 çıkarımı **Ultralytics** (AGPL-3.0) kütüphanesini kull
 - Resmî test (812), 3 tohum, bbox-GT ile eğitilen U-Net: AUPRC 0.950 ± 0.011, F1@τ* 0.846 ± 0.015 (zero-shot TruFor F1 0.403).
 - Aynı tahminler eşleşen orijinalden türetilen **piksel-değişim GT'si** ile puanlandığında F1 0.45 / AUPRC 0.37 → kutu maskesi skorları şişiriyor (H1).
 - Sahtelerin %75.4'ünde üretim hattının bıraktığı **yeşil işaretçi kalıntısı** var; yalnız işaretçi authentic görüntüye aktarılınca model kutuyu çiziyor (AP 0.906).
+- Faz 4: tam veriyle eğitilen ResNet-18 yama sınıflandırıcısı (3 tohum, kalibre eşik) test AUROC 0.978; kalıntı onarıldığında doğru tespit oranı 0.995'ten 0.471'e düşüyor.
+- İşaretçisi onarılmış görüntülerle yeniden eğitilen kutu U-Net (3 tohum) bağımlılığı kaybediyor (onarım ΔAP +0.017) ve işaretçisiz AIForge-Doc v2'de 0.711 kutu AUPRC veriyor (standart 0.520).
 
 Kod: `app.py` (Gradio), `xai/` (SHAP açıklanabilirlik paketi), `baselines/features_classical.py` (56 klasik öznitelik). Dağıtım: proje deposundaki `hf_space/deploy_hf.py`.

@@ -17,7 +17,8 @@ from .models import (  # noqa: F401
     friendly, gpu_infer
 )
 from .metrics import (  # noqa: F401
-    IMG_TAU, disp, heatmap_rgb, hist_metrics, image_score, image_threshold, overlay, postprocess, rectangularity
+    IMG_TAU, RESNET_TAU, disp, heatmap_rgb, hist_metrics, image_score, image_threshold, overlay, postprocess, rectangularity,
+    resnet_decision
 )
 from .scenarios import (  # noqa: F401
     bbox_of, fmt
@@ -359,9 +360,10 @@ def run_resnet(orig, cur, mask, model_name, source, stride):
     img = to_rgb(orig if source == "Orijinal görüntü" else cur)
     hm, info = gpu_infer([], [model_name], [img], int(stride))[0][model_name]
     scores = info["scores"]
-    smax = max(s for s, _, _ in scores)
+    smax, rthr, rcal = resnet_decision(model_name, scores)
     rows = [("model", friendly(model_name)), ("girdi", source), ("patch sayısı", len(scores)), ("süre (s)", f"{info['sec']:.2f}"),
-            ("görüntü skoru (maks patch)", f"{smax:.3f}"), ("karar (eşik 0.5)", "SAHTE" if smax >= 0.5 else "GERÇEK"),
+            ("görüntü skoru (maks patch)", f"{smax:.3f}"),
+            (f"karar (eşik {rthr:.3f}{'' if rcal else ', kalibre değil'})", "SAHTE" if smax >= rthr else "GERÇEK"),
             ("ortalama patch skoru", f"{np.mean([s for s, _, _ in scores]):.3f}")]
     if mask is not None and mask.shape == img.shape[:2]:
         bb = bbox_of(mask)
@@ -414,6 +416,11 @@ def results_markdown():
     if IMG_TAU:
         rows = [(friendly('PHASE2/' + k), v["thr"], v["auroc"], v["tpr"], v["fpr"]) for k, v in IMG_TAU.items() if isinstance(v, dict)]
         parts.append("\n\n## Görüntü-düzeyi karar eşikleri (val 487 sahte + 487 eşleşen authentic, Youden-J)\n")
+        parts.append(pd.DataFrame(rows, columns=["model", "eşik", "AUROC", "TPR", "FPR"]).to_markdown(index=False))
+    if RESNET_TAU:
+        rows = [(friendly(('PHASE1/' if k.endswith('_best') else 'PHASE4/') + k), v["thr"], v["auroc"], v["tpr"], v["fpr"])
+                for k, v in RESNET_TAU.items() if isinstance(v, dict) and "thr" in v]
+        parts.append("\n\n## ResNet-18 görüntü-düzeyi karar eşikleri (skor = maks patch; val 487 + 487, Youden-J) — Faz 4\n")
         parts.append(pd.DataFrame(rows, columns=["model", "eşik", "AUROC", "TPR", "FPR"]).to_markdown(index=False))
     return "\n".join(parts) if parts else "Sonuç dosyaları bulunamadı."
 

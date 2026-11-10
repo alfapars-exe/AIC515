@@ -75,7 +75,7 @@ Kernel'ler checkpoint dosyalarından okunur; yeni filtre eğitilmez/üretilmez. 
 - ✅ **T6 PHASE1/resnet18_ft_best: görseller + ham dışa aktarım** — 40 görsel/normalizasyon · 3 dosya
 - ✅ **T6 PHASE2/dlv3p_bbox_s42: görseller + ham dışa aktarım** — 40 görsel/normalizasyon · 3 dosya
 - ✅ **T6 YOLO/aiforge-full-yolo11s-img1280-conserv-s42: görseller + ham dışa aktarım** — 40 görsel/normalizasyon · 3 dosya
-- ✅ **T3 kayıtlı modeller** — 46/46 model tüm kontrolleri geçti (checkpoint kernel'i = modül ağırlığı; bağımsız F.conv2d = model conv çıktısı; ilk conv girdisi = ön işlenmiş tensör; kanal katkıları toplamı = conv; aktivasyon = f(BN) birebir; ağırlık SHA-256 ve .pt dosyası değişmedi; adım ≤ 4)
+- ✅ **T3 kayıtlı modeller** — 46/46 model tüm kontrolleri geçti (11 Kasım 2026 koşusunda ek tohum ağırlıklarıyla 50/50; toplam 91 kontrol, 0 hata) (checkpoint kernel'i = modül ağırlığı; bağımsız F.conv2d = model conv çıktısı; ilk conv girdisi = ön işlenmiş tensör; kanal katkıları toplamı = conv; aktivasyon = f(BN) birebir; ağırlık SHA-256 ve .pt dosyası değişmedi; adım ≤ 4)
 - GPU: cuda ↔ CPU göreli fark 1.0e-03, tepe bellek 73 MiB, 1.43 s (eğitim sürerken 14.6 GiB boş)
 
 ## Temsilî görseller

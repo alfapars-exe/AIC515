@@ -1,0 +1,46 @@
+% Faz 4 (ResNet-18 yama siniflandiricisi) ve aciklanabilirlik bulgulari; kaynaklar: phase4_resnet/results/tables_p4.md, docs/xai_benchmark.csv
+\subsection{A patch classifier: the same shortcut in a third model family}
+\label{sec:res-cls}
+The models above are trained to localize. To see whether the shortcut is specific to localization, we repeat the analysis with the image-level patch classifier of Sec.~\ref{sec:method} (Table~\ref{tab:cls}). On the 400-image pilot subset (296 validation patches), 56 classical features (block DCT, LBP, GLCM, Laplacian residual, radial FFT) with an SVM and a random forest reach a patch AUROC of 0.646 and 0.706, a frozen ResNet-18 0.726, training from scratch 0.679 and full fine-tuning 0.899; the images are lossless PNG, so compression cues are absent, and only fine-tuning is carried forward. A pilot model trained on 400 images reaches a patch AUROC of 0.926 on the 1{,}431 validation patches; the unchanged recipe on the full training split reaches \pmm{0.983}{0.003} over three seeds. The decision rule matters as much as the data: with the uncalibrated rule ``any patch $\ge0.5$'' the full-data classifier flags 24\,\% of the authentic validation images, because the maximum over a median of 75 patches per image is biased upward; the thresholds selected on validation lie between 0.94 and 0.995 and bring the false-positive rate to 0.021 on validation and 0.022 on the 89 authentic test images (Wilson interval roughly 0.2--9\,\%), at a test AUROC of \pmm{0.978}{0.003}. Averaging the top 2, 3 or 5 patches was not better than the maximum (validation AUROC 0.962, 0.958, 0.951 vs.\ 0.965). Under the same validation protocol the box U-Net reaches 0.921, 0.916 and 0.838 over its three seeds and the tiled detector 0.961.
+
+\begin{table}[t]
+\caption{ResNet-18 patch classifier. Patch AUROC on 1{,}431 validation patches; image-level results with the maximum patch score and the validation-calibrated threshold (test: 812 forged, 89 paired authentic). Mean$\pm$sd over seeds 42--44 (sd of test TPR and FPR $\le0.017$); the pilot has one seed.}
+\label{tab:cls}
+\centering\footnotesize
+\setlength{\tabcolsep}{2.4pt}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+ & Patch & \multicolumn{2}{c}{Image AUROC} & \multicolumn{2}{c}{Test, calibrated} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+Training data & AUROC & val & test & TPR & FPR \\
+\midrule
+pilot, 400 images & 0.926 & 0.893 & 0.919 & 0.805 & 0.079 \\
+full split & \pmm{0.983}{0.003} & \pmm{0.965}{0.002} & \pmm{0.978}{0.003} & 0.901 & 0.022 \\
+full, repaired & \pmm{0.982}{0.001} & \pmm{0.948}{0.002} & \pmm{0.958}{0.004} & 0.834 & 0.064 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{Marker probes for the patch classifier at its calibrated threshold: detection rate on the 368 validation forgeries with residue before and after the residue is repaired, false-alarm rate on their authentic counterparts without and with the residue pasted in, and test detection rate with and without residue. Three-seed means (sd $\le0.047$); pilot: one seed.}
+\label{tab:clsprobe}
+\centering\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+ & \multicolumn{2}{c}{forged TPR} & \multicolumn{2}{c}{authentic FPR} & \multicolumn{2}{c}{test TPR} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Training data & raw & repaired & raw & +marker & residue & none \\
+\midrule
+pilot, 400 images & 0.910 & 0.207 & 0.073 & 0.848 & 0.906 & 0.465 \\
+full split & 0.995 & 0.471 & 0.016 & 0.955 & 0.985 & 0.618 \\
+full, repaired & 0.880 & 0.899 & 0.049 & 0.458 & 0.863 & 0.735 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The headline numbers are, however, largely a marker score (Table~\ref{tab:clsprobe}). When only the residue pixels are restored, the full-data classifier misses half of the forgeries it had found (detection rate 0.995 to 0.471), and pasting only the residue onto authentic images makes it flag 96\,\% of them. On the test set it detects 98.5\,\% of the 627 forgeries with residue but 61.8\,\% of the 185 without, and 62.4\,\% of the 85 Ideogram edits. Training on marker-repaired patches removes most of the dependence (0.880 raw vs.\ 0.899 repaired) and gives the best detection of residue-free and Ideogram forgeries (0.735 and 0.737), at the price of a lower overall AUROC (0.958) and a higher false-alarm rate (0.064). The repaired model still flags 46\,\% of the authentic images that carry a pasted residue; it never saw the marker during training, and the pasted pixels are themselves a manipulation. The shortcut found for the segmenters and, more weakly, for the detector thus reappears in a third model family and with a different output type. These classifiers were not evaluated on v2, under degradations or with a held-out generator.
+
+\subsection{Attribution evidence}
+\label{sec:res-xai}
+Input interventions show what a model reacts to; attributions show where its decision comes from. We compute SHAP values~\cite{lundberg2017shap} with the model-agnostic partition explainer (200 evaluations, window-score target) for the three standard U-Nets and the pilot classifier on eight inputs (three true positives, three false negatives, two true negatives). Additivity holds exactly in every run. Deleting regions in the order of their attribution lowers the score faster than a random order~\cite{samek2017evaluating} (area over the perturbation curve 0.445 vs.\ 0.191 for the box U-Net, 0.321 vs.\ 0.101 for \GTp, 0.349 vs.\ 0.167 for \GTg, 0.623 vs.\ 0.225 for the classifier), so the maps point at regions the models use. The positive attribution mass on residue pixels is 4.3 (box U-Net), 8.6 (\GTp), 7.5 (\GTg) and 15.1 (classifier) times their share of the image area, and 4.1--6.2 times on a ring around the box edge. With eight inputs and a coarse partition this is qualitative support for Sec.~\ref{sec:res-marker}, not an independent measurement. An interactive demonstrator that runs the models, probes and explanations on dataset samples accompanies the code.

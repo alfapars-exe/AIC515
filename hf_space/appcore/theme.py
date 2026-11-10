@@ -97,7 +97,7 @@ TIPS = {
     "tip-sl_morph": 'İkili maskeye önce açma (küçük gürültüleri siler), sonra kapama (boşlukları doldurur) uygulanır; değer çekirdek boyutudur (px). 0 = kapalı.',
     "tip-btn_unet": 'Seçili modeli çalıştırır: olasılık haritası, bindirme, ikili maske ve ölçütler (F1, IoU, AP…).',
     "tip-btn_cmp": "Aynı modeli hem orijinal görüntüde hem pipeline çıktısında çalıştırıp ölçütleri yan yana koyar; ön işlemenin etkisini gösterir. Pipeline'da en az bir adım olmalı.",
-    "tip-dd_rn": "ResNet-18 ağırlığı. <b>ft</b>: ImageNet'ten tam ince ayar · <b>probe</b>: yalnız son katman eğitildi · <b>scratch</b>: sıfırdan eğitim. <b>h4</b> modelleri Faz 2 H4 deneylerine aittir.",
+    "tip-dd_rn": "ResNet-18 ağırlığı. <b>ft</b>: ImageNet'ten tam ince ayar · <b>probe</b>: yalnız son katman eğitildi · <b>scratch</b>: sıfırdan eğitim. <b>h4</b> modelleri Faz 2 H4 deneylerine aittir. <b>tam veri (Faz 4)</b>: aynı tarif, 2748 eğitim görüntüsü; <b>işaretçisiz eğitim</b>: yeşil işaretçi kalıntısı onarılmış görüntülerle eğitildi. Görüntü kararı: maks patch ≥ val'de kalibre edilmiş eşik.",
     "tip-rd_src2": 'Modele <b>orijinal görüntünün</b> mü yoksa <b>Ön işleme</b> sekmesinde kurduğunuz <b>pipeline çıktısının</b> mı verileceği.',
     "tip-sl_stride": "224 px'lik pencerenin her adımda kaç piksel kaydırılacağı. Küçük adım daha ince ısı haritası verir ama yavaştır (adım yarıya inince patch sayısı ~4 katına çıkar). 224 = örtüşmesiz.",
     "tip-btn_rn": "Görüntüyü 224 px patch'lerle tarar; patch skoru ısı haritası ve ölçütleri üretir. Görüntü kararı: en yüksek patch skoru ≥ 0.5 ise SAHTE.",

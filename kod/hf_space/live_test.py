@@ -1,6 +1,6 @@
 r"""
 live_test.py — Canlı Space testi (gradio_client). Simülasyon ve toplu testi uzaktan çalıştırır, sonuçları JSON'a yazar.
-Kullanım (proje kökü):  python hf_space\live_test.py [--space infinayazilim/ai515] [--n 24] [--out reports\canli_test.json]
+Kullanım (proje kökü):  python kod\hf_space\live_test.py [--space infinayazilim/ai515] [--n 24] [--out reports\canli_test.json] [--res A,B]
 Gerekli: pip install gradio_client ; hf auth login (Space özel).
 """
 import argparse, json, sys, time, datetime
@@ -16,6 +16,8 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--space", default="infinayazilim/ai515")
 ap.add_argument("--n", type=int, default=24)
 ap.add_argument("--out", default="reports/canli_test.json")
+ap.add_argument("--res", default="PHASE1/resnet18_ft_best",
+                help="virgülle ayrılmış sınıflandırıcı anahtarları (Faz 4: PHASE4/resnet18_ft_full_s42,PHASE4/resnet18_ft_full_mr_s42)")
 a = ap.parse_args()
 
 t0 = time.time()
@@ -34,7 +36,7 @@ def table(x):
 
 UNETS = ["PHASE2/unet_bbox_s42", "PHASE2/unet_pixel_eps8_morph_s42", "PHASE2/unet_glyph_v2_s42",
          "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42", "PHASE2/dlv3p_bbox_s42"]  # Faz 3: YOLO11 + DeepLabV3+
-RES = ["PHASE1/resnet18_ft_best"]
+RES = [x.strip() for x in a.res.split(",") if x.strip()]
 INPUTS = ["Sahte belge (forged)", "Authentic eş (negatif kontrol)", "Sahte, yeşil işaretçi onarılmış",
           "Authentic + yalnız yeşil işaretçi (kısayol testi)",
           "Yalnız yeniden-render (karakterler geri alınmış · Faz 3 sondası)", "Yalnız içerik (render ve işaretçi yok · Faz 3 sondası)"]

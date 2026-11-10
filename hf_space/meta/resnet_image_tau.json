@@ -1,0 +1,83 @@
+{
+ "_doc": "ResNet-18 görüntü düzeyi karar kuralı: skor = en yüksek k patch skorunun ortalaması (agg), eşik val 487 sahte + 487 eşleşen authentic üzerinde Youden-J. Üretici: kod/phase4_resnet/calibrate_p4.py",
+ "_agg_selection": {
+  "rule": "tam veri/ham 3 tohumun val AUROC ortalaması; 0.002 içinde küçük k",
+  "mean_val_auroc": {
+   "max": 0.9655,
+   "top2": 0.962,
+   "top3": 0.9579,
+   "top5": 0.9508
+  },
+  "chosen": "max"
+ },
+ "resnet18_ft_best": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.938124,
+  "tpr": 0.791,
+  "fpr": 0.101,
+  "auroc": 0.893,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "resnet18_ft_full_mr_s42": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.965381,
+  "tpr": 0.856,
+  "fpr": 0.08,
+  "auroc": 0.949,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "resnet18_ft_full_mr_s43": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.981167,
+  "tpr": 0.842,
+  "fpr": 0.053,
+  "auroc": 0.949,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "resnet18_ft_full_mr_s44": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.982014,
+  "tpr": 0.821,
+  "fpr": 0.049,
+  "auroc": 0.946,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "resnet18_ft_full_s42": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.995095,
+  "tpr": 0.883,
+  "fpr": 0.01,
+  "auroc": 0.965,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "resnet18_ft_full_s43": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.939913,
+  "tpr": 0.889,
+  "fpr": 0.033,
+  "auroc": 0.968,
+  "n_pos": 487,
+  "n_neg": 487
+ },
+ "resnet18_ft_full_s44": {
+  "agg": "max",
+  "k": 1,
+  "thr": 0.992184,
+  "tpr": 0.887,
+  "fpr": 0.018,
+  "auroc": 0.964,
+  "n_pos": 487,
+  "n_neg": 487
+ }
+}

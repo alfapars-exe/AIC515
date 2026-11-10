@@ -57,7 +57,7 @@ _UNETS = [n for n in list_unet_ckpts() if n in _REG or not _REG]
 _RESNETS = [n for n in list_resnet_ckpts() if n in _REG or not _REG]
 _DEF_UNETS = [n for n in ("PHASE2/unet_bbox_s42", "PHASE2/unet_pixel_eps8_morph_s42", "PHASE2/unet_glyph_v2_s42",
                              "YOLO/aiforge-tiles-yolo11s-img1024-conserv-s42") if n in _UNETS] or _UNETS[:1]
-_DEF_RESNET = [n for n in ("PHASE1/resnet18_ft_best",) if n in _RESNETS]
+_DEF_RESNET = [n for n in ("PHASE4/resnet18_ft_full_s42", "PHASE1/resnet18_ft_best") if n in _RESNETS][:1]  # [FAZ4] tam veri modeli varsayılan
 _SOURCES = ["hepsi"] + sorted(x for x in _IDX["source_dataset"].unique() if x)
 _TOOLS = ["hepsi"] + sorted(x for x in _IDX["tool"].unique() if x)
 _AREAS = ["hepsi"] + [a for a in ("<1%", "1-5%", "5-20%", ">20%") if a in set(_IDX["area_bin"])]

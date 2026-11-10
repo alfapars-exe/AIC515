@@ -12,7 +12,7 @@ from .models import (  # noqa: F401
     list_seg_ckpts, list_unet_ckpts, norm_chw
 )
 from .metrics import (  # noqa: F401
-    default_tau, image_score, image_threshold, postprocess
+    default_tau, image_score, image_threshold, postprocess, resnet_decision
 )
 
 # ================================================================== XAI · SHAP AÇIKLAMALARI (sekme 8 › SHAP Açıklamaları)
@@ -228,9 +228,9 @@ def xai_predict(src, unets, resnets, orig, cur, mask, auth, sim, up_img, up_auth
     for n in resnets:
         hm, info = res[n]
         preds[n] = (hm, info)
-        smax = max(s for s, _, _ in info["scores"])
-        rows.append({"Model": friendly(n), "Aile": "ResNet-18", "Görüntü skoru": smax, "Eşik": 0.5,
-                     "Karar": "SAHTE" if smax >= 0.5 else "GERÇEK", "Patch sayısı": len(info["scores"])})
+        smax, rthr, _ = resnet_decision(n, info["scores"])
+        rows.append({"Model": friendly(n), "Aile": "ResNet-18", "Görüntü skoru": smax, "Eşik": rthr,
+                     "Karar": "SAHTE" if smax >= rthr else "GERÇEK", "Patch sayısı": len(info["scores"])})
     for n in unets:
         prob, info = res[n]
         preds[n] = (prob, info)

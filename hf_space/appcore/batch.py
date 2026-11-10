@@ -14,7 +14,7 @@ from .models import (  # noqa: F401
     friendly, gpu_infer
 )
 from .metrics import (  # noqa: F401
-    default_tau, hist_metrics, image_score, image_threshold, postprocess, ref_lookup
+    default_tau, hist_metrics, image_score, image_threshold, postprocess, ref_lookup, resnet_decision
 )
 from .scenarios import (  # noqa: F401
     degrade, show_df
@@ -57,8 +57,8 @@ def batch_test(split, source, tool, area, marker, n, seed, mode, degradation, un
                     "İşaretçi": "var" if meta.get("has_marker_index") else "yok", "Girdi": kind, "Etiket": label}
             for nme in resnet_sel:
                 hm, info = rr[nme]
-                smax = max(s for s, _, _ in info["scores"])
-                rows.append({**base, "Model": friendly(nme), "Görüntü skoru": smax, "Karar": int(smax >= 0.5), "Doğru": int((smax >= 0.5) == label)})
+                smax, rthr, _ = resnet_decision(nme, info["scores"])
+                rows.append({**base, "Model": friendly(nme), "Görüntü skoru": smax, "Karar": int(smax >= rthr), "Doğru": int((smax >= rthr) == label)})
             for nme in unet_sel:
                 prob, _ = rr[nme]
                 stem = nme.split("/", 1)[-1]

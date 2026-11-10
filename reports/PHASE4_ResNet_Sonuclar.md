@@ -69,11 +69,12 @@ Aynı val protokolünde diğer modeller (`kod/app/meta/image_tau.json`): U-Net b
 3. **İşaretçisiz eğitim kısayolu kaldırır ama bedeli vardır.** İşaretçisiz ve Ideogram sahtelerinde en iyi model budur (0.735 / 0.737); genel AUROC 0.958'e iner. Yalnız-işaretçi yanlış alarmı 0.458'de kalır: model eğitimde hiç işaretçi görmediği için yapıştırılmış yeşil çerçeveyi "işaretçi zararsızdır" diye öğrenmemiştir (bu sonda görüntüsü ayrıca gerçekten yapıştırma içerir).
 4. **Görüntü düzeyinde ResNet rekabetçidir.** Aynı val protokolünde tam veri ResNet (0.965) U-Net bbox-GT'nin (0.838–0.921) üstünde, YOLO11s (0.961) düzeyindedir; ancak ResNet yalnız kaba bir ısı haritası verir, lokalizasyon ölçütü yoktur.
 
-## 6. Uygulama (yalnız yerel; HF Space ve GitHub'a gönderilmedi)
+## 6. Uygulama (10 Kasım akşamı GitHub'a, 11 Kasım 2026'da HF Space'e gönderildi)
 - Yeni modeller `PHASE4/resnet18_ft_full_s42` ve `PHASE4/resnet18_ft_full_mr_s42` listede; varsayılan ResNet tam veri modeli.
 - ResNet görüntü kararı artık `kod/app/meta/resnet_image_tau.json` içindeki kalibre eşikle verilir (Faz 1 modeli için de: 0.938). Simülasyon, toplu test, ResNet sekmesi, XAI tahmin tablosu ve Sonuçlar sekmesi güncellendi.
-- Testler: `kod/tests/run_all_tests.ps1` → app 289 kontrol 0 hata, app_p3 0 hata, xai_filters 87 kontrol 0 hata, xai rc = 0. Uygulama skoru 3 model × 40 görüntüde boru hattıyla aynı kararı verdi (en büyük |Δskor| 0.0014).
+- Testler: `kod/tests/run_all_tests.ps1` → app 289 kontrol 0 hata, app_p3 0 hata, xai_filters 87 kontrol 0 hata (11 Kasım 2026 koşusunda ek tohum ağırlıklarıyla 91 kontrol, 50 model), xai rc = 0. Uygulama skoru 3 model × 40 görüntüde boru hattıyla aynı kararı verdi (en büyük |Δskor| 0.0014).
 - Değiştirilen dosyaların önceki hâlleri: `phase4_resnet/app_yedek_oncesi/`.
+- **Canlı dağıtım (11 Kasım 2026).** `kod/hf_space/deploy_hf.py --skip-data` ile Space güncellendi (altı Faz 4 ağırlığı ve dört ek tohum ağırlığı özel kovaya eklendi) ve canlı test iki koşuyla yinelendi (`reports/canli_test_v4deploy_log.txt`, `reports/canli_test_v4deploy_faz4_log.txt`). 24 eşli test örneğinde kalibre eşikle: Faz 1 modeli TPR 0.917 / FPR 0.083 / AUROC 0.990 (önceki dağıtımda sabit 0.5 eşiğiyle FPR 0.375); tam veri s42 TPR 0.917 / FPR 0.000 / AUROC 0.998; işaretçisiz eğitim s42 TPR 0.583 / FPR 0.000 / AUROC 0.967 (89 eşli test sahtesinin tamamında boru hattı TPR'si 0.719; eşik 0.965 doygunluğa yakın). Senaryo testinde yalnız kalıntı eklenmiş özgün görüntüyü Faz 1 ve tam veri modelleri sahte sayıyor, işaretçisiz eğitilen model saymıyor.
 
 ## 7. Sınırlamalar
 - Test authentic kümesi 89 görüntü; test FPR'si geniş aralıklıdır. Val negatifleri sahtelerin eşleşen authentic'leridir (eşli tasarım), bağımsız belgelerde FPR farklı olabilir.
