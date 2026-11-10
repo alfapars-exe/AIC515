@@ -13,7 +13,8 @@ yöntemin neden seçildiği, mimari, kullanım ve sınırlamalar. Test sonuçlar
 | U-Net, 3 kanal | `unet_rgb_best`, PHASE 2 `unet_{bbox,pixel_eps8_morph,glyph_v2}_s{42,43,44}`, 3× `*_geminionly_s42` | smp.Unet, resnet18 kodlayıcı, 1 sınıf | ikili segmentasyon | 512 px pencere / 448 adım, örtüşme ortalaması, uzun kenar > 4096 ise küçültme | piksel olasılığı; görüntü skoru = en yüksek %1 piksel ortalaması ≥ `IMG_TAU` (Youden-J); bölge = olasılık ≥ τ* | ✅ Partition (+ Gradient) |
 | U-Net, 5 kanal | `unet_rgbfreq_best` | aynı, `in_ch = 5` | aynı | RGB + FFT yüksek-geçiren + Laplacian; frekans kanalları pencere başına standartlaştırılır | aynı | ✅ Partition (frekans kanalları maskelenmiş RGB'den yeniden hesaplanır) + Gradient (kanal grubu katkısı) |
 | Klasik ML | SVM-RBF, RandomForest | 56 öznitelik (`features_classical.py`) | — | — | **model dosyası yok** | ⛔ UNSUPPORTED (sahte çıktı üretilmez) |
-| YOLO / ViT / EfficientNet | — | — | — | — | projede yok | N/A |
+| YOLO11s kutu dedektörü (Faz 3) | `models/phase3_yolo/aiforge-*-yolo11s-*.pt` | Ultralytics DetectionModel | kutu tespiti (tek sınıf) | 1024 kare / 768 adım (ya da `-full-`: tam görüntü 1280), RGB/255, conf 0.001, NMS iou 0.6 | kutu + güven | ✅ yalnız **tam görüntü** hedefleri (kutu güveni) |
+| ViT / EfficientNet | — | — | — | — | projede yok | N/A |
 
 Tüm modeller tek sigmoid çıkışlıdır, yani hedefler olasılık ölçeğindedir [0, 1]. Modeller arasındaki fark ölçekte
 değil, **hedef tanımında** ve **referans değerdedir**. Kayıt (registry) dinamiktir: uygulamanın listelediği
@@ -41,6 +42,45 @@ adımlı pencerelerin **örtüşme ortalamasından** hesaplanır. SHAP ise tek b
 farklı olabilir. Örneğin `testing:000000038` örneğinde ızgaradaki bir pencere 0.94 verirken komşu pencere ~0 verdiği
 için ortalama 0.12'ye düşüyor ve görüntü FN oluyor. Arayüz her açıklamanın yanında iki değeri de gösterir; fark
 0.25'ten büyükse bunu ayrıca belirtir. ResNet maks patch hedefi ise uygulama skoruyla birebir aynıdır (testte doğrulanır).
+
+## 2a. Tam görüntü SHAP (varsayılan hedefler)
+
+Önceki hedefler tek bir 512 px pencereyi ya da 224 px patch'i açıklıyordu: harita orijinal belgenin yalnız bir bölümünü
+kapsıyordu ve U-Net'te açıklanan pencere skoru uygulamanın tam görüntü skorundan farklıydı (§2). Yeni varsayılan hedefler
+(`xai/fullimage.py`) modelin **uygulamadaki tam görüntü çıktısını** açıklar:
+
+| Arayüz seçeneği | U-Net / DeepLabV3+ (3/5 kanal) | ResNet-18 | YOLO11s |
+|---|---|---|---|
+| **Tam görüntü · karar** | tam olasılık haritasının top-%1 ortalaması (= uygulamanın görüntü skoru; 512/448 pencere protokolü, örtüşme ortalaması) | tüm ızgaranın maks patch skoru (= uygulama skoru) | en güvenli kutunun güveni (IoU ≥ 0.5 eşleşen tahminlerin maks güveni) |
+| **Tam görüntü · tespitler** | τ* üstü bağlı bileşenin ortalama olasılığı | tek tespit patch'inin skoru | k kutu, her biri ayrı |
+| **Tam görüntü · GT** | GT kutusu içi ortalama olasılık | GT ile kesişen patch'lerin maks skoru | GT kutusuyla IoU ≥ 0.5 kutuların maks güveni |
+| **Döşemeli yerel mozaik** | 512 px / 128 px örtüşmeli pencereler, her biri kendi pencere skorunu açıklar | pencere içi maks patch | — |
+
+**Mekanizma.** shap'ın piksel düzeyi `maskers.Image`'ı tam çözünürlükte pratik değildir (ölçüm: 1296×750'de modelsiz 27 s,
+3 MP'de 99 s yalnız maske/ağaç maliyeti). Bu yüzden maske bir **ızgara** üzerinde tanımlanır: `PartitionExplainer`'a
+(gh, gw, 1) boyutlu bir gösterge görüntüsü verilir (uzun kenar 192 hücre; 864 px'lik görüntüde 5 px hücre); her
+değerlendirmede gösterge en yakın komşu ile tam çözünürlüğe taşınır ve görüntü = gösterge ? x : referans olarak kurulur.
+Böylece açıklama **tek hedef ve tek referansla tüm görüntüyü** kapsar; toplamsallık kesindir: E[f] + ΣSHAP = f(x),
+E[f] = f(referans görüntüsü). Hücre değeri hücre piksellerine eşit dağıtılır (toplam korunur); U-Net > 4096 px küçültmesinde
+harita orijinal çözünürlüğe alan korunarak taşınır. Değerlendirmeler toplu (batch) yapılır; pencere/patch/kare çıktıları içerik
+özetiyle önbelleğe alınır (maskelenmemiş pencereler yeniden hesaplanmaz).
+
+**Döşemeli mozaik neden "tam görüntü SHAP" değildir?** Her pencere kendi skorunu kendi tabanıyla (E[f]) açıklar; farklı
+tabanlı SHAP değerlerini toplamak tek bir hedefin açıklaması olmaz. Mozaik kosinüs ağırlıklarıyla orijinal koordinatlarda
+birleştirilir (dikiş azaltma), kapsama ve pencere tabanlarının farkı raporlanır ve arayüzde/dışa aktarımda **"tam görüntü SHAP
+DEĞİLDİR"** etiketiyle sunulur. Bir sonuç yalnız şu koşullar doğrulandığında **"TAM GÖRÜNTÜ SHAP (doğrulandı)"** olarak etiketlenir:
+harita boyutu = orijinal görüntü, hedef tam görüntü hedefi, |E[f] + ΣSHAP − f(x)| < 1e-3. Aksi halde uyarı gösterilir.
+
+**Görselleştirme.** Orijinal tam görüntü · SHAP ısı haritası · bindirme · pozitif / negatif katkı · SAHTE | GERÇEK sınıf
+panelleri · **orijinal ↔ bindirme kaydırıcısı** · **katkı dağılımı** (piksel başına SHAP histogramı, birikimli kütle eğrisi —
+katkının görüntünün ne kadarında yoğunlaştığı —, Σ pozitif / Σ negatif / net ve GT içi/dışı toplamları). Hepsi aynı koordinat
+sisteminde, en-boy korunarak (ekranda ≤ 2400 px; hesap ve dışa aktarım natif çözünürlükte) gösterilir; görüntüler fare
+tekerleğiyle yakınlaştırılır, sürüklenir, tam ekran açılır. Dışa aktarımda her tam görüntü sonucu için natif çözünürlükte
+ısı haritası ve bindirme PNG, `shap_float32.npy` ve 300 dpi PNG + PDF yayın şekli (renk çubuğu, piksel eksenleri, GT ve hedef
+konturu) vardır.
+
+**ZeroGPU.** Tam görüntü işinin süresi pencere/patch/kare sayısı × bütçe ile tahmin edilir; çağrı 120 s sınırını aşacaksa
+`max_evals` o iş için düşürülür ve sonuç notunda yazılır.
 
 ## 3. Yöntem seçimi ve gerekçeler
 
@@ -72,6 +112,10 @@ xai/
                 · UNSUPPORTED_MODELS (SVM/RF UNSUPPORTED, YOLO/ViT N/A + gerekçe)
   targets.py    TargetSpec (pencere, bölge, geçerli pikseller, patch'ler) · decision / detection / gt / common_window
                 hedef üreticileri · unet_geometry (= app._unet_prepare) · window_mask
+  fullimage.py  tam görüntü hedefleri (U-Net/ResNet/YOLO) · ızgara göstergeli Partition (grid_explain) · toplu, önbellekli
+                değerlendiriciler (UNetFull, ResNetFull, YoloFull) · döşemeli yerel mozaik · run_full_jobs
+  viewer.py     ekran ölçekleme (en-boy korunur) · katkı dağılımı şekli · 300 dpi PNG/PDF yayın şekli · natif dışa aktarım ·
+                yakınlaştırma/kaydırma JS + CSS (SHAP ve Kernel sekmeleri ortak)
   adapters.py   BaseShapAdapter → predict_batch(NHWC 0–255) → (N,1) · ResNetPatchAdapter · UNetWindowAdapter (3/5 kanal)
                 · UnsupportedAdapter (XAIUnsupported) · run_jobs (GPU fonksiyonunun içinde) · model_fingerprint
   manager.py    XAIManager: LRU önbellek (görüntü sha1 + model + hedef + yöntem + referans + bütçe); yalnız eksikler hesaplanır
@@ -117,7 +161,8 @@ python scripts/xai_benchmark.py --n 24            # GPU; → docs/xai_test_repor
 
 ## 6. Sınırlamalar
 
-- **Pencere ve tam görüntü:** U-Net hedefleri 512 px penceredir (bkz. §2). Kutu bir pencereden büyükse bölgenin pencere dışında kalan payı not edilir.
+- **Pencere ve tam görüntü:** "Pencere" hedefleri 512 px penceredir (bkz. §2); tam görüntü hedefleri için bkz. §2a. Tam görüntü haritasının uzamsal çözünürlüğü ızgara hücresiyle (uzun kenar / 192 px) ve `max_evals` bütçesiyle sınırlıdır; Partition hiyerarşisi bütçe azaldıkça daha kaba bloklar bırakır.
+- **Tam görüntü + Gradient:** desteklenmez; ızgara maskeli Partition kullanılır ve sonuç notunda yazılır. Tam görüntüde `inpaint` referansı maskeye bağlı olduğundan `blur(32,32)` kullanılır (not edilir).
 - **Partition çözünürlüğü:** harita, `max_evals` bütçesiyle belirlenen hiyerarşik bölümleme kadar ince olur. 1000 değerlendirmede 512 px pencerede bloklar onlarca piksel büyüklüğündedir. İnce doku için Gradient kullanılmalıdır. Düşük bütçede (< 200) tohumlar arası IoU yapay olarak yüksek çıkabilir, çünkü bloklar çok kabadır.
 - **5 kanallı U-Net:** frekans kanalları her değerlendirmede yeniden hesaplanır. 2.5 MP'ye kadar tam görüntü kullanılır, daha büyük görüntülerde pencere ± 256 px bağlam kullanılır (yaklaşık; sonuçta not edilir). Bu model Partition'da en yavaş olanıdır.
 - **> 4096 px görüntüler:** U-Net küçültülmüş görüntüyü görür, ResNet ise natif çözünürlüğü. Bu durumda ResNet ile U-Net piksel düzeyinde karşılaştırılmaz (ölçek uyarısı).

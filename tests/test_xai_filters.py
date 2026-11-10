@@ -13,6 +13,10 @@ Kontroller
   T4  YOLO: export_yolo_stem (ultralytics'siz dosya) çıktıları = tam checkpoint çıktıları
   T5  GPU (boş bellek ≥ 1 GB ise): cuda haritaları ≈ CPU haritaları
   T6  Görselleştirme fonksiyonları her aile için görüntü üretir; ham dışa aktarım dosyaları yazılır
+  T7  TAM GÖRÜNTÜ (natif, döşemeli): farklı çözünürlüklerde (tek döşeme … 3×3 döşeme) döşemeli birleştirme = bütün görüntünün
+      tek geçişi (dikiş yok, max|Δ|), çıktı boyutu = ⌈orijinal/adım⌉ (tam kapsama), saklama ölçeği f>1 iken haritalar = tek
+      geçişin f×f alan ortalaması, orijinal-koordinat bindirmesi orijinal en-boyunda, yüksek çözünürlüklü dışa aktarım,
+      süre ve GPU tepe belleği
 Sonuç: reports/xai_filters/test_results.json
 """
 from __future__ import annotations
@@ -121,7 +125,7 @@ def t3_models(img, mask, iname):
         try:
             fsha0 = file_sha(sp.path)
             t0 = time.time()
-            an = XF.run_analysis(sp, img, mask, XF.REGION_MODES[0], size, "CPU", 6)
+            an = XF.run_analysis(sp, img, mask, XF.MODE_CROP, size, "CPU", 6)
             lm = XF.load_model(sp)
             L0 = an.layers[0]
             ok_w = all(L.verify["weight_is_checkpoint"] for L in an.layers)
@@ -170,8 +174,8 @@ def t4_yolo_stem(img, mask):
     run = Path(best).parent.parent.name
     out = Path(tempfile.mkdtemp()) / f"{run}_stem.pt"
     XF.export_yolo_stem(best, out)
-    full = XF.run_analysis(XF.ModelSpec("YOLO/x", "full", best, "yolo", "P3"), img, mask, XF.REGION_MODES[0], 256, "CPU", 6)
-    stem = XF.run_analysis(XF.ModelSpec("YOLOSTEM/x", "stem", str(out), "yolo_stem", "P3"), img, mask, XF.REGION_MODES[0], 256, "CPU", 6)
+    full = XF.run_analysis(XF.ModelSpec("YOLO/x", "full", best, "yolo", "P3"), img, mask, XF.MODE_CROP, 256, "CPU", 6)
+    stem = XF.run_analysis(XF.ModelSpec("YOLOSTEM/x", "stem", str(out), "yolo_stem", "P3"), img, mask, XF.MODE_CROP, 256, "CPU", 6)
     d = 0.0
     for a, b in zip(full.layers[:len(stem.layers)], stem.layers):
         for k in b.stages:
@@ -190,8 +194,8 @@ def t5_gpu(img, mask):
     if free < 1.0:
         check(f"T5 GPU dolu ({free:.1f} GiB boş; atlandı)", True); return
     sp = [s for s in XF.discover_models(ROOT / "models") if s.key == "PHASE2/unet_bbox_s42"][0]
-    a = XF.run_analysis(sp, img, mask, XF.REGION_MODES[0], 256, "CPU", 6)
-    b = XF.run_analysis(sp, img, mask, XF.REGION_MODES[0], 256, "GPU (cuda)", 6)
+    a = XF.run_analysis(sp, img, mask, XF.MODE_CROP, 256, "CPU", 6)
+    b = XF.run_analysis(sp, img, mask, XF.MODE_CROP, 256, "GPU (cuda)", 6)
     rel = max(float(np.abs(x.stages[k] - y.stages[k]).max() / (np.abs(x.stages[k]).max() + 1e-9)) for x, y in zip(a.layers, b.layers) for k in x.stages)
     check("T5 cuda haritaları ≈ CPU (TF32 toleransı)", rel < 5e-3 and b.device == "cuda" and all(XF.verify_ok(L, 5e-3) for L in b.layers),
           f"göreli {rel:.1e} · tepe {b.peak_gpu_mb:.0f} MiB · {b.sec:.2f} s")
@@ -205,7 +209,7 @@ def t6_render(img, mask):
     keys = [k for k in ("PHASE2/unet_bbox_s42", "PHASE1/unet_rgbfreq_best", "PHASE1/resnet18_ft_best", "PHASE2/dlv3p_bbox_s42") if k in specs]
     keys += [k for k in specs if k.startswith("YOLO")][:1]
     for k in keys:
-        an = XF.run_analysis(specs[k], img, mask, XF.REGION_MODES[1], 384, "CPU", 6)
+        an = XF.run_analysis(specs[k], img, mask, XF.MODE_SCALED, 384, "CPU", 6)
         n = 0
         for L in an.layers[:2]:
             for st in L.stages:
@@ -224,12 +228,87 @@ def t6_render(img, mask):
         XF._RESULTS.clear()
 
 
+# ---------------------------------------------------------------- T7
+def t7_full(img, mask):
+    print("T7 tam görüntü (natif, döşemeli)", flush=True)
+    specs = {s.key: s for s in XF.discover_models(ROOT / "models", ROOT / "phase3_yolo" / "runs")}
+    keys = [k for k in ("PHASE2/unet_bbox_s42", "PHASE1/unet_rgbfreq_best", "PHASE1/resnet18_ft_best", "PHASE2/dlv3p_bbox_s42") if k in specs]
+    keys += [k for k in specs if k.startswith("YOLO")][:1]
+    H, W = img.shape[:2]
+    sizes = [(H, W), (1100, 1500), (700, 2300)] if not QUICK else [(1100, 1500)]
+    RES["full"] = []
+    for k in keys:
+        lm = XF.load_model(specs[k])
+        for (h, w) in sizes:
+            im = img if (h, w) == (H, W) else cv2.resize(img, (w, h), interpolation=cv2.INTER_AREA)
+            mk = None if mask is None else cv2.resize(mask, (w, h), interpolation=cv2.INTER_NEAREST)
+            t0 = time.time()
+            layers, ieq, sec, peak, fct, nt, _, _ = XF.analyze_full(lm, im, None, "cpu", 6, np.float32, 10 ** 6)
+            t_tiled = time.time() - t0
+            x, _ = XF.preprocess(im, lm.preprocess, None)
+            t0 = time.time()
+            ref, _, _, _ = XF.analyze(lm, x, (h, w), "cpu", 6, 4.0, np.float32)
+            t_single = time.time() - t0
+            worst, cover = 0.0, True
+            for L, Lr in zip(layers, ref):
+                s = int(round(L.out_stride))
+                for st in Lr.stages:
+                    a, b = L.stages[st], Lr.stages[st]
+                    cover &= a.shape == b.shape == (L.n_filters, -(-h // s), -(-w // s))
+                    if a.shape == b.shape:
+                        worst = max(worst, float(np.abs(a - b).max() / (np.abs(b).max() + 1e-12)))
+            same = len(layers) == len(ref) and [L.name for L in layers] == [L.name for L in ref]
+            ver = max(L.verify["rel"] for L in layers)
+            row = dict(model=k, size=f"{w}x{h}", tiles=nt, layers=len(layers), rel_tiled_vs_single=worst, coverage=bool(cover),
+                       verify_rel=ver, sec_tiled=round(t_tiled, 2), sec_single=round(t_single, 2))
+            RES["full"].append(row)
+            check(f"T7 {k} {w}×{h}: {nt} döşeme = tek geçiş, tam kapsama", same and cover and worst < 1e-4 and ver < 1e-3 and ieq,
+                  f"göreli max|Δ| {worst:.1e} · doğrulama {ver:.1e} · {t_tiled:.1f}/{t_single:.1f} s")
+        # saklama ölçeği: küçük bütçe → f>1, değer = tek geçişin blok ortalaması
+        im = cv2.resize(img, (1500, 1100), interpolation=cv2.INTER_AREA)
+        layers, _, _, _, fct, nt, _, _ = XF.analyze_full(lm, im, None, "cpu", 6, np.float32, 8)
+        x, _ = XF.preprocess(im, lm.preprocess, None)
+        ref, _, _, _ = XF.analyze(lm, x, (1100, 1500), "cpu", 6, 4.0, np.float32)
+        d = max(float(np.abs(L.stages[st] - XF._block_mean(Lr.stages[st], fct)).max() / (np.abs(Lr.stages[st]).max() + 1e-12))
+                for L, Lr in zip(layers, ref) for st in Lr.stages)
+        check(f"T7 {k}: saklama ölçeği f={fct} → f×f alan ortalaması", fct > 1 and d < 1e-4, f"göreli max|Δ| {d:.1e}")
+    # uçtan uca: run_analysis(MODE_FULL) + orijinal koordinat görüntüleyici + dışa aktarım
+    k = keys[0]
+    an = XF.run_analysis(specs[k], img, mask, XF.MODE_FULL, 512, "CPU", 6)
+    L = an.layers[0]
+    st = list(L.stages)[-1]
+    img_d, col, ov, desc = XF.act_on_original(an, L, 3, st, XF.NORMS[1])
+    ok = an.full and an.region.shape == img.shape and an.orig_hw == (H, W) and img_d.shape == ov.shape == col.shape[:2] + (3,)
+    ok &= abs(img_d.shape[1] / img_d.shape[0] - W / H) < 0.01
+    files = XF.export_full_hr(an, L, 3, st, XF.NORMS[1])
+    ok &= all(Path(f).exists() and Path(f).stat().st_size > 0 for f in files) and any(str(f).endswith(".pdf") for f in files)
+    figs = [XF.fig_pairs(an, L, st, 1, XF.NORMS[1]), XF.fig_act_grid(an, L, st, XF.NORMS[2]), XF.fig_compare(an, L, 1, st, XF.NORMS[0])]
+    ok &= all(isinstance(i, np.ndarray) and i.ndim == 3 for i in figs)
+    check(f"T7 {k}: tam görüntü run_analysis + orijinal-koordinat bindirme + yüksek çözünürlüklü dışa aktarım", ok,
+          f"{desc} · {len(files)} dosya")
+    # GPU (boşsa): süre + tepe bellek, 2300×1700 görüntü
+    if torch.cuda.is_available():
+        free = torch.cuda.mem_get_info()[0] / 2 ** 30
+        if free >= 1.5:
+            big = cv2.resize(img, (2300, 1700), interpolation=cv2.INTER_AREA)
+            for kk in keys:
+                a = XF.run_analysis(specs[kk], big, None, XF.MODE_FULL, 512, "GPU (cuda)", 6)
+                RES["full"].append(dict(model=kk, size="2300x1700", device=a.device, tiles=a.n_tiles, sec=round(a.sec, 2),
+                                        peak_gpu_mb=round(a.peak_gpu_mb, 1), stored_mb=round(a.stored_mb, 1), store_factor=a.store_factor))
+                check(f"T7 GPU {kk} 2300×1700", a.device == "cuda" and all(XF.verify_ok(L, 5e-3) for L in a.layers),
+                      f"{a.n_tiles} döşeme · {a.sec:.2f} s · tepe {a.peak_gpu_mb:.0f} MB · saklanan {a.stored_mb:.0f} MB · f={a.store_factor}")
+                XF._RESULTS.clear()
+        else:
+            check(f"T7 GPU dolu ({free:.1f} GiB boş; atlandı)", True)
+    XF._RESULTS.clear()
+
+
 if __name__ == "__main__":
     t_all = time.time()
     img, mask, iname = test_image()
     RES["image"] = iname
     for fn in (t1_synthetic, t2_noconv, lambda: t3_models(img, mask, iname), lambda: t4_yolo_stem(img, mask),
-               lambda: t5_gpu(img, mask), lambda: t6_render(img, mask)):
+               lambda: t5_gpu(img, mask), lambda: t6_render(img, mask), lambda: t7_full(img, mask)):
         try:
             fn()
         except Exception as e:

@@ -54,7 +54,7 @@ def main():
     for k in REPR:
         if k not in specs:
             continue
-        an = XF.run_analysis(specs[k], img, mask, XF.REGION_MODES[0], 512, "CPU", 6)
+        an = XF.run_analysis(specs[k], img, mask, XF.MODE_CROP, 512, "CPU", 6)
         L = an.layers[0]
         st = list(L.stages)[-1]
         tag = k.replace("/", "_")

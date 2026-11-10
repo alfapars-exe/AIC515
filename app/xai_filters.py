@@ -67,7 +67,11 @@ STAGES = OrderedDict([("conv", "Conv çıktısı (ham, BN öncesi)"),
                       ("act", "Aktivasyon sonrası (sonraki katmana giden)")])
 NORMS = ["Harita başına min-max", "Harita başına %1–%99 kırpma", "Katman genelinde simetrik (0 = gri)",
          "Katman genelinde min-max (ölçek korunur)"]
-REGION_MODES = ["Natif çözünürlük kırpma (sahte bölge / merkez)", "Tam görüntü (uzun kenar ≤ N, küçültme)"]
+MODE_FULL = "Tam görüntü · natif çözünürlük, döşemeli (önerilen)"
+MODE_CROP = "Natif çözünürlük kırpma (sahte bölge / merkez)"
+MODE_SCALED = "Tam görüntü (uzun kenar ≤ N, küçültme)"
+REGION_MODES = [MODE_FULL, MODE_CROP, MODE_SCALED]
+FULL_TILE, FULL_MARGIN = 1024, 64   # döşeme çekirdeği / kenar payı (32'nin katı; ilk katmanların alıcı alanından büyük)
 DEVICES = ["otomatik", "GPU (cuda)", "CPU"]
 SOURCES = ["Veri setinden örnek", "Girdi sekmesindeki görüntü", "Yeni yükleme"]
 MAX_REGION = 1536
@@ -378,7 +382,7 @@ def select_region(img, mask, mode: str, size: int):
     m = None if mask is None else (mask if mask.ndim == 2 else mask[..., 0])
     if m is not None and m.shape != (H, W):
         m = cv2.resize(m, (W, H), interpolation=cv2.INTER_NEAREST)
-    if mode == REGION_MODES[1]:
+    if mode == MODE_SCALED:
         s = min(1.0, size / max(H, W))
         if s < 1.0:
             nw, nh = max(1, int(round(W * s))), max(1, int(round(H * s)))
@@ -477,6 +481,10 @@ class Analysis:
     sha_after: str
     channel_names: list
     note: str = ""
+    full: bool = False                # tam görüntü (natif, döşemeli)
+    store_factor: int = 1             # saklama ölçeği (1 = natif çıktı çözünürlüğü; >1 alan ortalaması)
+    orig_hw: Optional[tuple] = None   # orijinal görüntü (H, W)
+    n_tiles: int = 0
 
 
 def pick_device(choice: str = "otomatik", min_free_gb: float = 1.5) -> str:
@@ -626,9 +634,82 @@ def analyze(lm: LoadedModel, x: torch.Tensor, valid_hw, device: str = "cpu", max
 _RESULTS: "OrderedDict[str, Analysis]" = OrderedDict()
 
 
-def run_analysis(spec: ModelSpec, img, mask=None, region_mode=REGION_MODES[0], size=512, device_choice="otomatik",
+def _block_mean(a, f):
+    """(C, h, w) ya da (h, w) → f×f blok ortalaması (kenar bloklar kısmi; tavan boyut)."""
+    if f <= 1:
+        return a
+    two = a.ndim == 2
+    if two:
+        a = a[None]
+    C, h, w = a.shape
+    H, W = -(-h // f) * f, -(-w // f) * f
+    s = np.zeros((C, H, W), np.float32); n = np.zeros((1, H, W), np.float32)
+    s[:, :h, :w] = a; n[:, :h, :w] = 1
+    s = s.reshape(C, H // f, f, W // f, f).sum((2, 4)); n = n.reshape(1, H // f, f, W // f, f).sum((2, 4))
+    out = s / np.maximum(n, 1)
+    return out[0] if two else out
+
+
+def analyze_full(lm: LoadedModel, img, freq_fn=None, device="cpu", max_layers=6, store_dtype=np.float32, budget_mb=768,
+                 tile=FULL_TILE, margin=FULL_MARGIN):
+    """TAM GÖRÜNTÜ, natif çözünürlük: ön işlenmiş görüntü 1024 px çekirdek + 64 px kenar paylı döşemelere bölünür; her döşeme
+    modelin kendi forward'ından (kancalar + bağımsız F.conv2d doğrulaması) geçer, yalnız çekirdek bölgenin çıktıları
+    orijinal koordinatlardaki tam haritaya yazılır. Kenar payı ilk katmanların alıcı alanından büyük olduğundan sonuç tek
+    geçişle (bütün görüntü tek tensör) birebir aynıdır (test: T7). Bellek bütçesi aşılırsa haritalar f×f alan ortalamasıyla
+    saklanır (değerler yine natif hesaplanır; f raporlanır)."""
+    H0, W0 = img.shape[:2]
+    x, pdesc = preprocess(img, lm.preprocess, freq_fn)
+    Hp, Wp = x.shape[-2:]
+    cores = [(y, xx) for y in range(0, Hp, tile) for xx in range(0, Wp, tile)]
+    maps, meta, factor = None, None, 1
+    ieq_all, sec_all, peak_all, verify = True, 0.0, 0.0, {}
+    for (y0, x0) in cores:
+        y1, x1 = min(Hp, y0 + tile), min(Wp, x0 + tile)
+        ys, xs_ = max(0, y0 - margin), max(0, x0 - margin)
+        ye, xe = min(Hp, y1 + margin), min(Wp, x1 + margin)
+        sl = x[:, :, ys:ye, xs_:xe]
+        layers, ieq, sec, peak = analyze(lm, sl, (ye - ys, xe - xs_), device, max_layers, 4.0, np.float32)
+        ieq_all &= ieq; sec_all += sec; peak_all = max(peak_all, peak)
+        if maps is None:
+            meta = layers
+            per_px = sum(L.n_filters * len(L.stages) / (L.out_stride ** 2) for L in layers)
+            est = per_px * H0 * W0 * np.dtype(store_dtype).itemsize / 2 ** 20
+            while est / factor ** 2 > budget_mb and factor < 64:
+                factor *= 2
+            maps = []
+            for L in layers:
+                s = int(round(L.out_stride))
+                hh, ww = -(-(-(-H0 // s)) // factor), -(-(-(-W0 // s)) // factor)
+                maps.append({k: np.zeros((L.n_filters, hh, ww), store_dtype) for k in L.stages})
+        for li, L in enumerate(layers):
+            s = int(round(L.out_stride))
+            oy0, ox0 = (y0 - ys) // s, (x0 - xs_) // s
+            # yalnız GEÇERLİ (dolgusuz) alan: kısmi kenar blokları dolgu değeriyle ortalanmasın
+            ch, cw = -(-(min(y1, H0) - y0) // s), -(-(min(x1, W0) - x0) // s)
+            gy, gx = y0 // s // factor, x0 // s // factor
+            for k, a in L.stages.items():
+                core = a[:, oy0:oy0 + ch, ox0:ox0 + cw]
+                core = _block_mean(core.astype(np.float32), factor)
+                dst = maps[li][k]
+                hh = min(core.shape[1], dst.shape[1] - gy); ww = min(core.shape[2], dst.shape[2] - gx)
+                if hh > 0 and ww > 0:
+                    dst[:, gy:gy + hh, gx:gx + ww] = core[:, :hh, :ww].astype(store_dtype)
+            v = verify.setdefault(li, dict(max_abs=0.0, rel=0.0, weight_is_checkpoint=True))
+            v["max_abs"] = max(v["max_abs"], L.verify["max_abs"]); v["rel"] = max(v["rel"], L.verify["rel"])
+            v["weight_is_checkpoint"] &= L.verify["weight_is_checkpoint"]
+    for li, L in enumerate(meta):
+        L.stages = OrderedDict((k, maps[li][k]) for k in L.stages)
+        L._stats = {}
+        L.out_shape = (L.n_filters,) + maps[li][next(iter(L.stages))].shape[1:]
+        L.verify.update(verify[li]); L.verify["tiles"] = len(cores)
+    return meta, ieq_all, sec_all, peak_all, factor, len(cores), pdesc, (Hp, Wp)
+
+
+def run_analysis(spec: ModelSpec, img, mask=None, region_mode=MODE_CROP, size=512, device_choice="otomatik",
                  max_layers=6, freq_fn=None, store_fp16: Optional[bool] = None, cache_size=2) -> Analysis:
     lm = load_model(spec)
+    if region_mode == MODE_FULL:
+        return _run_full(spec, lm, img, mask, device_choice, max_layers, freq_fn, store_fp16, cache_size)
     region, mreg, rdesc = select_region(img, mask, region_mode, size)[:3]
     x, pdesc = preprocess(region, lm.preprocess, freq_fn)
     if x.shape[1] != lm.in_ch:
@@ -650,6 +731,33 @@ def run_analysis(spec: ModelSpec, img, mask=None, region_mode=REGION_MODES[0], s
     return an
 
 
+def _run_full(spec, lm, img, mask, device_choice, max_layers, freq_fn, store_fp16, cache_size):
+    img = _to_rgb(img)
+    H0, W0 = img.shape[:2]
+    m = None if mask is None else (mask if mask.ndim == 2 else mask[..., 0])
+    if m is not None and m.shape != (H0, W0):
+        m = cv2.resize(m, (W0, H0), interpolation=cv2.INTER_NEAREST)
+    dev = pick_device(device_choice)
+    dt = np.float16 if (store_fp16 or H0 * W0 > 1536 * 1536) else np.float32
+    budget = 256 if store_fp16 else 768
+    sha0 = lm.sha
+    layers, ieq, sec, peak, factor, nt, pdesc, (Hp, Wp) = analyze_full(lm, img, freq_fn, dev, int(max_layers), dt, budget)
+    sha1 = state_sha(lm.module)
+    stored = sum(a.nbytes for L in layers for a in L.stages.values()) / 2 ** 20
+    rdesc = (f"TAM GÖRÜNTÜ {W0}×{H0} px · natif çözünürlük · {nt} döşeme ({FULL_TILE} px çekirdek + {FULL_MARGIN} px kenar payı; "
+             f"yalnız çekirdek çıktıları birleştirildi)" + (f" · haritalar {factor}×{factor} alan ortalamasıyla saklandı (bellek bütçesi "
+                                                        f"{budget} MiB)" if factor > 1 else " · haritalar natif çıktı çözünürlüğünde"))
+    keep_x = H0 * W0 * lm.in_ch <= 20_000_000
+    xin = preprocess(img, lm.preprocess, freq_fn)[0][0].numpy() if keep_x else None
+    an = Analysis(uuid.uuid4().hex[:12], spec.key, spec.label, lm.arch, lm.family, lm.preprocess, pdesc, img, m, rdesc,
+                  xin, (H0, W0), layers, ieq, dev, sec, peak, stored, np.dtype(dt).name, sha0, sha1, lm.channel_names, lm.note,
+                  full=True, store_factor=factor, orig_hw=(H0, W0), n_tiles=nt)
+    _RESULTS[an.token] = an
+    while len(_RESULTS) > cache_size:
+        _RESULTS.popitem(last=False)
+    return an
+
+
 def get_analysis(token):
     return _RESULTS.get(token) if token else None
 
@@ -665,17 +773,25 @@ def channel_contributions(an: Analysis, L: LayerRecord, f: int):
     """İlk katman (girdi = görüntü kanalları): filtre f'nin her giriş kanalına ayrı uygulanması W[f,c] ⋆ x_c.
     Toplam + bias = conv çıktısı (kanal birleştirmesinin açık gösterimi). Dönüş: (katkılar (C,h,w), toplam+bias)."""
     c = L.conv
-    if L.idx != 0 or c["groups"] != 1 or L.weight.shape[1] != an.x.shape[0]:
+    if L.idx != 0 or c["groups"] != 1:
         return None, None
-    x = torch.from_numpy(an.x.astype(np.float32))[None]
+    xa = an.x if an.x is not None else preprocess(an.region, an.preprocess, None)[0][0].numpy()
+    if L.weight.shape[1] != xa.shape[0]:
+        return None, None
+    x = torch.from_numpy(xa.astype(np.float32))[None]
     Wf = torch.from_numpy(L.weight[f:f + 1].astype(np.float32))
     pad = c["padding"]
     contrib = []
     for ch in range(x.shape[1]):
         y = F.conv2d(x[:, ch:ch + 1], Wf[:, ch:ch + 1], None, c["stride"], pad, c["dilation"], 1)
         contrib.append(y[0, 0].numpy())
+    fct = getattr(an, "store_factor", 1) or 1
+    contrib = np.stack(contrib)
+    if fct > 1:
+        s = int(round(L.out_stride))
+        contrib = _block_mean(contrib[:, :-(-an.orig_hw[0] // s), :-(-an.orig_hw[1] // s)], fct)
     hh, ww = L.out_shape[1], L.out_shape[2]
-    contrib = np.stack(contrib)[:, :hh, :ww]
+    contrib = contrib[:, :hh, :ww]
     total = contrib.sum(0) + (float(L.bias[f]) if L.bias is not None else 0.0)
     return contrib, total
 
@@ -967,9 +1083,18 @@ def _draw_mask_box(rgb, mask):
     return out
 
 
+def _rd(an, maxside=1600):
+    """Şekiller için ekran çözünürlüğünde orijinal bölge + maske (en-boy korunur)."""
+    from xai.viewer import display, display_mask  # noqa: F401  (app/ sys.path'te)
+    r = display(an.region, maxside)
+    m = None if an.mask is None else (display_mask(an.mask > 127, r.shape[:2]).astype(np.uint8) * 255)
+    return r, m
+
+
 def fig_compare(an: Analysis, L: LayerRecord, f: int, stage: str, norm: str):
     """D · Orijinal ↔ filtre çıktısı. İlk katmanda kanal katkıları W[f,c]⋆x_c ve toplamları da gösterilir."""
-    reg = _draw_mask_box(an.region, an.mask)
+    rgb_d, msk_d = _rd(an)
+    reg = _draw_mask_box(rgb_d, msk_d)
     contrib, total = channel_contributions(an, L, f)
     stage_keys = list(L.stages.keys())
     if contrib is not None:
@@ -991,7 +1116,7 @@ def fig_compare(an: Analysis, L: LayerRecord, f: int, stage: str, norm: str):
             axes[1, 1 + j].imshow(norm_map(L.stages[sk][f], norm, L, sk), cmap="gray")
             axes[1, 1 + j].set_title(STAGES[sk], fontsize=8)
         a = norm_map(np.abs(L.stages[stage][f].astype(np.float32)), NORMS[1])
-        axes[1, 1 + len(stage_keys)].imshow(_overlay(an.region, a)); axes[1, 1 + len(stage_keys)].set_title("|aktivasyon| bindirme", fontsize=8)
+        axes[1, 1 + len(stage_keys)].imshow(_overlay(rgb_d, a)); axes[1, 1 + len(stage_keys)].set_title("|aktivasyon| bindirme", fontsize=8)
     else:
         fig, axes = plt.subplots(1, 4, figsize=(13, 3.6))
         for ax in axes:
@@ -999,9 +1124,9 @@ def fig_compare(an: Analysis, L: LayerRecord, f: int, stage: str, norm: str):
         axes[0].imshow(reg); axes[0].set_title("Orijinal bölge (mavi: GT)", fontsize=8)
         axes[1].imshow(norm_map(L.stages[stage][f], norm, L, stage), cmap="gray"); axes[1].set_title(f"filtre #{f} · {STAGES[stage]}", fontsize=8)
         a = norm_map(np.abs(L.stages[stage][f].astype(np.float32)), NORMS[1])
-        axes[2].imshow(_overlay(an.region, a)); axes[2].set_title("|aktivasyon| bindirme", fontsize=8)
+        axes[2].imshow(_overlay(rgb_d, a)); axes[2].set_title("|aktivasyon| bindirme", fontsize=8)
         e = np.abs(L.stages[stage].astype(np.float32)).mean(0)
-        axes[3].imshow(_overlay(an.region, norm_map(e, NORMS[1]))); axes[3].set_title("katman enerjisi: ort|a| (tüm filtreler)", fontsize=8)
+        axes[3].imshow(_overlay(rgb_d, norm_map(e, NORMS[1]))); axes[3].set_title("katman enerjisi: ort|a| (tüm filtreler)", fontsize=8)
     fig.suptitle(f"{an.model_label} · {L.name} · filtre #{f}", fontsize=9)
     fig.tight_layout(rect=(0, 0, 1, 0.95))
     return fig_to_np(fig)
@@ -1016,7 +1141,7 @@ def fig_top_filters(an: Analysis, L: LayerRecord, stage: str, norm: str, k=8):
     fig, axes = plt.subplots(rows, cols, figsize=(cols * 3.4, rows * 3.0), squeeze=False)
     for ax in axes.ravel():
         ax.axis("off")
-    axes[0, 0].imshow(_draw_mask_box(an.region, an.mask)); axes[0, 0].set_title("Orijinal bölge", fontsize=8)
+    axes[0, 0].imshow(_draw_mask_box(*_rd(an))); axes[0, 0].set_title("Orijinal bölge", fontsize=8)
     for j, r in enumerate(top.itertuples(index=False)):
         f = int(r[0])
         ax = axes.ravel()[j + 1]
@@ -1029,6 +1154,59 @@ def fig_top_filters(an: Analysis, L: LayerRecord, stage: str, norm: str, k=8):
     fig.suptitle(f"En güçlü {len(top)} filtre ({crit}) — {L.name} · {STAGES[stage]}", fontsize=9)
     fig.tight_layout(rect=(0, 0, 1, 0.95))
     return fig_to_np(fig)
+
+
+def _cmap_rgb(a01, name):
+    return (matplotlib.colormaps[name](np.clip(a01, 0, 1))[..., :3] * 255).astype(np.uint8)
+
+
+def act_on_original(an: Analysis, L: LayerRecord, f: int, stage: str, norm: str, maxside=2400):
+    """Seçili filtrenin aktivasyonu ORİJİNAL görüntü koordinatlarında: her çıktı hücresi (stride × saklama ölçeği) px'lik
+    bloğu kaplar. Dönüş: (orijinal (ekran), renkli harita (ekran), bindirme (ekran), açıklama)."""
+    from xai.viewer import display
+    H0, W0 = an.region.shape[:2]
+    img_d = display(an.region, maxside)
+    hd, wd = img_d.shape[:2]
+    cell = L.out_stride * (getattr(an, "store_factor", 1) or 1)
+    a = L.stages[stage][f].astype(np.float32)
+    z = norm_map(a, norm, L, stage)
+    sc = wd / W0
+    big = cv2.resize(z, (max(1, int(round(a.shape[1] * cell * sc))), max(1, int(round(a.shape[0] * cell * sc)))),
+                     interpolation=cv2.INTER_NEAREST if cell * sc >= 2 else cv2.INTER_AREA)[:hd, :wd]
+    if big.shape != (hd, wd):
+        big = cv2.copyMakeBorder(big, 0, hd - big.shape[0], 0, wd - big.shape[1], cv2.BORDER_REPLICATE)
+    signed = a.min() < 0 and stage != "act"
+    col = _cmap_rgb(big, "RdBu_r" if signed else "magma")
+    w = (np.abs(big - 0.5) * 2 if signed else big)[..., None]
+    ov = (img_d.astype(np.float32) * (1 - 0.8 * w) + col.astype(np.float32) * 0.8 * w).astype(np.uint8)
+    if an.mask is not None and (an.mask > 127).any():
+        ov = _draw_mask_box(ov, cv2.resize(an.mask, (wd, hd), interpolation=cv2.INTER_NEAREST))
+    desc = (f"{L.name} · filtre #{f} · {STAGES[stage]} · çıktı {a.shape[1]}×{a.shape[0]} hücre → orijinal {W0}×{H0} px "
+            f"(1 hücre = {cell:g}×{cell:g} px) · ekran {wd}×{hd} · {'tam görüntü' if an.full else 'kırpılmış bölge'}")
+    return img_d, col, ov, desc
+
+
+def export_full_hr(an: Analysis, L: LayerRecord, f: int, stage: str, norm: str):
+    """Yüksek çözünürlüklü dışa aktarım: natif çıktı haritası (PNG + float32 NPY), orijinal çözünürlükte bindirme PNG
+    (≤ 50 MP), 300 dpi PNG + PDF yayın şekli (orijinal | aktivasyon (renk çubuklu) | bindirme, piksel eksenleri)."""
+    from xai import viewer as V
+    out = V.new_export_dir("kernel")
+    stem = f"{an.model_key.replace('/', '_')}__{L.name.replace('.', '_')}__f{f}__{stage}"
+    a = L.stages[stage][f].astype(np.float32)
+    H0, W0 = an.region.shape[:2]
+    cell = L.out_stride * (getattr(an, "store_factor", 1) or 1)
+    native = _cmap_rgb(norm_map(a, norm, L, stage), "RdBu_r" if (a.min() < 0 and stage != "act") else "magma")
+    lim = 50e6
+    sc = min(1.0, (lim / (H0 * W0)) ** 0.5)
+    _, _, ov_full, _ = act_on_original(an, L, f, stage, norm, maxside=int(max(H0, W0) * sc))
+    files = V.export_native(out, stem, {"aktivasyon_natif": native, "bindirme_orijinal": ov_full, "orijinal": an.region},
+                            {"aktivasyon_ham": a})
+    up = cv2.resize(a, (int(round(a.shape[1] * cell)), int(round(a.shape[0] * cell))), interpolation=cv2.INTER_NEAREST)[:H0, :W0]
+    signed = a.min() < 0 and stage != "act"
+    files += V.publication_figure(an.region, up, f"{an.model_label} · {L.name} · filtre #{f} · {STAGES[stage]}", out, stem,
+                                  gt=None if an.mask is None else an.mask > 127, cmap="RdBu_r" if signed else "magma",
+                                  cbar_label="ham aktivasyon", symmetric=signed)
+    return files
 
 
 def layers_df(an: Analysis):
@@ -1181,14 +1359,15 @@ def build_tab(gr, *, models_dir, yolo_runs_dir=None, gpu=None, freq_fn=None, loa
     def render_filter(token, li, f, stage_lab, norm):
         an = get_analysis(token)
         if an is None:
-            return [None, None, None, None, " "]
+            return [None, None, None, None, " ", None, None, None, " "]
         L = an.layers[int(li)]
         f = int(min(max(0, int(f)), L.n_filters - 1))
         st = stage_by_label.get(stage_lab, list(L.stages)[-1])
         if st not in L.stages:
             st = list(L.stages)[-1]
+        img_d, col, ov, desc = act_on_original(an, L, f, st, norm)
         return [fig_kernel_detail(an, L, f), kernel_values_df(an, L, f), fig_act_detail(an, L, st, f),
-                fig_compare(an, L, f, st, norm), filter_md(an, L, f)]
+                fig_compare(an, L, f, st, norm), filter_md(an, L, f), ov, (img_d, ov), col, desc]
 
     @_plot_locked
     def render_pairs(token, li, stage_lab, norm, per_filter, page):
@@ -1214,8 +1393,8 @@ def build_tab(gr, *, models_dir, yolo_runs_dir=None, gpu=None, freq_fn=None, loa
                                 allow_custom_value=True, visible=load_sample is not None,
                                 value=(sample_choices[0][1] if sample_choices else None))
             f_up = gr.Image(label="Görüntü yükle (PNG/JPG)", type="numpy", height=220, visible=load_sample is None)
-            f_region = gr.Radio(REGION_MODES, value=REGION_MODES[0], label="Analiz bölgesi")
-            f_size = gr.Slider(64, MAX_REGION, value=512, step=32, label="Bölge boyutu N (px) — bellek kontrolü")
+            f_region = gr.Radio(REGION_MODES, value=MODE_FULL, label="Analiz bölgesi (tam görüntü: orijinalin tamamı, natif)")
+            f_size = gr.Slider(64, MAX_REGION, value=512, step=32, label="Kırpma / küçültme boyutu N (px) — yalnız diğer modlarda")
             with gr.Row():
                 f_dev = gr.Radio(DEVICES, value="otomatik", label="Cihaz")
                 f_maxl = gr.Slider(1, 8, value=6, step=1, label="En fazla ilk conv katmanı")
@@ -1235,16 +1414,26 @@ def build_tab(gr, *, models_dir, yolo_runs_dir=None, gpu=None, freq_fn=None, loa
             with gr.Tabs():
                 with gr.Tab("B · Kernel / filtre ağırlıkları"):
                     f_lmd = gr.Markdown(" ")
-                    f_kgrid = gr.Image(label="İlk katmandaki tüm filtreler (gerçek kernel ağırlıkları)", type="numpy", interactive=False)
+                    f_kgrid = gr.Image(label="İlk katmandaki tüm filtreler (gerçek kernel ağırlıkları)", type="numpy", interactive=False, elem_classes=["xai-zoom"])
                     f_kdet = gr.Image(label="Seçili filtrenin ağırlık matrisi (değerler hücrelerde)", type="numpy", interactive=False)
                     f_kdf = gr.Dataframe(label="Seçili filtrenin ağırlık değerleri", wrap=True, interactive=False)
                 with gr.Tab("C · Filtre aktivasyon haritaları"):
-                    f_pairs = gr.Image(label="Filtre ↔ öznitelik haritası çiftleri", type="numpy", interactive=False)
-                    f_agrid = gr.Image(label="Tüm filtrelerin aktivasyon haritaları (grid)", type="numpy", interactive=False)
+                    f_pairs = gr.Image(label="Filtre ↔ öznitelik haritası çiftleri", type="numpy", interactive=False, elem_classes=["xai-zoom"])
+                    f_agrid = gr.Image(label="Tüm filtrelerin aktivasyon haritaları (grid)", type="numpy", interactive=False, elem_classes=["xai-zoom"])
                     f_adet = gr.Image(label="Seçili filtrenin aktivasyon haritası (ham değer ölçeği) + histogram", type="numpy", interactive=False)
                     f_adf = gr.Dataframe(label="Filtre bazında ham aktivasyon istatistikleri", wrap=True, interactive=False)
                 with gr.Tab("D · Orijinal görüntü ile karşılaştırma"):
                     f_fmd = gr.Markdown(" ")
+                    f_fdesc = gr.Markdown(" ", elem_classes="small-md")
+                    f_fov = gr.Image(label="Tam görüntü · seçili filtrenin aktivasyonu orijinal üzerine (tekerlek: yakınlaştır · sürükle: kaydır · çift tık: sıfırla)",
+                                     type="numpy", interactive=False, height=720, elem_classes=["xai-zoom"])
+                    f_fsl = gr.ImageSlider(label="Yan yana karşılaştırma: orijinal ↔ aktivasyon bindirmesi (kaydırıcıyı sürükleyin)",
+                                           type="numpy", height=620)
+                    f_fmap = gr.Image(label="Aktivasyon haritası (orijinal en-boy, renk: magma = pozitif · RdBu = işaretli)",
+                                      type="numpy", interactive=False, height=620, elem_classes=["xai-zoom"])
+                    with gr.Row():
+                        b_hr = gr.Button("⤓ Yüksek çözünürlüklü dışa aktar (natif PNG/NPY · 300 dpi PNG · PDF)")
+                    f_hr = gr.File(label="Yüksek çözünürlüklü dosyalar", file_count="multiple")
                     f_cmp = gr.Image(label="Orijinal ↔ filtre çıktısı (ilk katmanda kanal katkıları W⋆x)", type="numpy", interactive=False)
                     f_top = gr.Image(label="Görüntüde en güçlü yanıt veren filtreler (kenar / çizgi / doku)", type="numpy", interactive=False)
                 with gr.Tab("Katman özeti ve doğrulama"):
@@ -1253,7 +1442,7 @@ def build_tab(gr, *, models_dir, yolo_runs_dir=None, gpu=None, freq_fn=None, loa
     st_tok = gr.State(None)
 
     layer_out = [f_lmd, f_kgrid, f_pairs, f_agrid, f_adf, f_top]
-    filt_out = [f_kdet, f_kdf, f_adet, f_cmp, f_fmd]
+    filt_out = [f_kdet, f_kdf, f_adet, f_cmp, f_fmd, f_fov, f_fsl, f_fmap, f_fdesc]
 
     def on_run(key, src, skey, up, orig, msk, region_mode, size, dev, maxl, stage_lab, norm, pf):
         if not key:
@@ -1277,7 +1466,7 @@ def build_tab(gr, *, models_dir, yolo_runs_dir=None, gpu=None, freq_fn=None, loa
     def on_layer(token, li, stage_lab, norm, pf):
         an = get_analysis(token)
         if an is None or li is None:
-            return [gr.update(), gr.update(), gr.update()] + [None] * 6 + [None] * 5
+            return [gr.update(), gr.update(), gr.update()] + [None] * 6 + [None] * 9
         L = an.layers[int(li)]
         su, sval = _stage_update(L, stage_lab)
         fu = gr.update(maximum=L.n_filters - 1, value=0)
@@ -1296,6 +1485,17 @@ def build_tab(gr, *, models_dir, yolo_runs_dir=None, gpu=None, freq_fn=None, loa
     f_pf.input(render_layer, [st_tok, f_layer, f_stage, f_norm, f_pf, f_page], layer_out)
     f_filter.release(render_filter, [st_tok, f_layer, f_filter, f_stage, f_norm], filt_out)
     f_page.release(render_pairs, [st_tok, f_layer, f_stage, f_norm, f_pf, f_page], [f_pairs])
+    def on_hr(token, li, f, stage_lab, norm):
+        an = get_analysis(token)
+        if an is None:
+            raise gr.Error("Önce analizi çalıştırın.")
+        L = an.layers[int(li or 0)]
+        st = stage_by_label.get(stage_lab, list(L.stages)[-1])
+        st = st if st in L.stages else list(L.stages)[-1]
+        with _PLOT_LOCK:
+            return export_full_hr(an, L, int(f), st, norm)
+
+    b_hr.click(on_hr, [st_tok, f_layer, f_filter, f_stage, f_norm], [f_hr])
     b_dl.click(lambda t, li, f: export_raw(get_analysis(t), get_analysis(t).layers[int(li or 0)], int(f)) if get_analysis(t) else None,
                [st_tok, f_layer, f_filter], [f_files])
     return dict(model=f_model, run=b_run, status=f_status)

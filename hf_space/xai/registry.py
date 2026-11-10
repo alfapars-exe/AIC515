@@ -78,8 +78,6 @@ UNSUPPORTED_MODELS = [
     ModelSpec("CLASSICAL/random_forest", "Klasik · RandomForest (56 öznitelik)", "classical", "binary-classification", None,
               None, "features_classical.py (56 öznitelik)", "olasılık", "—", "—", "", "UNSUPPORTED",
               "Model dosyası yok (bucket'ta .pkl/.joblib yok). Dosya eklenirse TreeExplainer (56 öznitelik)."),
-    ModelSpec("N/A/yolo", "YOLO (nesne tespiti)", "none", "object-detection", None, None, "—", "—", "—", "—", "", "N/A",
-              "Bu uygulamada YOLO modeli yok. Tespit gereksinimi U-Net bağlı bileşenleri ve ResNet top-k patch'leriyle karşılanır."),
     ModelSpec("N/A/vit", "ViT / EfficientNet", "none", "classification", None, None, "—", "—", "—", "—", "", "N/A",
               "Projede bu mimariler yok."),
 ]

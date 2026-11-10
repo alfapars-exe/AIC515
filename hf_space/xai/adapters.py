@@ -324,6 +324,10 @@ class UnsupportedAdapter(BaseShapAdapter):
 def adapter_for(spec, deps):
     if spec.status != "OK":
         return UnsupportedAdapter(spec, deps)
+    if spec.family == "yolo":  # kutu dedektörü: pencere/patch hedefi tanımsız → yalnız tam görüntü hedefleri (fullimage.py)
+        import dataclasses
+        return UnsupportedAdapter(dataclasses.replace(
+            spec, reason="pencere hedefleri piksel/patch modelleri içindir; YOLO için 'Tam görüntü' hedeflerini kullanın"), deps)
     if spec.family == "resnet":
         return ResNetPatchAdapter(spec, deps)
     if spec.family == "unet":

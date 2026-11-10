@@ -2232,7 +2232,17 @@ except Exception as _e:
     SHAP_OK, _SHAP_ERR = False, str(_e)
 
 XAI_SOURCES = ["Girdi sekmesi (orijinal)", "Ön işleme pipeline çıktısı", "Son simülasyon girdisi", "Yeni yükleme"]
-XAI_TARGETS = ["Karar hedefi (model başına)", "Tespitler (ilk k bölge / patch)", "GT kutusu", "Ortak pencere (karşılaştırma)"]
+# Tam görüntü hedefleri (xai/fullimage.py): açıklama orijinal görüntünün TAMAMINI tek hedef + tek referansla kapsar.
+# Döşemeli mozaik yerel pencere açıklamalarının birleşimidir (tabanlar farklı) → tam görüntü SHAP olarak sunulmaz.
+XT_FULL_DEC = "Tam görüntü · karar hedefi (önerilen)"
+XT_FULL_DET = "Tam görüntü · tespitler (ilk k bölge / patch / kutu)"
+XT_FULL_GT = "Tam görüntü · GT kutusu"
+XT_TILES = "Döşemeli yerel mozaik (512 px pencereler · tam görüntü SHAP DEĞİLDİR)"
+XT_WIN_DEC = "Pencere · karar hedefi (512 px pencere / 224 patch)"
+XT_WIN_DET = "Pencere · tespitler (ilk k bölge / patch)"
+XT_WIN_GT = "Pencere · GT kutusu"
+XT_COMMON = "Ortak pencere (karşılaştırma)"
+XAI_TARGETS = [XT_FULL_DEC, XT_FULL_DET, XT_FULL_GT, XT_TILES, XT_WIN_DEC, XT_WIN_DET, XT_WIN_GT, XT_COMMON]
 XAI_METHODS = ["Partition (önerilen)", "Gradient (ince doku)"]
 XAI_REFS = ["Otomatik (authentic eş varsa o, yoksa blur)", "authentic eş", "blur(32,32)", "inpaint_telea"]
 _XAI_REF_KEY = {XAI_REFS[0]: "auto", XAI_REFS[1]: "authentic", XAI_REFS[2]: "blur", XAI_REFS[3]: "inpaint"}
@@ -2252,13 +2262,41 @@ def xai_setup():
                         default_tau=default_tau, image_threshold=image_threshold, friendly=friendly,
                         list_unet=list_seg_ckpts, list_resnet=list_resnet_ckpts, green_marker_mask=green_marker_mask)
     XAI_SPECS = XAI.build_registry(XAI_DEPS, _REG)
+    try:  # YOLO11 kutu dedektörleri: tam görüntü kutu-güveni hedefleri (pencere adaptörleri piksel/patch modelleri içindir)
+        XAI_SPECS.update(XAI.fullimage.yolo_specs([n for n in list_unet_ckpts() if n.startswith("YOLO/")], XAI_DEPS))
+    except Exception as _e:
+        print("[XAI] YOLO kaydı yapılamadı:", _e)
     XAI_MGR = XAI.XAIManager(lambda: XAI_SPECS, gpu_explain)
+
+
+def _xai_is_full(t):
+    return XAI.fullimage.is_full(t.kind) or t.kind == XAI.fullimage.TILE_KIND
+
+
+def _xai_full_per_eval(t, sp):
+    """Tam görüntü işinde değerlendirme başına tahmini süre (s) — ölçüm (RTX 5080): 3 kanal U-Net ≈ 6 ms/pencere,
+    5 kanal U-Net ≈ 0.25 s/MP (tam görüntü frekans kanalları, CPU), ResNet ≈ 0.4 ms/patch, YOLO ≈ 25 ms/kare."""
+    F = XAI.fullimage
+    if t.kind == F.TILE_KIND:
+        n = len(F.tile_grid(max(t.h, 512), max(t.w, 512)))
+        return n * (0.003 if sp.family == "resnet" else (0.016 if sp.in_ch == 5 else 0.004))
+    if sp.family == "resnet":
+        return 0.0004 * max(1, len(t.patches or []))
+    if sp.family == "yolo":
+        n = 1 if "-full-" in t.model else len(_windows(max(t.h, 1024), max(t.w, 1024), 1024, 768))
+        return 0.025 * n
+    n = len(_windows(max(t.h, 512), max(t.w, 512), 512, 448))
+    if sp.in_ch == 5:  # frekans kanalları (FFT-HP + Laplacian) her değerlendirmede tüm görüntüde CPU'da yeniden hesaplanır
+        return n * 0.006 + 0.25 * t.h * t.w / 1e6
+    return n * 0.006
 
 
 def _xai_job_cost(t, cfg):
     sp = XAI_SPECS.get(t.model)
     if sp is None:
         return 1.0
+    if _xai_is_full(t):
+        return 5 + int(getattr(t, "budget", None) or cfg.max_evals) * _xai_full_per_eval(t, sp)
     if cfg.method == "gradient":
         per = 0.03 if sp.family == "unet" else 0.01 * max(1, len(t.patches or [1]))
         return 2 + cfg.grad_nsamples * per
@@ -2275,8 +2313,18 @@ def _dur_explain(rgb, auth, jobs, cfg):
 
 @gpu(duration=_dur_explain)
 def _gpu_explain(rgb, auth, jobs, cfg):
-    """SHAP açıklayıcıları bu fonksiyonun İÇİNDE kurulur (ZeroGPU); dönüş yalnız numpy (float16) + meta veri."""
-    return XAI.run_jobs(jobs, rgb, auth, XAI_DEPS, XAI_SPECS, cfg)
+    """SHAP açıklayıcıları bu fonksiyonun İÇİNDE kurulur (ZeroGPU); dönüş yalnız numpy + meta veri.
+    Tam görüntü / döşemeli işler xai.fullimage'e, pencere işleri mevcut adaptörlere gider (sıra korunur)."""
+    out = [None] * len(jobs)
+    idx_f = [i for i, t in enumerate(jobs) if _xai_is_full(t)]
+    idx_w = [i for i in range(len(jobs)) if i not in idx_f]
+    if idx_f:
+        for i, r in zip(idx_f, XAI.fullimage.run_full_jobs([jobs[i] for i in idx_f], rgb, auth, XAI_DEPS, XAI_SPECS, cfg)):
+            out[i] = r
+    if idx_w:
+        for i, r in zip(idx_w, XAI.run_jobs([jobs[i] for i in idx_w], rgb, auth, XAI_DEPS, XAI_SPECS, cfg)):
+            out[i] = r
+    return out
 
 
 def gpu_explain(rgb, auth, jobs, cfg):
@@ -2358,6 +2406,13 @@ def xai_predict(src, unets, resnets, orig, cur, mask, auth, sim, up_img, up_auth
         preds[n] = (prob, info)
         sc = image_score(prob); it, cal = image_threshold(n)
         sp = XAI_SPECS.get(n)
+        if n.startswith("YOLO/"):
+            bx = info.get("boxes") or []
+            rows.append({"Model": friendly(n), "Aile": "YOLO11", "Görüntü skoru": sc, "Eşik": it,
+                         "Karar": "SAHTE" if sc >= it else "GERÇEK", "Patch sayısı": None,
+                         "Tespit bölgesi (τ*)": (f"{info.get('n_boxes', len(bx))} kutu · en yüksek güven {bx[0][0]:.3f}" if bx
+                                                 else "kutu yok") + ("" if cal else " · eşik kalibre değil")})
+            continue
         tau = default_tau(n, (sp.train_gt if sp else "") or "bbox")
         nreg = len(XAI.targets.unet_regions(prob, tau, XAI_DEPS))
         rows.append({"Model": friendly(n), "Aile": "U-Net", "Görüntü skoru": sc, "Eşik": it,
@@ -2376,19 +2431,50 @@ def _xai_cfg(method, ref, evals):
                              batch_size=16, grad_nsamples=64)
 
 
-def _xai_jobs(st, mode, k):
+def _xai_jobs(st, mode, k, cfg=None):
     shape = st["rgb"].shape
     preds = st["preds"]
-    if mode == XAI_TARGETS[1]:
-        jobs = XAI.detection_targets(preds, XAI_SPECS, shape, XAI_DEPS, k=int(k))
-    elif mode == XAI_TARGETS[2]:
-        if st["gt"] is None:
-            raise gr.Error("Bu görüntüde GT maskesi yok; başka bir hedef seçin.")
-        jobs = XAI.gt_targets(st["models"], XAI_SPECS, shape, st["gt"], XAI_DEPS)
-    elif mode == XAI_TARGETS[3]:
-        jobs = XAI.common_window_targets(st["models"], preds, XAI_SPECS, shape, st["gt"], XAI_DEPS)
+    F = XAI.fullimage
+    fam = lambda n: getattr(XAI_SPECS.get(n), "family", "")
+    if mode in (XT_FULL_DEC, XT_FULL_DET, XT_FULL_GT, XT_TILES):
+        if mode == XT_FULL_DET:
+            jobs = F.full_detection_targets(preds, XAI_SPECS, shape, XAI_DEPS, k=int(k))
+        elif mode == XT_FULL_GT:
+            if st["gt"] is None:
+                raise gr.Error("Bu görüntüde GT maskesi yok; başka bir hedef seçin.")
+            jobs = F.full_gt_targets(st["models"], XAI_SPECS, shape, st["gt"], XAI_DEPS, preds)
+        elif mode == XT_TILES:
+            jobs = F.tile_targets(st["models"], XAI_SPECS, shape, XAI_DEPS)
+        else:
+            jobs = F.full_decision_targets(preds, XAI_SPECS, shape, XAI_DEPS)
+        if ZERO_GPU and cfg is not None:  # ZeroGPU çağrı sınırı (≤120 s): bütçe gerekirse düşürülür (sonuç notunda yazılır)
+            keep = []
+            for t in jobs:
+                c = _xai_job_cost(t, cfg)
+                if c > 100:
+                    b = int(cfg.max_evals * 95 / c)
+                    if b < 60:  # bu çözünürlükte anlamlı bir tam görüntü açıklaması süre sınırına sığmıyor → sahte/kaba sonuç üretme
+                        gr.Warning(f"{friendly(t.model)}: tam görüntü SHAP bu çözünürlükte ZeroGPU 120 s sınırına sığmıyor "
+                                   f"(tahmini {c:.0f} s) — 'Döşemeli yerel mozaik' ya da 'Pencere' hedeflerini kullanın.")
+                        continue
+                    t.budget = b
+                keep.append(t)
+            jobs = keep
     else:
-        jobs = XAI.decision_targets(preds, XAI_SPECS, shape, XAI_DEPS)
+        preds = {n: p for n, p in preds.items() if fam(n) != "yolo"}
+        models = [n for n in st["models"] if fam(n) != "yolo"]
+        if not models:
+            raise gr.Error("Pencere hedefleri piksel/patch modelleri içindir; YOLO11 için 'Tam görüntü' hedeflerini seçin.")
+        if mode == XT_WIN_DET:
+            jobs = XAI.detection_targets(preds, XAI_SPECS, shape, XAI_DEPS, k=int(k))
+        elif mode == XT_WIN_GT:
+            if st["gt"] is None:
+                raise gr.Error("Bu görüntüde GT maskesi yok; başka bir hedef seçin.")
+            jobs = XAI.gt_targets(models, XAI_SPECS, shape, st["gt"], XAI_DEPS)
+        elif mode == XT_COMMON:
+            jobs = XAI.common_window_targets(models, preds, XAI_SPECS, shape, st["gt"], XAI_DEPS)
+        else:
+            jobs = XAI.decision_targets(preds, XAI_SPECS, shape, XAI_DEPS)
     if not jobs:
         raise gr.Error("Açıklanacak hedef bulunamadı (ör. eşik üstü tespit bölgesi yok). Başka bir hedef türü deneyin.")
     return jobs
@@ -2402,6 +2488,41 @@ def _xai_window_views(st, t):
         gm &= ~green_marker_mask(st["auth"])
     mk_w = XAI.window_mask(gm, t, XAI_DEPS)
     return img, gt_w, mk_w
+
+
+def _xai_full_views(st, t):
+    """Tam görüntü sonuçları için ekran çözünürlüğünde (en-boy korunur, ≤2400 px) orijinal + GT + işaretçi + hedef alanı;
+    tam çözünürlüklü maskeler de döner (kütle ve dağılım hesapları orijinal çözünürlükte yapılır)."""
+    V = XAI.viewer
+    rgb = st["rgb"]
+    H0, W0 = rgb.shape[:2]
+    img = V.display(rgb)
+    hw = img.shape[:2]
+    g = st["gt"]
+    gt = None if g is None else (np.asarray(g) > (127 if np.asarray(g).dtype == np.uint8 else 0))
+    gm = green_marker_mask(rgb)
+    if st["auth"] is not None:
+        gm &= ~green_marker_mask(st["auth"])
+    reg = XAI.fullimage.target_region_orig(t, H0, W0, XAI_DEPS)
+    return img, gt, gm, reg, V.display_mask(gt, hw), V.display_mask(gm, hw), V.display_mask(reg, hw)
+
+
+def _xai_full_badge(st, r, t):
+    """Tam görüntü iddiası yalnız doğrulanırsa: harita boyutu = orijinal, tek hedef/tek referans, E[f]+ΣSHAP=f(x)."""
+    H0, W0 = st["rgb"].shape[:2]
+    m = r.shap_map()
+    if t.kind == XAI.fullimage.TILE_KIND:
+        tg = r.target
+        return (f"**DÖŞEMELİ YEREL MOZAİK — tam görüntü SHAP DEĞİLDİR.** {len(tg.get('tiles', []))} pencere · kapsama "
+                f"{'tam' if tg.get('covered') else 'EKSİK'} · pencere tabanları farklı (fark {tg.get('base_spread', 0):.3f}); "
+                "her pencere yalnız kendi skorunu açıklar.  \n")
+    ok = bool(r.target.get("full")) and m.shape == (H0, W0) and np.isfinite(r.add_err) and r.add_err < 1e-3
+    if ok:
+        return (f"**TAM GÖRÜNTÜ SHAP (doğrulandı):** harita {W0}×{H0} px = orijinal görüntü, kırpma yok · tek hedef, tek referans · "
+                f"E[f] + ΣSHAP = f(x) (hata {r.add_err:.1e}) · ızgara {r.target.get('grid', ['?', '?'])[1]}×"
+                f"{r.target.get('grid', ['?', '?'])[0]} hücre ({r.target.get('cell_px', '?')} px).  \n")
+    return (f"⚠️ **Tam görüntü doğrulanamadı** (harita {m.shape[1]}×{m.shape[0]}, toplamsallık hatası {r.add_err:.1e}) — "
+            "sonuç tam görüntü SHAP açıklaması olarak SUNULMUYOR.  \n")
 
 
 def _xai_app_score(st, model):
@@ -2427,11 +2548,26 @@ def _xai_render(st, results, jobs):
         if not r.ok:
             sums[lab] = f"**{r.label}** — {r.status}: {r.message}"
             continue
-        img, gt_w, mk_w = _xai_window_views(st, t)
-        pn = XAI.viz.panels(r, img, gt_w, mk_w, t.region if t.kind in ("region_mean", "gt_bbox_mean") else None)
-        pn["Özet şekil"] = XAI.viz.summary_figure(r, img, gt_w, mk_w)
+        badge = ""
+        if _xai_is_full(t):
+            import copy as _copy
+            m = r.shap_map()
+            img, gt, gm, reg, gt_d, gm_d, reg_d = _xai_full_views(st, t)
+            rd = _copy.copy(r); rd.values = XAI.viewer.display_map(m)[..., None]
+            pn = XAI.viz.panels(rd, img, gt_d, gm_d, reg_d)
+            pn["Özet şekil"] = XAI.viz.summary_figure(rd, img, gt_d, gm_d)
+            pn["Katkı dağılımı"] = XAI.viewer.distribution_figure(
+                m, gt, r.fx, r.base, f"{r.label} · açıklanan hedef: SAHTE yönü (+) · {r.target.get('label', '')}"[:160])
+            masses[f"{i + 1} · {r.label}"] = XAI.viz.region_masses(m, gt, gm)
+            badge = _xai_full_badge(st, r, t)
+        else:
+            img, gt_w, mk_w = _xai_window_views(st, t)
+            pn = XAI.viz.panels(r, img, gt_w, mk_w, t.region if t.kind in ("region_mean", "gt_bbox_mean") else None)
+            pn["Özet şekil"] = XAI.viz.summary_figure(r, img, gt_w, mk_w)
+            pn["Katkı dağılımı"] = XAI.viewer.distribution_figure(r.shap_map(), gt_w, r.fx, r.base,
+                                                                  f"{r.label} · pencere açıklaması · {r.target.get('label', '')}"[:160])
+            masses[f"{i + 1} · {r.label}"] = XAI.viz.region_masses(r.shap_map(), gt_w, mk_w)
         panels[lab] = pn
-        masses[f"{i + 1} · {r.label}"] = XAI.viz.region_masses(r.shap_map(), gt_w, mk_w)
         for pname, im in pn.items():
             if pname != "Özet şekil":
                 gal.append((im, f"{i + 1} · {r.label} — {pname}"))
@@ -2442,7 +2578,7 @@ def _xai_render(st, results, jobs):
             cmp_note = (f"  \nUygulamanın tam görüntü skoru (448 px adımlı pencerelerin örtüşme ortalaması): {app_sc:.4f}"
                         + (" — açıklanan pencere tek başına çok daha yüksek skor veriyor; örtüşme ortalaması sinyali seyreltiyor."
                            if r.fx - app_sc > 0.25 else ""))
-        sums[lab] = (f"**{r.label}** · hedef: {r.target.get('label', '')}  \n"
+        sums[lab] = (badge + f"**{r.label}** · hedef: {r.target.get('label', '')}  \n"
                      f"f(x) = **{r.fx:.4f}** · E[f] (referans: {r.reference}) = {r.base:.4f} · ΣSHAP = {r.sum_shap:+.4f} · "
                      f"toplamsallık hatası {r.add_err:.2e} · {r.n_evals} değerlendirme · {r.seconds:.1f} s"
                      + (f" · tepe {r.peak_mem_mb:.0f} MB" if r.peak_mem_mb else "") + g
@@ -2465,16 +2601,45 @@ def _xai_export(st, results, panels, mass_img, loc, cfg, cmp=None, cmp_img=None,
     return XAI.export_results(results, outdir, meta, panels, cmp, extra)
 
 
+def _xai_hires(st, results, jobs, outdir):
+    """Tam görüntü sonuçları: natif çözünürlükte ısı haritası + bindirme PNG, float32 SHAP NPY, 300 dpi PNG + PDF yayın
+    şekli (renk çubuğu, piksel eksenleri, GT / hedef konturu)."""
+    V, F = XAI.viewer, XAI.fullimage
+    files = []
+    rgb = st["rgb"]
+    H0, W0 = rgb.shape[:2]
+    for i, (r, t) in enumerate(zip(results, jobs)):
+        if not r.ok or not _xai_is_full(t):
+            continue
+        try:
+            m = r.shap_map()
+            _, gt, _, reg, _, _, _ = _xai_full_views(st, t)
+            v = XAI.viz.sym_vmax(m)
+            heat = XAI.viz.diverging(m, v)
+            ov = XAI.viz.blend(rgb, heat, 0.75, np.clip(np.abs(m) / v, 0, 1))
+            stem = f"r{i + 1:02d}_" + re.sub(r"[^A-Za-z0-9]+", "_", r.model).strip("_")
+            files += V.export_native(outdir, stem, {"shap_isi_natif": heat, "bindirme_natif": ov}, {"shap_float32": m})
+            kind = ("döşemeli yerel mozaik (tam görüntü SHAP değil)" if t.kind == F.TILE_KIND else "tam görüntü SHAP")
+            files += V.publication_figure(rgb, m, f"{r.label} · {kind} · {W0}×{H0} px · f(x)={r.fx:.3f} · E[f]={r.base:.3f} · "
+                                                  f"ΣSHAP={r.sum_shap:+.3f}", outdir, stem, gt=gt, region=reg)
+        except Exception as e:
+            print("[XAI] yüksek çözünürlüklü dışa aktarım:", r.model, e)
+    return files
+
+
 _XAI_PANEL_NAMES = ["Orijinal (açıklanan pencere)", "SHAP ısı haritası (kırmızı: SAHTE yönü · mavi: GERÇEK yönü)", "Bindirme",
                     "Pozitif katkı (SAHTE'yi artıran)", "Negatif katkı (GERÇEK'e iten)", "Sınıf panelleri: SAHTE | GERÇEK (= −SAHTE)"]
 
 
 def _xai_show_outputs(view, choice):
+    """[özet, 6 panel, kaydırıcı (orijinal ↔ bindirme), katkı dağılımı]"""
     if not view or choice not in view.get("panels", {}):
         md = view.get("sums", {}).get(choice, " ") if view else " "
-        return [md] + [None] * len(_XAI_PANEL_NAMES)
+        return [md] + [None] * (len(_XAI_PANEL_NAMES) + 2)
     pn = view["panels"][choice]
-    return [view["sums"].get(choice, " ")] + [pn.get(n) for n in _XAI_PANEL_NAMES]
+    a, b = pn.get(_XAI_PANEL_NAMES[0]), pn.get(_XAI_PANEL_NAMES[2])
+    sl = (a, b) if a is not None and b is not None and a.shape == b.shape else None
+    return [view["sums"].get(choice, " ")] + [pn.get(n) for n in _XAI_PANEL_NAMES] + [sl, pn.get("Katkı dağılımı")]
 
 
 def xai_run(st, mode, k, method, ref, evals):
@@ -2484,11 +2649,13 @@ def xai_run(st, mode, k, method, ref, evals):
     if not SHAP_OK:
         raise gr.Error(f"shap paketi yüklü değil: {_SHAP_ERR}")
     cfg = _xai_cfg(method, ref, evals)
-    jobs = _xai_jobs(st, mode, k)
+    jobs = _xai_jobs(st, mode, k, cfg)
     t0 = time.time()
     results = XAI_MGR.explain(st["rgb"], st["auth"], jobs, cfg)
     panels, masses, gal, sums, mass_img, loc = _xai_render(st, results, jobs)
     files = _xai_export(st, results, panels, mass_img, loc, cfg)
+    if files:
+        files += _xai_hires(st, results, jobs, Path(files[0]).parent)
     df = pd.DataFrame(XAI.service.result_table_rows(results))
     if len(df):
         df.insert(5, "Uygulama skoru", [_xai_app_score(st, r.model) for r in results])
@@ -2509,7 +2676,7 @@ def xai_compare(st, method, ref, evals):
     if not SHAP_OK:
         raise gr.Error(f"shap paketi yüklü değil: {_SHAP_ERR}")
     cfg = _xai_cfg(method, ref, evals)
-    jobs = _xai_jobs(st, XAI_TARGETS[3], 1)
+    jobs = _xai_jobs(st, XT_COMMON, 1, cfg)
     results = XAI_MGR.explain(st["rgb"], st["auth"], jobs, cfg)
     cmp = XAI.compare.compare_results(results, st["rgb"])
     fig = XAI.compare.comparison_figure(cmp)
@@ -2618,7 +2785,7 @@ TIPS = {
     "tip-x_unet": 'Açıklanacak U-Net modelleri. Her biri kendi gerçek çıktısından türetilen hedefle ayrı açıklanır.',
     "tip-x_res": 'Açıklanacak ResNet-18 modelleri (224 px patch sınıflandırıcı).',
     "tip-b_xpred": 'Seçili modelleri uygulamanın kendi çıkarımıyla (değiştirilmeden) çalıştırır: görüntü skoru, eşik, karar ve tespit bölgeleri. SHAP hedefleri bu tahminlerden türetilir.',
-    "tip-x_target": "Hangi skaler çıktının açıklanacağı:<br><b>Karar hedefi</b>: ResNet → kararı belirleyen maks patch; U-Net → top-%1 merkezli 512 px penceredeki görüntü skoru.<br><b>Tespitler</b>: U-Net eşik (τ*) üstü bağlı bileşenler (güven = ortalama olasılık) ve ResNet'in en yüksek k patch'i; her biri ayrı açıklanır.<br><b>GT kutusu</b>: GT kutusu içindeki ortalama olasılık (ResNet: kutu merkezli penceredeki maks patch).<br><b>Ortak pencere</b>: tüm modeller aynı 512 px pencereyi açıklar (karşılaştırma için).",
+    "tip-x_target": "Hangi skaler çıktının açıklanacağı:<br><b>Tam görüntü · karar</b> (önerilen): modelin uygulamadaki tam görüntü karar skoru (U-Net: tüm olasılık haritasının top-%1 ortalaması · ResNet: tüm ızgaranın maks patch skoru · YOLO11: en güvenli kutu). Açıklama orijinal görüntünün TAMAMINI tek hedef ve tek referansla kapsar; E[f]+ΣSHAP=f(x) doğrulanır.<br><b>Tam görüntü · tespitler</b>: ilk k bölge / patch / kutu, her biri tam görüntüde.<br><b>Tam görüntü · GT</b>: GT kutusu içi ortalama (ResNet: kesişen patch'lerin maks skoru · YOLO: GT ile IoU≥0.5 kutu güveni).<br><b>Döşemeli mozaik</b>: 512 px örtüşen pencerelerin yerel açıklamaları orijinal koordinatlarda birleşir — tabanlar farklı olduğundan tam görüntü SHAP DEĞİLDİR.<br><b>Pencere</b> hedefleri: önceki 512 px pencere / 224 patch açıklamaları (değişmedi).<br><b>Ortak pencere</b>: karşılaştırma (③).",
     "tip-x_k": 'Tespitler hedefinde model başına açıklanacak en fazla bölge / patch sayısı.',
     "tip-x_method": "<b>Partition</b>: modelden bağımsız, hiyerarşik Owen değerleri; referansla maskeleme yapar, toplamsallık kesindir (ΣSHAP = f(x) − f(referans)).<br><b>Gradient</b>: beklenen gradyanlar (fp32); piksel düzeyinde ince doku izi, 5 kanallı U-Net'te RGB / FFT-HP / Laplacian grup katkısı. Toplamsallık yaklaşıktır.",
     "tip-x_ref": "Gizlenen piksellerin neyle doldurulacağı (SHAP'ın karşı-olgusal referansı).<br><b>authentic eş</b>: orijinal belge — en anlamlı referans; ΣSHAP = f(sahte) − f(orijinal).<br><b>blur(32,32)</b>: görüntünün bulanık hali.<br><b>inpaint_telea</b>: çevreden doldurma (yalnız Partition).",
@@ -2627,6 +2794,8 @@ TIPS = {
     "tip-b_xcmp": 'Tüm seçili modelleri aynı pencerede, aynı referans ve bütçeyle açıklar; top-%5 pozitif bölge IoU/Dice, 16×16 blok Spearman korelasyonu ve ortak / modele özgü bölge haritası üretir. Farklı hedef türleri yalnız normalize ölçütlerle karşılaştırılır.',
     "tip-x_show": 'Ayrıntılı panelleri gösterilecek açıklama (model · hedef).',
 }
+
+CSS += (XAI.viewer.ZOOM_CSS if XAI_OK else "")  # büyük, en-boy korumalı, yakınlaştırılabilir XAI görüntüleri
 
 TIP_JS = """
 () => {
@@ -2882,7 +3051,7 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
                             with gr.Row():
                                 x_up_auth = gr.Image(label="Authentic eş (isteğe bağlı)", type="numpy", height=120, elem_id="tip-x_up_auth")
                                 x_up_gt = gr.Image(label="GT maskesi (isteğe bağlı)", type="numpy", height=120, image_mode="L", elem_id="tip-x_up_gt")
-                        x_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS if not n.startswith("YOLO/")], value=[n for n in _DEF_UNETS if not n.startswith("YOLO/")], label="U-Net / DeepLabV3+ (YOLO kutu dedektörü XAI dışı)", elem_id="tip-x_unet")
+                        x_unet = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _UNETS], value=[n for n in _DEF_UNETS if not n.startswith("YOLO/")], label="U-Net / DeepLabV3+ / YOLO11 (YOLO: yalnız tam görüntü hedefleri)", elem_id="tip-x_unet")
                         x_res = gr.CheckboxGroup(choices=[(friendly(n), n) for n in _RESNETS], value=_DEF_RESNET, label="ResNet-18", elem_id="tip-x_res")
                         gr.Markdown(xai_unsupported_md(), elem_classes="small-md")
                         b_xpred = gr.Button("① Tahmin yap", variant="primary", elem_id="tip-b_xpred")
@@ -2891,24 +3060,30 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
                         x_k = gr.Slider(1, 3, value=3, step=1, label="Tespit sayısı k", elem_id="tip-x_k")
                         x_method = gr.Radio(XAI_METHODS, value=XAI_METHODS[0], label="Yöntem", elem_id="tip-x_method")
                         x_ref = gr.Dropdown(XAI_REFS, value=XAI_REFS[0], label="Referans (arka plan)", elem_id="tip-x_ref")
-                        x_evals = gr.Slider(300, 3000, value=1000, step=100, label="max_evals (Partition bütçesi)", elem_id="tip-x_evals")
+                        x_evals = gr.Slider(200, 3000, value=800, step=100, label="max_evals (Partition bütçesi)", elem_id="tip-x_evals")
                         b_xshap = gr.Button("② SHAP analizini başlat", variant="primary", elem_id="tip-b_xshap")
                         b_xcmp = gr.Button("③ Modelleri karşılaştır", elem_id="tip-b_xcmp")
                     with gr.Column(scale=2):
                         x_status = gr.Markdown("① ile tahmin yapın, ② ile seçilen hedefleri SHAP ile açıklayın, ③ ile modelleri aynı pencerede karşılaştırın.")
                         x_pred_df = gr.Dataframe(label="Tahminler (uygulamanın kendi çıkarımı)", wrap=True, interactive=False)
                         x_res_df = gr.Dataframe(label="SHAP sonuçları", wrap=True, interactive=False)
-                        x_loc = gr.Image(label="Açıklanan pencerelerin konumu (numara = sonuç sırası)", type="numpy", height=300, interactive=False)
+                        x_loc = gr.Image(label="Açıklanan alanların konumu (tam görüntü hedefinde çerçeve = görüntünün tamamı)", type="numpy", height=300, interactive=False)
                         x_show = gr.Dropdown(choices=[], label="Gösterilecek açıklama", elem_id="tip-x_show")
                         x_sum = gr.Markdown(" ")
+                        gr.Markdown("Görüntüler en-boy oranı korunarak gösterilir · **fare tekerleği**: imleç çevresinde yakınlaştır (32×'e kadar) · "
+                                    "**sürükle**: kaydır · **çift tık**: sıfırla · sağ üst düğmeler: tam ekran / indir. Natif çözünürlüklü "
+                                    "PNG/NPY ve 300 dpi PNG + PDF yayın şekilleri aşağıdaki dışa aktarımdadır.", elem_classes="small-md")
+                        x_slider = gr.ImageSlider(label="Yan yana karşılaştırma: orijinal ↔ SHAP bindirmesi (kaydırıcıyı sürükleyin)", type="numpy", height=680)
                         with gr.Row():
-                            x_p0 = gr.Image(label="Orijinal pencere (mavi: GT · magenta: işaretçi · yeşil: hedef bölge)", type="numpy", height=260, interactive=False)
-                            x_p1 = gr.Image(label="SHAP ısı haritası (kırmızı: SAHTE · mavi: GERÇEK)", type="numpy", height=260, interactive=False)
-                            x_p2 = gr.Image(label="Bindirme", type="numpy", height=260, interactive=False)
+                            x_p0 = gr.Image(label="Orijinal — tam görüntü ya da açıklanan pencere (mavi: GT · magenta: işaretçi · yeşil: hedef)", type="numpy", height=560, interactive=False, elem_classes=["xai-zoom"])
+                            x_p2 = gr.Image(label="Bindirme (aynı koordinat sistemi)", type="numpy", height=560, interactive=False, elem_classes=["xai-zoom"])
                         with gr.Row():
-                            x_p3 = gr.Image(label="Pozitif katkı (SAHTE'yi artıran)", type="numpy", height=260, interactive=False)
-                            x_p4 = gr.Image(label="Negatif katkı (GERÇEK'e iten)", type="numpy", height=260, interactive=False)
-                        x_p5 = gr.Image(label="Sınıf panelleri: SAHTE | GERÇEK (= −SAHTE)", type="numpy", height=280, interactive=False)
+                            x_p1 = gr.Image(label="SHAP ısı haritası (kırmızı: SAHTE yönü · mavi: GERÇEK yönü)", type="numpy", height=560, interactive=False, elem_classes=["xai-zoom"])
+                        with gr.Row():
+                            x_p3 = gr.Image(label="Pozitif katkı (SAHTE'yi artıran bölgeler)", type="numpy", height=480, interactive=False, elem_classes=["xai-zoom"])
+                            x_p4 = gr.Image(label="Negatif katkı (GERÇEK'e iten bölgeler)", type="numpy", height=480, interactive=False, elem_classes=["xai-zoom"])
+                        x_p5 = gr.Image(label="Sınıf panelleri: SAHTE | GERÇEK (= −SAHTE)", type="numpy", height=480, interactive=False, elem_classes=["xai-zoom"])
+                        x_dist = gr.Image(label="Açıklanan hedef sınıfına (SAHTE) katkı dağılımı: histogram · birikimli kütle · toplamlar (GT içi/dışı)", type="numpy", height=360, interactive=False)
                         x_mass = gr.Image(label="Pozitif SHAP kütlesinin bölgelere dağılımı (GT kutusu / kenar halkası / işaretçi / geri kalan)", type="numpy", interactive=False)
                         with gr.Accordion("Tüm paneller (galeri)", open=False):
                             x_gal = gr.Gallery(columns=3, height=520, object_fit="contain", preview=False, format="png")
@@ -2984,13 +3159,15 @@ with gr.Blocks(title="AIC515 · AIForge-Doc Sahtecilik Lokalizasyonu") as demo:
     x_src.change(lambda v: gr.update(visible=v == XAI_SOURCES[3]), [x_src], [x_up_grp])
     b_xpred.click(xai_predict, [x_src, x_unet, x_res, st_orig, st_cur, st_mask, st_auth, st_sim, x_up_img, x_up_auth, x_up_gt],
                   [x_pred_df, x_status, st_xpred])
-    _x_panels = [x_sum, x_p0, x_p1, x_p2, x_p3, x_p4, x_p5]
+    _x_panels = [x_sum, x_p0, x_p1, x_p2, x_p3, x_p4, x_p5, x_slider, x_dist]
     b_xshap.click(xai_run, [st_xpred, x_target, x_k, x_method, x_ref, x_evals],
                   [x_status, x_res_df, x_loc, x_show, st_xview, x_mass, x_gal, x_files] + _x_panels)
     x_show.change(_xai_show_outputs, [st_xview, x_show], _x_panels)
     b_xcmp.click(xai_compare, [st_xpred, x_method, x_ref, x_evals], [x_cmp_md, x_cmp_img, x_cmp_df, x_files])
 
     demo.load(None, None, None, js=TIP_JS)  # sol panel açıklamaları
+    if XAI_OK:
+        demo.load(None, None, None, js=XAI.viewer.ZOOM_JS)  # XAI görüntüleri: tekerlek yakınlaştırma · sürükleme · çift tık sıfırlama
 
 demo.queue(default_concurrency_limit=2)
 

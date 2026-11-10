@@ -1,0 +1,63 @@
+{
+ "kernel|928x2317|PHASE2/unet_bbox_s42|tf32=True": {
+  "tiles": 3,
+  "rel": 0.027049072086811066,
+  "sec": 0.75,
+  "peak_mb": 2034
+ },
+ "kernel|928x2317|PHASE2/unet_bbox_s42|tf32=False": {
+  "tiles": 3,
+  "rel": 0.0,
+  "sec": 0.38,
+  "peak_mb": 2035
+ },
+ "kernel|928x2317|PHASE1/resnet18_ft_best|tf32=True": {
+  "tiles": 3,
+  "rel": 0.022669559344649315,
+  "sec": 0.3,
+  "peak_mb": 2022
+ },
+ "kernel|928x2317|PHASE1/resnet18_ft_best|tf32=False": {
+  "tiles": 3,
+  "rel": 0.0,
+  "sec": 0.35,
+  "peak_mb": 2022
+ },
+ "kernel|1392x3476|PHASE2/unet_bbox_s42|tf32=True": {
+  "tiles": 8,
+  "rel": 0.020129388198256493,
+  "sec": 0.79,
+  "peak_mb": 2079
+ },
+ "kernel|1392x3476|PHASE2/unet_bbox_s42|tf32=False": {
+  "tiles": 8,
+  "rel": 0.0,
+  "sec": 0.8,
+  "peak_mb": 2079
+ },
+ "kernel|1392x3476|PHASE1/resnet18_ft_best|tf32=True": {
+  "tiles": 8,
+  "rel": 0.01731122098863125,
+  "sec": 0.73,
+  "peak_mb": 2066
+ },
+ "kernel|1392x3476|PHASE1/resnet18_ft_best|tf32=False": {
+  "tiles": 8,
+  "rel": 0.0,
+  "sec": 0.72,
+  "peak_mb": 2066
+ },
+ "mosaic": {
+  "tiles": 8,
+  "bases": [
+   0.001708672786169027,
+   0.0022293541605883102,
+   0.0021994299436676615,
+   0.0022727442751232503,
+   0.0018553014490802044,
+   0.0017116652078610919,
+   0.001633862243867406,
+   0.001376513978349829
+  ]
+ }
+}

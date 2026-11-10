@@ -15,7 +15,7 @@ from .targets import (TargetSpec, decision_targets, detection_targets, gt_target
 from .adapters import (XAIUnsupported, ExplainConfig, adapter_for, prepare_for, run_jobs, model_fingerprint)
 from .service import ExplanationResult, export_results
 from .manager import XAIManager
-from . import viz, compare
+from . import viz, compare, fullimage, viewer
 
 __all__ = ["Deps", "ModelSpec", "build_registry", "UNSUPPORTED_MODELS", "TargetSpec", "decision_targets",
            "detection_targets", "gt_targets", "common_window_targets", "window_mask", "XAIUnsupported", "ExplainConfig",

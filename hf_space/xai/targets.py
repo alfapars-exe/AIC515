@@ -45,7 +45,12 @@ class TargetSpec:
 
     def key(self):
         rh = "" if self.region is None else hashlib.sha1(np.packbits(self.region).tobytes()).hexdigest()[:12]
-        return f"{self.model}|{self.kind}|{self.prep}|{self.y},{self.x},{self.h},{self.w}|{rh}"
+        k = f"{self.model}|{self.kind}|{self.prep}|{self.y},{self.x},{self.h},{self.w}|{rh}"
+        if self.patches:  # tam görüntü hedeflerinde pencere aynı, ayırt edici olan patch / kutu listesidir
+            k += "|" + hashlib.sha1(repr([tuple(round(float(v), 1) for v in p) for p in self.patches]).encode()).hexdigest()[:12]
+        if getattr(self, "budget", None):
+            k += f"|b{self.budget}"
+        return k
 
     def to_dict(self):
         return dict(model=self.model, kind=self.kind, prep=self.prep, window=[self.y, self.x, self.h, self.w], label=self.label,
