@@ -81,7 +81,7 @@ Aynı val protokolünde diğer modeller (`kod/app/meta/image_tau.json`): U-Net b
 - Eşikler doygunluğa yakındır (0.94–0.995) ve tohuma duyarlıdır (0.940 ↔ 0.995); bf16 sayısal farkı (≤ 0.0014) sınırdaki görüntülerde kararı değiştirebilir. CPU'da (fp32) eşik yeniden doğrulanmadı.
 - Parça indeksi tüm tohumlarda sabittir; tohum std'si başlangıç, sıra ve augmentasyon değişkenliğini ölçer, parça örneklemesini değil.
 - İşaretçisiz eğitimde model seçimi onarılmış val parçalarıyla yapıldı (Faz 3 kuralı).
-- Kod henüz bir commit'e bağlı değil; koşu JSON'larında betik SHA-256 özeti kayıtlı (`script_sha`).
+- Koşular sırasında kod bir commit'e bağlı değildi (koşu JSON'larında betik SHA-256 özeti kayıtlı: `script_sha`); kod koşulardan sonra 10 Kasım 2026'da `4668b08` numaralı commit ile depoya girdi.
 - Dayanıklılık (JPEG, ölçekleme) ve held-out üretici deneyleri ResNet için yapılmadı.
 
 ## 8. Yeniden üretim
