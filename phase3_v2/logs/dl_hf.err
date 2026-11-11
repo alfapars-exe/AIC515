@@ -14,38 +14,38 @@ The above exception was the direct cause of the following exception:
 
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\_validators.py", line 89, in _inner_fn
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\_validators.py", line 89, in _inner_fn
     return fn(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\_http.py", line 276, in _inner
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\_http.py", line 276, in _inner
     return fn(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\_snapshot_download.py", line 541, in snapshot_download
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\_snapshot_download.py", line 541, in snapshot_download
     hf_thread_map(
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\tqdm.py", line 441, in hf_thread_map
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\tqdm.py", line 441, in hf_thread_map
     results[future_to_index[future]] = future.result()
                                        ^^^^^^^^^^^^^^^
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\concurrent\futures\_base.py", line 449, in result
+  File "~\.claude-science\conda\envs\docforensics\Lib\concurrent\futures\_base.py", line 449, in result
     return self.__get_result()
            ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\concurrent\futures\_base.py", line 401, in __get_result
+  File "~\.claude-science\conda\envs\docforensics\Lib\concurrent\futures\_base.py", line 401, in __get_result
     raise self._exception
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\concurrent\futures\thread.py", line 58, in run
+  File "~\.claude-science\conda\envs\docforensics\Lib\concurrent\futures\thread.py", line 58, in run
     result = self.fn(*self.args, **self.kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\_snapshot_download.py", line 521, in _inner_hf_hub_download
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\_snapshot_download.py", line 521, in _inner_hf_hub_download
     hf_hub_download(  # type: ignore
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\_validators.py", line 89, in _inner_fn
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\_validators.py", line 89, in _inner_fn
     return fn(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\_http.py", line 276, in _inner
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\utils\_http.py", line 276, in _inner
     return fn(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\file_download.py", line 1026, in hf_hub_download
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\file_download.py", line 1026, in hf_hub_download
     return _hf_hub_download_to_local_dir(
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\file_download.py", line 1421, in _hf_hub_download_to_local_dir
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\file_download.py", line 1421, in _hf_hub_download_to_local_dir
     _raise_on_head_call_error(head_call_error, force_download, local_files_only)
-  File "C:\Users\PARS\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\file_download.py", line 1962, in _raise_on_head_call_error
+  File "~\.claude-science\conda\envs\docforensics\Lib\site-packages\huggingface_hub\file_download.py", line 1962, in _raise_on_head_call_error
     raise LocalEntryNotFoundError(
 huggingface_hub.errors.LocalEntryNotFoundError: An error happened while trying to locate the file on the Hub and we cannot find the requested files in the local cache. Please check your connection and try again or make sure your Internet connection is on.

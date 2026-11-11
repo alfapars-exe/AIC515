@@ -1,5 +1,5 @@
 ﻿[deploy] oturum: argeinfina (orgs: ['infinayazilim'])
-[deploy] Space: infinayazilim/ai515 ÔåÉ C:\Users\PARS\Desktop\PROJELER\AI 515\Vize Proje\hf_space
+[deploy] Space: infinayazilim/ai515 ÔåÉ hf_space
 [deploy] donan─▒m iste─şi: zero-a10g
 [deploy] runtime: RUNNING_BUILDING (zero-a10g)
 [deploy] runtime: RUNNING_APP_STARTING (zero-a10g)

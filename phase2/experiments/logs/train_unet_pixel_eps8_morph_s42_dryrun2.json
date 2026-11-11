@@ -17,7 +17,7 @@
  "lr": 0.0001,
  "crops_per_image": 2,
  "n_train_crops_per_epoch": 1280,
- "ckpt": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\models\\phase2\\unet_pixel_eps8_morph_s42_dryrun2.pt",
+ "ckpt": "models\\phase2\\unet_pixel_eps8_morph_s42_dryrun2.pt",
  "ckpt_mb": 54.768900871276855,
  "torch": "2.11.0+cu128",
  "gpu": "NVIDIA GeForce RTX 5080"

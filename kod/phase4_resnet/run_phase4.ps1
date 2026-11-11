@@ -3,7 +3,7 @@
 # Kullanim: powershell -ExecutionPolicy Bypass -File kod\phase4_resnet\run_phase4.ps1 -Stage All   (Smoke | Data | Train | Infer | Calib | All)
 param([string]$Stage = "All", [int[]]$Seeds = @(42, 43, 44))
 $ErrorActionPreference = "Continue"
-$PY = if ($env:P3_PYTHON) { $env:P3_PYTHON } else { "C:\Users\PARS\.claude-science\conda\envs\docforensics\python.exe" }
+$PY = if ($env:P3_PYTHON) { $env:P3_PYTHON } else { "python" }
 $HERE = $PSScriptRoot
 $KOD = Split-Path $HERE -Parent
 $env:VIZE_ROOT = Split-Path $KOD -Parent

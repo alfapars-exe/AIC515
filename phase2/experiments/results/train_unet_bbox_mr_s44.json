@@ -13,7 +13,7 @@
  "train_time_s": 491.8118357658386,
  "peak_gpu_mem_gib": 4.658321380615234,
  "n_params": 14328209,
- "ckpt": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\models\\phase2\\unet_bbox_mr_s44.pt",
+ "ckpt": "models\\phase2\\unet_bbox_mr_s44.pt",
  "ckpt_mb": 54.76573085784912,
  "torch": "2.11.0+cu128",
  "gpu": "NVIDIA GeForce RTX 5080"

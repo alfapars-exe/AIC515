@@ -438,6 +438,30 @@
   "ideogram": 0.4542,
   "gemini": 0.5715
  },
+ "heldout_U-Net_marker-repaired_box_go0_box": {
+  "ideogram": 0.6326,
+  "gemini": 0.8979
+ },
+ "heldout_U-Net_marker-repaired_box_go0_pix": {
+  "ideogram": 0.3851,
+  "gemini": 0.3772
+ },
+ "heldout_U-Net_marker-repaired+nm-GT_glyph_go0_box": {
+  "ideogram": 0.3384,
+  "gemini": 0.3611
+ },
+ "heldout_U-Net_marker-repaired+nm-GT_glyph_go0_pix": {
+  "ideogram": 0.392,
+  "gemini": 0.3891
+ },
+ "heldout_U-Net_marker-repaired+nm-GT_pix_go0_box": {
+  "ideogram": 0.4296,
+  "gemini": 0.4917
+ },
+ "heldout_U-Net_marker-repaired+nm-GT_pix_go0_pix": {
+  "ideogram": 0.457,
+  "gemini": 0.5049
+ },
  "heldout_YOLO11s_geminionly_box_go1_box": {
   "ideogram": 0.752,
   "gemini": 0.9378

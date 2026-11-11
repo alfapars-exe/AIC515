@@ -6,9 +6,12 @@ Sonra:                      python kod/tools/capture_screens.py [http://127.0.0.
 Çıktılar: <proje>/app/ekran_<sekme>_<ad>.png (rapor ve sunum bu adlarla atıf yapar).
 Her adım gerçek arayüz üzerinden yürütülür. Bir işlem bitmeden ya da hata verdiğinde görüntü alınmaz:
 Gradio'nun durum göstergesi (status-tracker) boşa dönene kadar beklenir; gösterge "Error" yazıyorsa betik durur.
+Görüntü alınmadan önce sayfadaki metinlerde kullanıcının ev dizini "~" olarak kısaltılır (depoya kişisel klasör yolu girmesin);
+başka hiçbir içerik değiştirilmez.
 """
 import argparse
 import asyncio
+import json
 import re
 import sys
 from pathlib import Path
@@ -23,6 +26,10 @@ W, H = 1680, 1050
 _TRACK = "[...document.querySelectorAll('[data-testid=\"status-tracker\"]')].filter(e => !e.classList.contains('hide'))"
 BUSY_JS = f"{_TRACK}.some(e => !/Error/.test(e.innerText))"
 ERROR_JS = f"{_TRACK}.filter(e => /Error/.test(e.innerText)).length"
+# ev dizinini "~" ile kısaltır (yalnız metin düğümleri); değiştirilen düğüm sayısını döndürür
+HOME_JS = ("(() => { const h = %s; let n = 0; const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let t; "
+           "while ((t = w.nextNode())) { if (t.nodeValue.includes(h)) { t.nodeValue = t.nodeValue.split(h).join('~'); n++; } } return n; })()"
+           % json.dumps(str(Path.home())))
 
 
 async def idle(pg, what, min_ms=2500, timeout=900000):
@@ -41,9 +48,10 @@ async def shot(pg, name, max_h=2600):
     await pg.wait_for_timeout(1200)
     h = await pg.evaluate("document.documentElement.scrollHeight")
     await pg.evaluate("window.scrollTo(0, 0)")
+    n_home = await pg.evaluate(HOME_JS)
     hh = max(H, min(h, max_h))
     await pg.screenshot(path=str(OUT / name), full_page=True, clip={"x": 0, "y": 0, "width": W, "height": hh})
-    print(f"  ✓ {name}  ({W}×{hh})")
+    print(f"  ✓ {name}  ({W}×{hh}; ev dizini kısaltılan metin: {n_home})")
 
 
 async def tab(pg, name, exact=True):

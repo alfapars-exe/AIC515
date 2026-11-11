@@ -2,8 +2,8 @@
  "form": "verification_human.xlsx",
  "n_rows": 100,
  "n_complete": 100,
- "evaluator": "doğrulanmadı",
- "evaluator_note": "Değerlendiricinin türü (insan / model destekli) doğrulanmadı; bu özet doğrulanmış insan etiketlemesi sayılmaz. Dosya ve anahtar adlarındaki 'human' sözcüğü tarihsel addır.",
+ "evaluator": "insan — yazar (Harun Benli), tek değerlendirici; 10 Kasım 2026",
+ "evaluator_note": "Değerlendirici: insan — yazar (Harun Benli), tek değerlendirici; 10 Kasım 2026.",
  "distribution": {
   "bbox_verdict": {
    "OK": {

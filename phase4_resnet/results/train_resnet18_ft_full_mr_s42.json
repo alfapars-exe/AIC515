@@ -20,7 +20,7 @@
  "torch": "2.11.0+cu128",
  "script_sha": "e03c946a4f135fa9",
  "common_sha": "625506e0a808a052",
- "ckpt": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\models\\phase4\\resnet18_ft_full_mr_s42.pt",
+ "ckpt": "models\\phase4\\resnet18_ft_full_mr_s42.pt",
  "ckpt_sha": "ce44d461421fc817",
  "val_mr": {
   "n": 1431,

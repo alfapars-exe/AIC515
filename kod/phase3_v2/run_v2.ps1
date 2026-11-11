@@ -1,6 +1,6 @@
 ﻿# AIForge-Doc v2 harici test kuyruğu (TR). Her adım tamamlanınca logs\<ad>.done yazılır; yeniden çalıştırmada atlanır.
 $ErrorActionPreference = "Continue"
-$py = if ($env:P3_PYTHON) { $env:P3_PYTHON } else { "C:\Users\PARS\.claude-science\conda\envs\docforensics\python.exe" }   # diğer kuyruklarla aynı: P3_PYTHON ile değiştirilebilir
+$py = if ($env:P3_PYTHON) { $env:P3_PYTHON } else { "python" }   # diğer kuyruklarla aynı: P3_PYTHON ile değiştirilebilir
 Set-Location $PSScriptRoot
 $KOD = $PSScriptRoot; while ($KOD -and -not (Test-Path (Join-Path $KOD "_paths.py"))) { $KOD = Split-Path $KOD -Parent }   # kod çatısı
 $ROOT = if ((Split-Path $KOD -Leaf) -eq "kod") { Split-Path $KOD -Parent } else { $KOD }                                       # proje kökü (veri + çıktılar)

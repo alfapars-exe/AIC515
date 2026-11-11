@@ -12,7 +12,7 @@ save_period: -1
 cache: false
 device: ""
 workers: 6
-project: C:\Users\PARS\Desktop\PROJELER\AI 515\Vize Proje\phase3_yolo\runs
+project: phase3_yolo\runs
 name: aiforge-tiles-yolo11s-img1024-default-s42
 exist_ok: true
 pretrained: true
@@ -112,4 +112,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: tracktrack.yaml
-save_dir: C:\Users\PARS\Desktop\PROJELER\AI 515\Vize Proje\phase3_yolo\runs\aiforge-tiles-yolo11s-img1024-default-s42
+save_dir: phase3_yolo\runs\aiforge-tiles-yolo11s-img1024-default-s42

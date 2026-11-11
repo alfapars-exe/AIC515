@@ -6,7 +6,7 @@ cosine, bf16, val-crop AUPRC ile seçim, patience 4); yalnız tek bir faktör de
   --aux-bbox W                  (PHASE3-a: birleşik kayıp; kanal 1 = bbox GT, kayıp = L(primary) + W·L(bbox); model adı unetjoint_*)
   --marker-repair               (W4: eğitim/val görüntülerinde işaretçi onarılmış; GT olarak *_nm varyantı önerilir)
 
-Run adı: <arch>_<gt>[_mr]_s<seed>  (unetjoint_<gt>_s<seed> birleşik kayıpta). Çıktılar Faz 2 klasörlerine (models/phase2, logs, results).
+Run adı: <arch>_<gt>[_geminionly][_mr]_s<seed>  (unetjoint_<gt>_s<seed> birleşik kayıpta). Çıktılar Faz 2 klasörlerine (models/phase2, logs, results).
 Örnek:
   set P3_MARKER_REPAIR=1 & python train_unet_p3.py --gt pixel_eps8_morph_nm --marker-repair --seed 42
   python train_unet_p3.py --arch dlv3p --gt bbox --seed 42
@@ -60,6 +60,7 @@ def main():
     ap.add_argument("--arch", default="unet", choices=["unet", "dlv3p"])
     ap.add_argument("--aux-bbox", type=float, default=0.0)
     ap.add_argument("--marker-repair", action="store_true")
+    ap.add_argument("--train-filter", default=None, choices=[None, "gemini_only"])  # train_unet_p2.py ile aynı süzgeç
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--epochs", type=int, default=10)
     ap.add_argument("--batch", type=int, default=16)
@@ -76,15 +77,19 @@ def main():
     D.ensure_dirs(); D.set_seed(args.seed)
     device = torch.device("cuda"); torch.backends.cudnn.benchmark = True
     arch = "unetjoint" if args.aux_bbox > 0 else args.arch
-    run = f"{arch}_{args.gt}" + ("_mr" if args.marker_repair else "") + f"_s{args.seed}" + (f"_{args.tag}" if args.tag else "")
-    tr_ids = D.train_ids(None)
+    run = (f"{arch}_{args.gt}" + ("_geminionly" if args.train_filter == "gemini_only" else "") + ("_mr" if args.marker_repair else "")
+           + f"_s{args.seed}" + (f"_{args.tag}" if args.tag else ""))
+    tr_ids = D.train_ids(args.train_filter)
     val_tab = D.split_table("val"); val_ids = list(val_tab.index)
+    if args.train_filter == "gemini_only":
+        val_ids = list(val_tab[val_tab["tool"] == "gemini"].index)  # Ideogram tamamen held-out kalsın (train_unet_p2.py ile aynı)
     print(f"[{run}] train {len(tr_ids)} | val {len(val_ids)} | gt {args.gt} | arch {arch} | repair {args.marker_repair}", flush=True)
     idx_path = D.RESULTS_DIR / f"val_crop_index_{args.gt}.csv"
     if idx_path.exists():
         val_idx = pd.read_csv(idx_path, dtype={"new_id": str})
     else:
-        val_idx = D.build_val_crop_index(val_ids, args.gt, args.crop, seed=1000 + 7); val_idx.to_csv(idx_path, index=False)
+        val_idx = D.build_val_crop_index(list(val_tab.index), args.gt, args.crop, seed=1000 + 7); val_idx.to_csv(idx_path, index=False)
+    val_idx = val_idx[val_idx.new_id.isin(set(val_ids))].reset_index(drop=True)  # train_unet_p2.py ile aynı: seçim kırpıntıları da süzülür
     ipb = max(1, args.batch // args.crops_per_image)
     S = JointSampler if args.aux_bbox > 0 else D.SegTrainSampler
     sampler = S(tr_ids, args.gt, args.crop, args.crops_per_image, 0.7, ipb, args.seed, args.threads)
@@ -131,8 +136,8 @@ def main():
             bad += 1
             if bad >= args.patience:
                 print("early stop", flush=True); break
-    res = dict(run=run, arch=arch, gt=args.gt, seed=args.seed, marker_repair=args.marker_repair, aux_bbox=args.aux_bbox,
-               n_train=len(tr_ids), best_epoch=best_ep, best_val_auprc=best, epochs_run=len(log_rows), epochs_planned=args.epochs,
+    res = dict(run=run, arch=arch, gt=args.gt, seed=args.seed, marker_repair=args.marker_repair, aux_bbox=args.aux_bbox, train_filter=args.train_filter,
+               n_train=len(tr_ids), n_val=len(val_ids), n_val_crops=len(val_idx), best_epoch=best_ep, best_val_auprc=best, epochs_run=len(log_rows), epochs_planned=args.epochs,
                train_time_s=time.time() - t0, peak_gpu_mem_gib=torch.cuda.max_memory_allocated() / 2 ** 30,
                n_params=sum(p.numel() for p in model.parameters()), ckpt=str(ckpt),
                ckpt_mb=os.path.getsize(ckpt) / 2 ** 20 if ckpt.exists() else None, torch=torch.__version__,

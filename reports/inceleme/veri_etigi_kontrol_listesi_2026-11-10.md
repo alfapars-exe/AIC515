@@ -44,7 +44,7 @@ Ayrıca `phase2/gt/verification_human.xlsx`, `verification_sheet*.csv` ve `vlm_v
 | 1 | Depoya gönderim | **Yapıldı (10 Kasım 2026, commit `4668b08`):** üç dosya HEAD'den kalktı; ayrıca veri tabanı metni taşıyan `original_value` ve `forged_value` sütunları yayımlanan iki tablodan (`dataset_audit/samples_forged.csv`, `phase3_v2/v2_table.csv`) çıkarıldı. Git geçmişinde kalırlar; geçmişin yeniden yazılması ayrı bir karardır (lisans paylaşıma izin verdiğinden zorunlu görünmüyor). |
 | 2 | `LICENSE` ve şekil notu | **Yapıldı (10 Kasım 2026):** kod MIT lisanslı (`LICENSE`), README'de lisans bölümü ve şekil notu var. İlk öneri: kod için bir lisans (ör. MIT ya da Apache-2.0) ve "örnek görüntü içeren şekiller AIForge-Doc'tan türetilmiştir, CC BY-NC-SA 4.0" notu. Lisans dosyası yokken kod yasal olarak yeniden kullanılamaz; bildirideki "we release the code" cümlesi bir lisans gerektirir. |
 | 3 | Veri tabanı yayıncısına bilgi | İşaretçi kalıntısı v1 makalesinde anlatılan yeşil dikdörtgenin artığıdır ve v2'de yoktur. Yayından önce Scam.AI'ye kısa bir not göndermek iyi uygulamadır; zorunlu değildir. |
-| 4 | Denetim formu | `verification_human.xlsx` depoda kalsın mı? Kalacaksa dosya adındaki "human" sözcüğü yanıltıcıdır; özet dosyası artık değerlendiricinin doğrulanmadığını belirtiyor. |
+| 4 | Denetim formu | **Kapandı (11 Kasım 2026):** yazar formu kendisinin doldurduğunu bildirdi; özet artık "İnsan GT doğrulaması" başlığını taşıyor ve değerlendiriciyi kaydediyor (`score_human_verification.py --evaluator`). Önceki not: `verification_human.xlsx` depoda kalsın mı? Kalacaksa dosya adındaki "human" sözcüğü yanıltıcıdır; özet dosyası artık değerlendiricinin doğrulanmadığını belirtiyor. |
 
 ## 5. Diğer `dataset-curation` adımlarının kanıtı
 
@@ -53,5 +53,5 @@ Ayrıca `phase2/gt/verification_human.xlsx`, `verification_sheet*.csv` ve `vlm_v
 | Dağılım | `dataset_audit/audit_report.md` §4–10 (kaynak, üretici, belge tipi, dil, alan, çözünürlük, alan oranı) |
 | Yanlılık ve sahte bağıntı | Yeşil işaretçi kalıntısı (`phase2/gt/green_residue_pairs.csv`, çiftlerin %75.4'ü; Gemini %83.6, Ideogram %1.5); üretici ile işaretçinin karışması raporda sınırlama olarak yazılı |
 | Bölme | Kaynak belge gruplarıyla bölme, grup çakışması yok (`dataset_audit/splits.json`); araç, kaynak, alan ve işaretçi dağılımları üç bölmede benzer (χ² p ≥ 0.30); test sahtelerinin %8.9'u eğitimle kaynak paylaşır, 740 sızıntısız görüntü ayrıca raporlanır |
-| Etiket kalitesi | İki denetim (dil modeli destekli: 69/96 uygun; ikinci denetim: 36 uygun, 64 kısmi), uyum zayıf (κ = 0.07); doğrulanmış insan etiketlemesi yok |
+| Etiket kalitesi | İki denetim (dil modeli destekli: 69/96 uygun; insan denetimi, yazar: 36 uygun, 64 kısmi), uyum zayıf (κ = 0.07); insan denetimi tek değerlendiricili |
 | Genişletme | v2 birincil kümesi (567 çift) yalnız harici test olarak kullanıldı; v2 üzerinde eğitim yapılmadı |

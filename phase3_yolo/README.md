@@ -85,7 +85,7 @@ Temizlik: yeniden başlatmada `runs/<run>/` silinmez (`exist_ok=True` üzerine y
 Temiz lansman komutu (A geçtikten sonra):
 ```powershell
 conda activate docforensics
-cd "C:\Users\PARS\Desktop\PROJELER\AI 515\Vize Proje\phase3_yolo"
+cd "<proje kökü>\phase3_yolo"
 .\run_phase3.ps1 -Stage B
 ```
 

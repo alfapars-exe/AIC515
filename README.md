@@ -153,7 +153,7 @@ Ağırlıklar ve tahmin haritaları repoda yoktur (boyut/lisans); yukarıdaki ko
 | W6 Faz 1 AUPRC şişkin | Kesin AUPRC: 0.947 → **0.805** (rgb), 0.939 → **0.792** (rgbfreq) | `kod/phase3/phase1_exact_auprc.py` |
 | Veri bias analizi | işaretçi × üretici Cramér's V 0.61; split χ² p ≥ 0.30 | `kod/phase3/dataset_curation.py` |
 | Literatür | 77 doğrulanmış kaynak (38 yeni); bildiride ek 2 yöntem kaynağı (Holm 1979, AdamW) ile 79 kayıt | `literature/references_v3.bib`, `lit_update_phase3.md` |
-| W1 100 çift GT doğrulaması | **Kısmen** — ikinci bağımsız denetim yapıldı ama değerlendirici türü doğrulanmadığı için insan etiketlemesi sayılmıyor: kutu 99/100 uygun; piksel GT 36 uygun / 64 kısmi (hepsi fazla kapsama) / 0 hatalı. Doğrulanmış insan denetimi açık iş; form hazır (`phase2/gt/verification_sheet.csv`) | `phase2/gt/human_verification_summary.md` |
+| W1 100 çift GT doğrulaması | **Kapandı (tek değerlendirici)** — insan denetimi yazar tarafından yapıldı: kutu 99/100 uygun; piksel GT 36 uygun / 64 kısmi (hepsi fazla kapsama) / 0 hatalı; VLM denetimiyle uyum zayıf (κ = 0.07). Açık kalan güçlendirme: ikinci bağımsız değerlendirici (form ve yönerge: `phase2/gt/verification_human.xlsx`) | `phase2/gt/human_verification_summary.md` |
 | W7 TruFor ince ayar | **Yapılamadı** — yayımlanan kodda eğitim betiği yok; mimari bağımsızlık DeepLabV3+/YOLO ile | — |
 
 Ortam: torch 2.11.0+cu128, smp 0.6.0, ultralytics 8.4.208; Faz 2 checkpoint'leri yeni ortamda birebir aynı çıktıyı verir (`phase3/results/repro_check_env.json`).

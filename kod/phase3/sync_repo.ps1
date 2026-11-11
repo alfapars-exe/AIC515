@@ -33,6 +33,56 @@ foreach ($rel in "dataset_audit\samples_forged.csv", "phase3_v2\v2_table.csv") {
     }
   }
 }
+# çalışma ağacında artık bulunmayan, depoda kalmış eski dosyaları kaldır (robocopy /PURGE kullanılmıyor; silme git add -A ile kayda girer).
+# Güvenlik: yalnız ASCII adlı ve izlenen dosyalar; .gitignore ve .gitattributes korunur.
+Push-Location $DST
+$keepOnlyInRepo = @(".gitignore", ".gitattributes")
+git ls-files | ForEach-Object {
+  if (($keepOnlyInRepo -notcontains $_) -and ($_ -cmatch '^[\x20-\x7E]+$') -and ($_ -notmatch '"')) {   # -cmatch: tr-TR kültüründe büyük I harfi büyük-küçük duyarsız eşleşmede ASCII dışına düşer
+    $rel = $_ -replace '/', '\'
+    if (-not (Test-Path -LiteralPath (Join-Path $SRC $rel))) {
+      Remove-Item -LiteralPath (Join-Path $DST $rel) -Force -ErrorAction SilentlyContinue; "eski dosya kaldırıldı: $_"
+    }
+  }
+}
+Pop-Location
+# kişisel mutlak yollar: yayımlanan kopyalarda proje kökü göreli yola, kullanıcı klasörü "~" işaretine çevrilir.
+# Çalışma ağacındaki dosyalar değişmez. Üç yazım da ele alınır: tek ters eğik çizgi, JSON kaçışlı çift ters eğik çizgi, düz eğik çizgi.
+$pats = New-Object System.Collections.ArrayList
+foreach ($pair in @(@($SRC, ""), @($env:USERPROFILE, "~"))) {
+  $p = $pair[0]; $to = $pair[1]
+  if ($to -eq "") {   # proje kökü: ayırıcıyla birlikte silinir (göreli yol kalır)
+    [void]$pats.Add(@([regex]::Escape($p.Replace('\', '\\') + '\\'), ""))
+    [void]$pats.Add(@([regex]::Escape($p + '\'), ""))
+    [void]$pats.Add(@([regex]::Escape($p.Replace('\', '/') + '/'), ""))
+  }
+  [void]$pats.Add(@([regex]::Escape($p.Replace('\', '\\')), $(if ($to -eq "") { "." } else { $to })))
+  [void]$pats.Add(@([regex]::Escape($p), $(if ($to -eq "") { "." } else { $to })))
+  [void]$pats.Add(@([regex]::Escape($p.Replace('\', '/')), $(if ($to -eq "") { "." } else { $to })))
+}
+$userLeaf = Split-Path $env:USERPROFILE -Leaf
+$textExt = @(".csv", ".json", ".yaml", ".yml", ".txt", ".err", ".md", ".ps1", ".py", ".tex", ".cfg", ".ini", ".toml")
+$nSan = 0; $sanList = New-Object System.Collections.ArrayList
+$ro = [System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::CultureInvariant   # tr-TR: I/i eşleşmesi kültürden bağımsız olsun
+Get-ChildItem $DST -Recurse -File | Where-Object { $_.FullName -notmatch '\\.git\\' -and $textExt -contains $_.Extension.ToLower() } | ForEach-Object {
+  $path = $_.FullName
+  if (Select-String -LiteralPath $path -Pattern "Users[\\/]{1,2}$userLeaf" -Quiet) {
+    $b = [System.IO.File]::ReadAllBytes($path)
+    if ($b.Length -ge 2 -and $b[0] -eq 0xFF -and $b[1] -eq 0xFE) { $enc = New-Object System.Text.UnicodeEncoding($false, $true); $skip = 2 }
+    elseif ($b.Length -ge 3 -and $b[0] -eq 0xEF -and $b[1] -eq 0xBB -and $b[2] -eq 0xBF) { $enc = New-Object System.Text.UTF8Encoding($true); $skip = 3 }
+    else { $enc = New-Object System.Text.UTF8Encoding($false, $true); $skip = 0 }
+    try { $t = $enc.GetString($b, $skip, $b.Length - $skip) }
+    catch { $enc = [System.Text.Encoding]::GetEncoding(28591); $skip = 0; $t = $enc.GetString($b) }   # UTF-8 değilse baytları koruyan Latin-1
+    $n = $t
+    foreach ($pt in $pats) { $n = [regex]::Replace($n, $pt[0], $pt[1], $ro) }
+    if ($n -ne $t) { [System.IO.File]::WriteAllBytes($path, [byte[]]($enc.GetPreamble() + $enc.GetBytes($n))); $nSan++; [void]$sanList.Add($path.Substring($DST.Length + 1)) }
+  }
+}
+"kişisel yol temizlenen dosya: $nSan"
+$sanLog = Join-Path $SRC "_arsiv\_commit\sync_last_sanitised.txt"   # depoya gitmez (_arsiv hariç tutulur)
+if (Test-Path (Split-Path $sanLog -Parent)) { $sanList | Sort-Object | Set-Content -LiteralPath $sanLog -Encoding UTF8 }
+$sanCode = @($sanList | Where-Object { $_ -match '\.(py|ps1)$' })
+if ($sanCode.Count) { "UYARI: kişisel yol içeren kod dosyası (çalışma ağacında düzeltin): $($sanCode -join ', ')" }
 # literatür PDF'leri (telif) ve büyük dosya kontrolü
 Get-ChildItem "$DST\literature" -Recurse -Filter *.pdf -ErrorAction SilentlyContinue | Remove-Item -Force
 $big = Get-ChildItem $DST -Recurse -File | Where-Object { $_.FullName -notmatch '\\.git\\' -and $_.Length -gt 50MB }

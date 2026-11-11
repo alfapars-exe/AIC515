@@ -98,7 +98,11 @@ def rectfit_models(models, gts=("bbox", "pixel_eps8_morph", "glyph_v2"), threads
                 rows.extend(o)
         print(f"[rectfit] {model} done", flush=True)
     df = pd.DataFrame(rows)
-    df.to_csv(D.RESULTS_DIR / "per_image_rectfit.csv", index=False)
+    _p = D.RESULTS_DIR / "per_image_rectfit.csv"
+    if _p.exists():  # önceki modellerin satırlarını koru (11.11.2026: aşama eskiden dosyayı yalnız verilen modellerle baştan yazıyordu)
+        _old = pd.read_csv(_p, dtype={"new_id": str}, low_memory=False)
+        df = pd.concat([_old[~_old.model.isin(df.model.unique())], df], ignore_index=True)
+    df.to_csv(_p, index=False)
     summ = df.groupby(["model", "gt"]).agg(n=("new_id", "count"), tau=("tau", "first"), f1_raw=("f1_raw", "mean"), f1_rectfit=("f1_rectfit", "mean"),
                                             iou_raw=("iou_raw", "mean"), iou_rectfit=("iou_rectfit", "mean"),
                                             f1_rectfit_taubbox=("f1_rectfit_taubbox", "mean")).reset_index()

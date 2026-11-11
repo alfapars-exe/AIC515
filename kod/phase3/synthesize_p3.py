@@ -145,8 +145,8 @@ if st is not None:
     MD.append("\n## T2. Resmî test (box GT; piksel GT 89 çift) + tespit AP\n\n" + md_table(T2))
 
 # ============================================================ 3. işaretçi sondası + işaretçisiz yeniden eğitim
-pr = pd.concat([x for x in [rd(R3 / f"per_image_probes_p3_{t}.csv") for t in ("unet", "unet_s4344", "unet_mrj_s4344", "yolo")] if x is not None], ignore_index=True) \
-    if any((R3 / f"per_image_probes_p3_{t}.csv").exists() for t in ("unet", "unet_s4344", "unet_mrj_s4344", "yolo")) else None
+pr = pd.concat([x for x in [rd(R3 / f"per_image_probes_p3_{t}.csv") for t in ("unet", "unet_s4344", "unet_mrj_s4344", "unet_q5a", "unet_q5b", "unet_q5c", "unet_q5d", "yolo", "yolo_s4344")] if x is not None], ignore_index=True) \
+    if any((R3 / f"per_image_probes_p3_{t}.csv").exists() for t in ("unet", "unet_s4344", "unet_mrj_s4344", "unet_q5a", "unet_q5b", "unet_q5c", "unet_q5d", "yolo", "yolo_s4344")) else None
 if pr is not None:
     pr = addcols(pr.drop(columns=[c for c in ("family",) if c in pr]))
     pr["fam_key"] = pr.family + "|" + pr.variant + "|" + pr.train_gt
@@ -210,7 +210,8 @@ if pv_ is not None and pt_ is not None:
     pi["uid"] = pi.split + ":" + pi.new_id
     rows = []
     for (fam, var, tg, go), d in pi.groupby(["family", "variant", "train_gt", "gemini_only"]):
-        if not go and not (var == "main" and fam in ("U-Net", "YOLO11s")): continue
+        # tüm üreticilerle eğitilen karşılaştırma satırları: ana modeller ve (11.11.2026) işaretçisiz eğitilen U-Net'ler
+        if not go and not ((var == "main" and fam in ("U-Net", "YOLO11s")) or (fam == "U-Net" and var in ("marker-repaired", "marker-repaired+nm-GT"))): continue
         for gt_ in (["bbox", "pixel_eps8_morph"] if not d.is_yolo.iloc[0] else ["bbox", "pixel_eps8_morph"]):
             e = d[d['gt'] == gt_]
             if not len(e): continue

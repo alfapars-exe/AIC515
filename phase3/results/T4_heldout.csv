@@ -11,6 +11,12 @@ U-Net,main,glyph,False,3,box,126,"0.312 [0.269, 0.357]","0.369 [0.356, 0.382]",0
 U-Net,main,glyph,False,3,pix,41,"0.365 [0.276, 0.440]","0.389 [0.364, 0.414]",0.024
 U-Net,main,pix,False,3,box,126,"0.423 [0.367, 0.481]","0.574 [0.557, 0.590]",0.151
 U-Net,main,pix,False,3,pix,41,"0.454 [0.350, 0.550]","0.571 [0.540, 0.603]",0.117
+U-Net,marker-repaired,box,False,3,box,126,"0.633 [0.573, 0.695]","0.898 [0.881, 0.915]",0.265
+U-Net,marker-repaired,box,False,3,pix,41,"0.385 [0.300, 0.470]","0.377 [0.350, 0.405]",-0.008
+U-Net,marker-repaired+nm-GT,glyph,False,1,box,126,"0.338 [0.293, 0.383]","0.361 [0.348, 0.376]",0.023
+U-Net,marker-repaired+nm-GT,glyph,False,1,pix,41,"0.392 [0.301, 0.479]","0.389 [0.363, 0.417]",-0.003
+U-Net,marker-repaired+nm-GT,pix,False,1,box,126,"0.430 [0.377, 0.484]","0.492 [0.473, 0.510]",0.062
+U-Net,marker-repaired+nm-GT,pix,False,1,pix,41,"0.457 [0.360, 0.552]","0.505 [0.474, 0.539]",0.048
 YOLO11s,geminionly,box,True,1,box,126,"0.752 [0.703, 0.806]","0.938 [0.929, 0.946]",0.186
 YOLO11s,geminionly,box,True,1,pix,41,"0.422 [0.357, 0.494]","0.330 [0.308, 0.355]",-0.092
 YOLO11s,main,box,False,3,box,126,"0.872 [0.846, 0.895]","0.945 [0.938, 0.951]",0.073

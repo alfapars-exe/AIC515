@@ -1,9 +1,9 @@
 {
- "data_path": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\data\\AIForge-Doc-v1",
+ "data_path": "data\\AIForge-Doc-v1",
  "run_started": "2026-10-20 03:09:15",
  "params": {
-  "data": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\data\\AIForge-Doc-v1",
-  "out": "C:\\Users\\PARS\\.claude-science\\orgs\\a66d459d-ea41-4e22-b919-aa640b4f343a\\workspaces\\c970c5bc-8056-4268-b624-cb9b703f3ccc\\dataset_audit",
+  "data": "data\\AIForge-Doc-v1",
+  "out": "~\\.claude-science\\orgs\\a66d459d-ea41-4e22-b919-aa640b4f343a\\workspaces\\c970c5bc-8056-4268-b624-cb9b703f3ccc\\dataset_audit",
   "workers": 24,
   "dup_threshold": 20,
   "val_frac": 0.15,

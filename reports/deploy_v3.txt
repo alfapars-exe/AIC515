@@ -1,6 +1,6 @@
-﻿[deploy] [space] 46 dosya · 0 güncellendi · 0 kaldırıldı → C:\Users\PARS\Desktop\PROJELER\AI 515\Vize Proje\hf_space
+﻿[deploy] [space] 46 dosya · 0 güncellendi · 0 kaldırıldı → hf_space
 [deploy] oturum: argeinfina (orgs: ['infinayazilim'])
-[deploy] Space: infinayazilim/ai515 ← C:\Users\PARS\Desktop\PROJELER\AI 515\Vize Proje\hf_space
+[deploy] Space: infinayazilim/ai515 ← hf_space
 [deploy] donanım isteği: zero-a10g
 [deploy] runtime: RUNNING_BUILDING (zero-a10g)
 [deploy] runtime: RUNNING_APP_STARTING (zero-a10g)

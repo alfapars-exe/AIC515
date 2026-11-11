@@ -13,7 +13,7 @@
  "train_time_s": 557.5963506698608,
  "peak_gpu_mem_gib": 3.4433512687683105,
  "n_params": 12329297,
- "ckpt": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\models\\phase2\\dlv3p_glyph_v2_s42.pt",
+ "ckpt": "models\\phase2\\dlv3p_glyph_v2_s42.pt",
  "ckpt_mb": 47.14797782897949,
  "torch": "2.11.0+cu128",
  "gpu": "NVIDIA GeForce RTX 5080"

@@ -13,7 +13,7 @@
  "train_time_s": 564.1239235401154,
  "peak_gpu_mem_gib": 3.4433512687683105,
  "n_params": 12329297,
- "ckpt": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\models\\phase2\\dlv3p_pixel_eps8_morph_s42.pt",
+ "ckpt": "models\\phase2\\dlv3p_pixel_eps8_morph_s42.pt",
  "ckpt_mb": 47.149465560913086,
  "torch": "2.11.0+cu128",
  "gpu": "NVIDIA GeForce RTX 5080"

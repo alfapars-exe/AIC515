@@ -17,7 +17,7 @@
  "lr": 0.0001,
  "crops_per_image": 2,
  "n_train_crops_per_epoch": 5488,
- "ckpt": "C:\\Users\\PARS\\Desktop\\PROJELER\\AI 515\\Vize Proje\\models\\phase2\\unet_glyph_v2_s43.pt",
+ "ckpt": "models\\phase2\\unet_glyph_v2_s43.pt",
  "ckpt_mb": 54.765910148620605,
  "torch": "2.11.0+cu128",
  "gpu": "NVIDIA GeForce RTX 5080"
