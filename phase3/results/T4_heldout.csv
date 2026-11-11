@@ -23,7 +23,7 @@ U-Net,marker-repaired+nm-GT+geminionly,glyph,True,3,box,126,"0.203 [0.168, 0.240
 U-Net,marker-repaired+nm-GT+geminionly,glyph,True,3,pix,41,"0.239 [0.168, 0.314]","0.352 [0.328, 0.377]",0.113
 U-Net,marker-repaired+nm-GT+geminionly,pix,True,3,box,126,"0.317 [0.267, 0.366]","0.472 [0.453, 0.491]",0.155
 U-Net,marker-repaired+nm-GT+geminionly,pix,True,3,pix,41,"0.350 [0.260, 0.449]","0.480 [0.448, 0.514]",0.130
-YOLO11s,geminionly,box,True,1,box,126,"0.752 [0.703, 0.806]","0.938 [0.929, 0.946]",0.186
-YOLO11s,geminionly,box,True,1,pix,41,"0.422 [0.357, 0.494]","0.330 [0.308, 0.355]",-0.092
+YOLO11s,geminionly,box,True,3,box,126,"0.725 [0.675, 0.778]","0.938 [0.930, 0.946]",0.214
+YOLO11s,geminionly,box,True,3,pix,41,"0.402 [0.330, 0.475]","0.334 [0.311, 0.358]",-0.068
 YOLO11s,main,box,False,3,box,126,"0.872 [0.846, 0.895]","0.945 [0.938, 0.951]",0.073
 YOLO11s,main,box,False,3,pix,41,"0.443 [0.382, 0.507]","0.336 [0.313, 0.361]",-0.107

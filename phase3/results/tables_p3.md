@@ -18,11 +18,11 @@
 | U-Net | marker-repaired+nm-GT | pix | 3 | 0.480 ± 0.053 | 0.498 ± 0.027 | 0.415 ± 0.044 | 0.458 ± 0.021 | 0.507 ± 0.045 | 0.485 ± 0.017 |
 | U-Net+box-aux | main | glyph | 3 | 0.395 ± 0.073 | 0.429 ± 0.011 | 0.641 ± 0.063 | 0.639 ± 0.035 | 0.386 ± 0.051 | 0.458 ± 0.021 |
 | U-Net+box-aux | main | pix | 3 | 0.668 ± 0.019 | 0.629 ± 0.013 | 0.523 ± 0.009 | 0.551 ± 0.006 | 0.633 ± 0.013 | 0.588 ± 0.007 |
-| YOLO11m | main | box | 1 | 0.960 | 0.942 | 0.224 | 0.418 | 0.356 | 0.493 |
-| YOLO11n | main | box | 1 | 0.944 | 0.907 | 0.219 | 0.404 | 0.366 | 0.468 |
-| YOLO11s | authneg | box | 1 | 0.967 | 0.948 | 0.223 | 0.421 | 0.361 | 0.495 |
-| YOLO11s | defaug | box | 1 | 0.967 | 0.945 | 0.221 | 0.421 | 0.373 | 0.495 |
-| YOLO11s | full1280 | box | 1 | 0.922 | 0.902 | 0.203 | 0.395 | 0.334 | 0.463 |
+| YOLO11m | main | box | 3 | 0.952 ± 0.008 | 0.941 ± 0.002 | 0.222 ± 0.002 | 0.418 ± 0.001 | 0.373 ± 0.014 | 0.492 ± 0.001 |
+| YOLO11n | main | box | 3 | 0.955 ± 0.010 | 0.917 ± 0.009 | 0.223 ± 0.003 | 0.408 ± 0.004 | 0.370 ± 0.005 | 0.474 ± 0.005 |
+| YOLO11s | authneg | box | 3 | 0.964 ± 0.004 | 0.944 ± 0.005 | 0.223 ± 0.000 | 0.421 ± 0.002 | 0.382 ± 0.019 | 0.495 ± 0.003 |
+| YOLO11s | defaug | box | 3 | 0.968 ± 0.001 | 0.950 ± 0.005 | 0.218 ± 0.003 | 0.422 ± 0.002 | 0.366 ± 0.006 | 0.496 ± 0.002 |
+| YOLO11s | full1280 | box | 3 | 0.923 ± 0.004 | 0.899 ± 0.003 | 0.207 ± 0.004 | 0.395 ± 0.001 | 0.341 ± 0.007 | 0.464 ± 0.002 |
 | YOLO11s | main | box | 3 | 0.965 ± 0.003 | 0.947 ± 0.005 | 0.221 ± 0.003 | 0.420 ± 0.002 | 0.368 ± 0.015 | 0.494 ± 0.003 |
 
 ## T2. Resmî test (box GT; piksel GT 89 çift) + tespit AP
@@ -43,11 +43,11 @@
 | U-Net | marker-repaired+nm-GT | pix | 3 | 0.536 ± 0.060 | 0.538 ± 0.057 | 0.512 ± 0.030 | 0.384 ± 0.026 | 0.569 ± 0.024 | — | — |
 | U-Net+box-aux | main | glyph | 3 | 0.438 ± 0.069 | 0.438 ± 0.072 | 0.435 ± 0.013 | 0.294 ± 0.012 | 0.440 ± 0.043 | — | — |
 | U-Net+box-aux | main | pix | 3 | 0.702 ± 0.020 | 0.702 ± 0.021 | 0.641 ± 0.012 | 0.506 ± 0.015 | 0.652 ± 0.003 | 0.125 ± 0.020 | 0.064 ± 0.010 |
-| YOLO11m | main | box | 1 | 0.969 | 0.969 | 0.947 | 0.920 | 0.418 | 0.897 | 0.800 |
-| YOLO11n | main | box | 1 | 0.963 | 0.964 | 0.926 | 0.891 | 0.413 | 0.871 | 0.738 |
-| YOLO11s | authneg | box | 1 | 0.971 | 0.971 | 0.943 | 0.913 | 0.425 | 0.874 | 0.774 |
-| YOLO11s | defaug | box | 1 | 0.971 | 0.972 | 0.951 | 0.922 | 0.397 | 0.864 | 0.765 |
-| YOLO11s | full1280 | box | 1 | 0.932 | 0.932 | 0.909 | 0.872 | 0.430 | 0.960 | 0.881 |
+| YOLO11m | main | box | 3 | 0.966 ± 0.008 | 0.966 ± 0.009 | 0.948 ± 0.002 | 0.920 ± 0.001 | 0.437 ± 0.024 | 0.882 ± 0.015 | 0.785 ± 0.014 |
+| YOLO11n | main | box | 3 | 0.966 ± 0.003 | 0.967 ± 0.003 | 0.928 ± 0.003 | 0.894 ± 0.005 | 0.401 ± 0.012 | 0.871 ± 0.002 | 0.733 ± 0.004 |
+| YOLO11s | authneg | box | 3 | 0.969 ± 0.002 | 0.970 ± 0.002 | 0.938 ± 0.006 | 0.907 ± 0.008 | 0.446 ± 0.036 | 0.874 ± 0.003 | 0.770 ± 0.005 |
+| YOLO11s | defaug | box | 3 | 0.973 ± 0.002 | 0.973 ± 0.002 | 0.954 ± 0.003 | 0.926 ± 0.003 | 0.402 ± 0.013 | 0.867 ± 0.004 | 0.769 ± 0.005 |
+| YOLO11s | full1280 | box | 3 | 0.936 ± 0.005 | 0.937 ± 0.005 | 0.906 ± 0.004 | 0.872 ± 0.005 | 0.441 ± 0.016 | 0.961 ± 0.003 | 0.879 ± 0.004 |
 | YOLO11s | main | box | 3 | 0.969 ± 0.006 | 0.969 ± 0.007 | 0.946 ± 0.007 | 0.918 ± 0.006 | 0.404 ± 0.042 | 0.880 ± 0.002 | 0.780 ± 0.003 |
 
 ## T3. Sondalar (val çiftleri; işaretçili alt küme için AP; seed-ortalaması + grup bootstrap CI)
@@ -87,11 +87,11 @@
 | U-Net | marker-repaired+nm-GT | pix | 3 | 0.505 [0.488, 0.523] | 627 | 0.507 [0.463, 0.550] | 185 | 0.576 [0.520, 0.631] | 102 |
 | U-Net+box-aux | main | glyph | 3 | 0.474 [0.461, 0.486] | 627 | 0.376 [0.340, 0.414] | 185 | 0.412 [0.362, 0.461] | 102 |
 | U-Net+box-aux | main | pix | 3 | 0.687 [0.674, 0.699] | 627 | 0.544 [0.496, 0.593] | 185 | 0.600 [0.541, 0.662] | 102 |
-| YOLO11m | main | box | 1 | 0.954 [0.951, 0.957] | 627 | 0.882 [0.860, 0.899] | 185 | 0.894 [0.869, 0.914] | 102 |
-| YOLO11n | main | box | 1 | 0.946 [0.940, 0.950] | 627 | 0.812 [0.780, 0.841] | 185 | 0.794 [0.749, 0.839] | 102 |
-| YOLO11s | authneg | box | 1 | 0.951 [0.948, 0.954] | 627 | 0.877 [0.851, 0.899] | 185 | 0.889 [0.863, 0.911] | 102 |
-| YOLO11s | defaug | box | 1 | 0.953 [0.950, 0.957] | 627 | 0.873 [0.846, 0.893] | 185 | 0.863 [0.830, 0.894] | 102 |
-| YOLO11s | full1280 | box | 1 | 0.930 [0.923, 0.937] | 627 | 0.756 [0.712, 0.795] | 185 | 0.850 [0.814, 0.883] | 102 |
+| YOLO11m | main | box | 3 | 0.956 [0.953, 0.958] | 627 | 0.879 [0.857, 0.896] | 185 | 0.893 [0.866, 0.913] | 102 |
+| YOLO11n | main | box | 3 | 0.946 [0.940, 0.950] | 627 | 0.825 [0.799, 0.848] | 185 | 0.813 [0.777, 0.845] | 102 |
+| YOLO11s | authneg | box | 3 | 0.952 [0.949, 0.954] | 627 | 0.863 [0.838, 0.885] | 185 | 0.869 [0.842, 0.895] | 102 |
+| YOLO11s | defaug | box | 3 | 0.956 [0.953, 0.958] | 627 | 0.878 [0.856, 0.895] | 185 | 0.869 [0.842, 0.894] | 102 |
+| YOLO11s | full1280 | box | 3 | 0.933 [0.926, 0.938] | 627 | 0.750 [0.709, 0.786] | 185 | 0.847 [0.815, 0.877] | 102 |
 | YOLO11s | main | box | 3 | 0.954 [0.951, 0.957] | 627 | 0.878 [0.857, 0.895] | 185 | 0.886 [0.861, 0.907] | 102 |
 
 ## T4. Held-out üretici (val+test; Ideogram vs kaynak-eşlenmiş Gemini; görüntü-AP)
@@ -122,8 +122,8 @@
 | U-Net | marker-repaired+nm-GT+geminionly | glyph | True | 3 | pix | 41 | 0.239 [0.168, 0.314] | 0.352 [0.328, 0.377] | 0.113 |
 | U-Net | marker-repaired+nm-GT+geminionly | pix | True | 3 | box | 126 | 0.317 [0.267, 0.366] | 0.472 [0.453, 0.491] | 0.155 |
 | U-Net | marker-repaired+nm-GT+geminionly | pix | True | 3 | pix | 41 | 0.350 [0.260, 0.449] | 0.480 [0.448, 0.514] | 0.130 |
-| YOLO11s | geminionly | box | True | 1 | box | 126 | 0.752 [0.703, 0.806] | 0.938 [0.929, 0.946] | 0.186 |
-| YOLO11s | geminionly | box | True | 1 | pix | 41 | 0.422 [0.357, 0.494] | 0.330 [0.308, 0.355] | -0.092 |
+| YOLO11s | geminionly | box | True | 3 | box | 126 | 0.725 [0.675, 0.778] | 0.938 [0.930, 0.946] | 0.214 |
+| YOLO11s | geminionly | box | True | 3 | pix | 41 | 0.402 [0.330, 0.475] | 0.334 [0.311, 0.358] | -0.068 |
 | YOLO11s | main | box | False | 3 | box | 126 | 0.872 [0.846, 0.895] | 0.945 [0.938, 0.951] | 0.073 |
 | YOLO11s | main | box | False | 3 | pix | 41 | 0.443 [0.382, 0.507] | 0.336 [0.313, 0.361] | -0.107 |
 
@@ -140,7 +140,18 @@
 | aiforge-tiles-yolo11n-img1024-conserv-s42 | 30 | 28 | 31.6 | 2.6 | 0.9599 | 0.849 | 0.723 | 0.776 | 0.871 | 0.738 | 0.846 | 0.944 | 0.366 | 81 |
 | aiforge-tiles-yolo11m-img1024-conserv-s42 | 30 | 23 | 87.1 | 20.05 | 0.982 | 0.897 | 0.800 | 0.868 | 0.897 | 0.800 | 0.882 | 0.960 | 0.356 | 76 |
 | aiforge-tiles_geminionly-yolo11s-img1024-conserv-s42 | 30 | 30 | 58.9 | 9.43 | 0.9909 | 0.865 | 0.765 | 0.807 | 0.855 | 0.760 | 0.813 | 0.957 | 0.344 | — |
-| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s43 | 30 | 30 | 31.2 | 9.43 | 0.9882 | — | — | — | — | — | — | — | — | — |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s43 | 30 | 30 | 31.2 | 9.43 | 0.9882 | 0.865 | 0.760 | 0.803 | 0.858 | 0.755 | 0.821 | 0.959 | 0.388 | — |
+| aiforge-full-yolo11s-img1280-conserv-s43 | 30 | 30 | 27.0 | 9.43 | 0.9629 | 0.956 | 0.879 | 0.908 | 0.959 | 0.875 | 0.928 | 0.920 | 0.340 | — |
+| aiforge-tiles-yolo11s-img1024-default-s43 | 30 | 27 | 34.0 | 9.43 | 0.9876 | 0.878 | 0.773 | 0.835 | 0.871 | 0.774 | 0.852 | 0.968 | 0.363 | — |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s43 | 30 | 28 | 48.8 | 9.43 | 0.9869 | 0.876 | 0.769 | 0.842 | 0.876 | 0.770 | 0.858 | 0.966 | 0.394 | — |
+| aiforge-tiles-yolo11n-img1024-conserv-s43 | 30 | 30 | 29.2 | 2.6 | 0.9735 | 0.857 | 0.721 | 0.803 | 0.873 | 0.730 | 0.850 | 0.961 | 0.369 | — |
+| aiforge-tiles-yolo11m-img1024-conserv-s43 | 30 | 21 | 66.7 | 20.05 | 0.9716 | 0.887 | 0.781 | 0.876 | 0.879 | 0.780 | 0.880 | 0.945 | 0.378 | — |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s44 | 30 | 26 | 27.6 | 9.43 | 0.9909 | 0.870 | 0.767 | 0.803 | 0.857 | 0.761 | 0.808 | 0.959 | 0.344 | — |
+| aiforge-full-yolo11s-img1280-conserv-s44 | 30 | 30 | 25.3 | 9.43 | 0.9648 | 0.961 | 0.885 | 0.924 | 0.965 | 0.880 | 0.939 | 0.927 | 0.349 | — |
+| aiforge-tiles-yolo11s-img1024-default-s44 | 30 | 25 | 32.4 | 9.43 | 0.9862 | 0.861 | 0.761 | 0.818 | 0.866 | 0.769 | 0.838 | 0.968 | 0.364 | — |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s44 | 30 | 24 | 46.6 | 9.43 | 0.9799 | 0.873 | 0.767 | 0.829 | 0.871 | 0.764 | 0.855 | 0.960 | 0.392 | — |
+| aiforge-tiles-yolo11n-img1024-conserv-s44 | 30 | 30 | 29.7 | 2.6 | 0.9651 | 0.847 | 0.712 | 0.796 | 0.869 | 0.732 | 0.837 | 0.960 | 0.377 | — |
+| aiforge-tiles-yolo11m-img1024-conserv-s44 | 30 | 22 | 72.1 | 20.05 | 0.967 | 0.868 | 0.769 | 0.861 | 0.868 | 0.773 | 0.870 | 0.950 | 0.384 | — |
 
 ## T5b. Hız (GPU boş, 100 test görüntüsü, ms/görüntü)
 
@@ -212,6 +223,78 @@
 | aiforge-full-yolo11s-img1280-conserv-s42 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.5 |
 | aiforge-full-yolo11s-img1280-conserv-s42 | yolo | tool_gemini | 446 | 0.974 | 0.9107 | 0.9574 | 3.01 |
 | aiforge-full-yolo11s-img1280-conserv-s42 | yolo | tool_ideogram | 41 | 0.6975 | 0.4775 | 0.5854 | 36.76 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s43 | yolo | all | 487 | 0.8647 | 0.7602 | 0.9384 | 3.03 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s43 | yolo | area_<1% | 231 | 0.8035 | 0.6682 | 0.9091 | 4.12 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s43 | yolo | area_1-5% | 254 | 0.9395 | 0.8533 | 0.9843 | 2.05 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s43 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.5 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s43 | yolo | tool_gemini | 446 | 0.8838 | 0.789 | 0.9686 | 2.73 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s43 | yolo | tool_ideogram | 41 | 0.6777 | 0.4441 | 0.6098 | 6.27 |
+| aiforge-full-yolo11s-img1280-conserv-s43 | yolo | all | 487 | 0.9559 | 0.8792 | 0.9261 | 4.01 |
+| aiforge-full-yolo11s-img1280-conserv-s43 | yolo | area_<1% | 231 | 0.9084 | 0.7851 | 0.8528 | 6.77 |
+| aiforge-full-yolo11s-img1280-conserv-s43 | yolo | area_1-5% | 254 | 0.9901 | 0.9581 | 0.9921 | 1.5 |
+| aiforge-full-yolo11s-img1280-conserv-s43 | yolo | area_5-20% | 2 | 1.0 | 0.7772 | 1.0 | 3.0 |
+| aiforge-full-yolo11s-img1280-conserv-s43 | yolo | tool_gemini | 446 | 0.9823 | 0.9163 | 0.9641 | 2.62 |
+| aiforge-full-yolo11s-img1280-conserv-s43 | yolo | tool_ideogram | 41 | 0.6242 | 0.4305 | 0.5366 | 19.1 |
+| aiforge-tiles-yolo11s-img1024-default-s43 | yolo | all | 487 | 0.8778 | 0.7726 | 0.9713 | 8.3 |
+| aiforge-tiles-yolo11s-img1024-default-s43 | yolo | area_<1% | 231 | 0.8352 | 0.7064 | 0.9567 | 14.77 |
+| aiforge-tiles-yolo11s-img1024-default-s43 | yolo | area_1-5% | 254 | 0.9201 | 0.8387 | 0.9961 | 2.48 |
+| aiforge-tiles-yolo11s-img1024-default-s43 | yolo | area_5-20% | 2 | 1.0 | 0.9505 | 1.0 | 1.0 |
+| aiforge-tiles-yolo11s-img1024-default-s43 | yolo | tool_gemini | 446 | 0.8823 | 0.7906 | 0.9843 | 6.43 |
+| aiforge-tiles-yolo11s-img1024-default-s43 | yolo | tool_ideogram | 41 | 0.8287 | 0.579 | 0.9268 | 28.66 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s43 | yolo | all | 487 | 0.8765 | 0.7693 | 0.9651 | 3.02 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s43 | yolo | area_<1% | 231 | 0.8421 | 0.7003 | 0.9264 | 4.31 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s43 | yolo | area_1-5% | 254 | 0.9136 | 0.8347 | 0.9764 | 1.86 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s43 | yolo | area_5-20% | 2 | 1.0 | 0.9252 | 1.0 | 1.0 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s43 | yolo | tool_gemini | 446 | 0.8877 | 0.7883 | 0.9641 | 2.56 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s43 | yolo | tool_ideogram | 41 | 0.8212 | 0.5681 | 0.9268 | 8.0 |
+| aiforge-tiles-yolo11n-img1024-conserv-s43 | yolo | all | 487 | 0.8572 | 0.7205 | 0.9528 | 8.16 |
+| aiforge-tiles-yolo11n-img1024-conserv-s43 | yolo | area_<1% | 231 | 0.803 | 0.6377 | 0.9221 | 13.72 |
+| aiforge-tiles-yolo11n-img1024-conserv-s43 | yolo | area_1-5% | 254 | 0.9173 | 0.8076 | 0.9803 | 3.15 |
+| aiforge-tiles-yolo11n-img1024-conserv-s43 | yolo | area_5-20% | 2 | 1.0 | 0.9505 | 1.0 | 3.0 |
+| aiforge-tiles-yolo11n-img1024-conserv-s43 | yolo | tool_gemini | 446 | 0.8632 | 0.7401 | 0.935 | 6.2 |
+| aiforge-tiles-yolo11n-img1024-conserv-s43 | yolo | tool_ideogram | 41 | 0.7665 | 0.4986 | 0.9024 | 29.51 |
+| aiforge-tiles-yolo11m-img1024-conserv-s43 | yolo | all | 487 | 0.8875 | 0.7807 | 0.9446 | 5.28 |
+| aiforge-tiles-yolo11m-img1024-conserv-s43 | yolo | area_<1% | 231 | 0.8762 | 0.7451 | 0.9048 | 7.66 |
+| aiforge-tiles-yolo11m-img1024-conserv-s43 | yolo | area_1-5% | 254 | 0.8992 | 0.8211 | 0.9764 | 3.15 |
+| aiforge-tiles-yolo11m-img1024-conserv-s43 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.5 |
+| aiforge-tiles-yolo11m-img1024-conserv-s43 | yolo | tool_gemini | 446 | 0.8936 | 0.803 | 0.9529 | 4.3 |
+| aiforge-tiles-yolo11m-img1024-conserv-s43 | yolo | tool_ideogram | 41 | 0.8333 | 0.5663 | 0.9268 | 16.0 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s44 | yolo | all | 487 | 0.8697 | 0.7671 | 0.9487 | 3.55 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s44 | yolo | area_<1% | 231 | 0.8026 | 0.6753 | 0.9177 | 4.89 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s44 | yolo | area_1-5% | 254 | 0.9446 | 0.8612 | 0.9764 | 2.36 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s44 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.0 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s44 | yolo | tool_gemini | 446 | 0.8862 | 0.7962 | 0.9709 | 3.22 |
+| aiforge-tiles_geminionly-yolo11s-img1024-conserv-s44 | yolo | tool_ideogram | 41 | 0.7345 | 0.4598 | 0.7073 | 7.24 |
+| aiforge-full-yolo11s-img1280-conserv-s44 | yolo | all | 487 | 0.9611 | 0.8849 | 0.9281 | 3.92 |
+| aiforge-full-yolo11s-img1280-conserv-s44 | yolo | area_<1% | 231 | 0.9239 | 0.7972 | 0.8874 | 6.49 |
+| aiforge-full-yolo11s-img1280-conserv-s44 | yolo | area_1-5% | 254 | 0.9895 | 0.9592 | 0.9921 | 1.59 |
+| aiforge-full-yolo11s-img1280-conserv-s44 | yolo | area_5-20% | 2 | 1.0 | 0.901 | 1.0 | 2.0 |
+| aiforge-full-yolo11s-img1280-conserv-s44 | yolo | tool_gemini | 446 | 0.9761 | 0.9167 | 0.9619 | 2.54 |
+| aiforge-full-yolo11s-img1280-conserv-s44 | yolo | tool_ideogram | 41 | 0.7159 | 0.469 | 0.6585 | 18.9 |
+| aiforge-tiles-yolo11s-img1024-default-s44 | yolo | all | 487 | 0.861 | 0.7615 | 0.9815 | 7.48 |
+| aiforge-tiles-yolo11s-img1024-default-s44 | yolo | area_<1% | 231 | 0.818 | 0.6901 | 0.974 | 13.01 |
+| aiforge-tiles-yolo11s-img1024-default-s44 | yolo | area_1-5% | 254 | 0.9109 | 0.8367 | 0.9882 | 2.5 |
+| aiforge-tiles-yolo11s-img1024-default-s44 | yolo | area_5-20% | 2 | 1.0 | 0.9505 | 1.0 | 1.0 |
+| aiforge-tiles-yolo11s-img1024-default-s44 | yolo | tool_gemini | 446 | 0.87 | 0.7799 | 0.9821 | 6.16 |
+| aiforge-tiles-yolo11s-img1024-default-s44 | yolo | tool_ideogram | 41 | 0.8157 | 0.5799 | 0.9756 | 21.8 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s44 | yolo | all | 487 | 0.8726 | 0.7671 | 0.9651 | 3.09 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s44 | yolo | area_<1% | 231 | 0.8292 | 0.698 | 0.9481 | 4.6 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s44 | yolo | area_1-5% | 254 | 0.9129 | 0.8353 | 0.9843 | 1.74 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s44 | yolo | area_5-20% | 2 | 1.0 | 0.9505 | 1.0 | 1.0 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s44 | yolo | tool_gemini | 446 | 0.8783 | 0.785 | 0.9686 | 2.55 |
+| aiforge-tiles_authneg-yolo11s-img1024-conserv-s44 | yolo | tool_ideogram | 41 | 0.7924 | 0.5696 | 0.9756 | 9.05 |
+| aiforge-tiles-yolo11n-img1024-conserv-s44 | yolo | all | 487 | 0.8474 | 0.7124 | 0.9363 | 6.85 |
+| aiforge-tiles-yolo11n-img1024-conserv-s44 | yolo | area_<1% | 231 | 0.7963 | 0.6277 | 0.8788 | 11.59 |
+| aiforge-tiles-yolo11n-img1024-conserv-s44 | yolo | area_1-5% | 254 | 0.9011 | 0.8012 | 0.9843 | 2.56 |
+| aiforge-tiles-yolo11n-img1024-conserv-s44 | yolo | area_5-20% | 2 | 1.0 | 0.9505 | 1.0 | 3.5 |
+| aiforge-tiles-yolo11n-img1024-conserv-s44 | yolo | tool_gemini | 446 | 0.8533 | 0.7371 | 0.935 | 5.28 |
+| aiforge-tiles-yolo11n-img1024-conserv-s44 | yolo | tool_ideogram | 41 | 0.7603 | 0.4516 | 0.8537 | 23.98 |
+| aiforge-tiles-yolo11m-img1024-conserv-s44 | yolo | all | 487 | 0.8681 | 0.7687 | 0.9548 | 5.61 |
+| aiforge-tiles-yolo11m-img1024-conserv-s44 | yolo | area_<1% | 231 | 0.8609 | 0.7301 | 0.9351 | 8.6 |
+| aiforge-tiles-yolo11m-img1024-conserv-s44 | yolo | area_1-5% | 254 | 0.9061 | 0.8298 | 0.9724 | 2.93 |
+| aiforge-tiles-yolo11m-img1024-conserv-s44 | yolo | area_5-20% | 2 | 1.0 | 1.0 | 1.0 | 1.0 |
+| aiforge-tiles-yolo11m-img1024-conserv-s44 | yolo | tool_gemini | 446 | 0.8704 | 0.7837 | 0.9664 | 4.66 |
+| aiforge-tiles-yolo11m-img1024-conserv-s44 | yolo | tool_ideogram | 41 | 0.8347 | 0.5809 | 0.8537 | 15.93 |
 | unet_bbox_s42 | unet | all | 487 | 0.8853 | 0.606 | 0.8912 | 2.15 |
 | unet_bbox_s42 | unet | area_<1% | 231 | 0.8194 | 0.5538 | 0.8009 | 2.43 |
 | unet_bbox_s42 | unet | area_1-5% | 254 | 0.9516 | 0.6627 | 0.9724 | 1.9 |

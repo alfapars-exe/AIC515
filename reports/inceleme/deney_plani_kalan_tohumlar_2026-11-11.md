@@ -154,3 +154,28 @@ Kaynaklar: `phase3/results/T1_dual_gt_val.csv`, `T2_test.csv`, `T3_probes.csv`, 
 **Yeni deneyin yorumu.** İşaretçi kalıntısını eğitimden kaldırmak yalnız-Gemini modellerinin Ideogram'daki çöküşünü yalnızca biraz azaltıyor: kutu modelinde Ideogram AP 0.412'den 0.463'e çıkıyor, Gemini ile fark 0.497'den 0.412'ye iniyor. Farkın yaklaşık altıda biri işaretçiye, kalanı üreticiye özgü izlere bağlanabilir. Tüm üreticilerle eğitilen modelde de onarım Ideogram puanını değiştirmiyordu (0.629 ve 0.633). Bildirideki "ayrı tutulan üreticide çöküş" bulgusu güçleniyor: çöküş işaretçi kısayolundan bağımsız.
 
 **Not (öngörülerin kapsamadığı).** İşaretçisiz piksel U-Net'in tohum 43'ü belirgin biçimde zayıf (doğrulama piksel AUPRC 0.458); 20 epoklu glif ve birleşik glif modelleri de tohuma duyarlı. Bildiride bu satırlar ortalama ± standart sapma ile verilecek.
+
+## 9. Sonuç (kuyruk sonu; 12 Kasım 2026, 01:30'da yazıldı; yukarıdaki bölümlere dokunulmadı)
+
+**Koşu.** Kuyruk 11 Kasım 03:37:33'te başladı ve 23:30:32'de bitti (yaklaşık 19 saat 53 dakika; tahmin 24 saat). 99 adımın tamamı `DONE`, `FAIL` yok. YOLO eğitimleri tahminden kısa sürdü (s43 ve s44 için 25–72 dk; s42'de 32–87 dk).
+
+**Ek hesap (K6'nın eşli ölçütü).** Yalnız-Gemini kutu U-Net, işaretçisiz − standart, aynı görüntülerde görüntü başı AP (üç tohum ortalaması, grup bootstrap, B = 1000): Ideogram +0.051 [+0.004, +0.096], kaynak-eşlenmiş Gemini −0.035 [−0.047, −0.023]. Piksel modeli (kutu ölçütü): +0.053 [+0.029, +0.079] ve −0.095 [−0.110, −0.081]. Glif modeli: +0.037 [+0.017, +0.057] ve −0.055 [−0.063, −0.047]. K6'nın eşli fark aralığı (−0.05 ile +0.09) tuttu.
+
+**YOLO öngörüleri** (kaynak: `phase3/results/T1_dual_gt_val.csv`, `T2_test.csv`, `T4_heldout.csv`; üç tohum):
+
+| # | Sonuç | Karar |
+|---|---|---|
+| K17 | Test kutu AUPRC: 11n 0.966 ± 0.003, 11m 0.966 ± 0.008, 11s 0.969 ± 0.006; 11m − 11s = −0.003 | Tuttu; model boyutunun etkisi yok |
+| K18 | Tam görüntü 1280: test AUPRC 0.936 ± 0.005 (karolu 0.969; fark −0.033), AP@0.5 0.961 ± 0.003 (karolu 0.880; fark +0.081) | Tuttu |
+| K19 | Varsayılan çoğaltma: 0.973 ± 0.002 (fark +0.004) | Tuttu |
+| K20 | Özgün negatif karolar: 0.969 ± 0.002 (fark 0.000) | Tuttu |
+| K21 | Yalnız-Gemini YOLO11s: Ideogram AP 0.725 [0.675, 0.778], eşlenmiş Gemini 0.938, fark 0.214 | Tuttu |
+
+**Toplam.** 21 öngörünün 21'i yanlışlama ölçütünü geçti. Biri (K2) öngörülen aralığın biraz altında kaldı: işaretçisiz piksel U-Net doğrulama piksel AUPRC 0.507 ± 0.045 (aralık 0.51–0.58, yanlışlama < 0.49).
+
+**İddialara etkisi.**
+1. Ayrı tutulan üretici: işaretçi kalıntısı eğitimden kaldırıldığında yalnız-Gemini modellerinin Ideogram'daki çöküşü yalnızca biraz azalıyor (kutu U-Net 0.412 → 0.463, eşli +0.051); Gemini puanı düşüyor (0.909 → 0.874). Çöküşün küçük bir kısmı işaretçiye, büyük kısmı üreticiye özgü izlere bağlı. YOLO11s'de de üç tohumda çöküş sürüyor (0.725; fark 0.214).
+2. Önceki tek tohumlu bulguların hepsi üç tohumda tekrarlandı; sayılar ortalama ± standart sapma ile verilecek. 20 epoklu eğitim hiçbir referansta yararlı değil, glifte belirgin biçimde kötü ve kararsız (0.598 ± 0.082).
+3. YOLO ablasyonları üç tohumda değişmedi: model boyutu, çoğaltma ve özgün negatif karolar test AUPRC'sini ±0.004 içinde bırakıyor; tam görüntü girdisi AUPRC'yi düşürüp AP@0.5'i yükseltiyor.
+
+**Tohum etiketi.** Faz 3'te tek tohumlu satır kalmadı. Tek tohumlu kalanlar: YOLO kontrol kaynakları (özgün, yapıştır-geri, yeniden örnekleme) ve hız ölçümü.

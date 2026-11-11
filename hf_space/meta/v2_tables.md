@@ -7,15 +7,15 @@
 | U-Net box (3 tohum)              |       0.52  |          0.272 |        0.209 |           0.717 |             -0.49  |              -0.169 |
 | U-Net piksel (3)                 |       0.227 |          0.246 |        0.252 |           0.693 |             -0.398 |              -0.172 |
 | U-Net glif (3)                   |       0.147 |          0.192 |        0.304 |           0.688 |             -0.171 |              -0.112 |
-| DeepLabV3+ box                   |       0.539 |          0.28  |        0.218 |           0.724 |             -0.375 |              -0.141 |
+| DeepLabV3+ box                   |       0.532 |          0.282 |        0.22  |           0.725 |             -0.372 |              -0.137 |
 | U-Net box, işaretçisiz (3 tohum) |       0.711 |          0.391 |        0.297 |           0.84  |             -0.188 |              -0.008 |
-| U-Net piksel, işaretçisiz        |       0.353 |          0.43  |        0.416 |           0.826 |             -0.106 |              -0.078 |
-| U-Net glif, işaretçisiz          |       0.214 |          0.287 |        0.446 |           0.764 |             -0.076 |              -0.065 |
+| U-Net piksel, işaretçisiz        |       0.346 |          0.422 |        0.397 |           0.816 |             -0.103 |              -0.077 |
+| U-Net glif, işaretçisiz          |       0.205 |          0.274 |        0.432 |           0.754 |             -0.058 |              -0.061 |
 | U-Net box, yalnız Gemini         |       0.449 |          0.248 |        0.175 |           0.742 |             -0.54  |              -0.189 |
 | YOLO11s kare (3)                 |       0.887 |          0.354 |        0.244 |           0.919 |             -0.149 |              -0.033 |
-| YOLO11s tam 1280                 |       0.697 |          0.328 |        0.215 |           0.8   |             -0.202 |              -0.083 |
-| YOLO11s yalnız Gemini            |       0.843 |          0.338 |        0.229 |           0.865 |             -0.212 |              -0.055 |
-| YOLO11s +authentic kare          |       0.863 |          0.345 |        0.241 |           0.937 |             -0.191 |              -0.055 |
+| YOLO11s tam 1280                 |       0.7   |          0.331 |        0.215 |           0.781 |             -0.209 |              -0.07  |
+| YOLO11s yalnız Gemini            |       0.819 |          0.334 |        0.227 |           0.864 |             -0.225 |              -0.046 |
+| YOLO11s +authentic kare          |       0.857 |          0.338 |        0.237 |           0.932 |             -0.196 |              -0.056 |
 
 **Okuma:** box U-Net v1'de 0.95 iken v2'de 0.52'ye düşüyor; kaybın çoğu v1'de işaretçi taşıyan spesifikasyonlarda. İşaretçisiz eğitilen box U-Net kalıntısız spesifikasyonlarda ölçülebilir kayıp göstermiyor (3 tohum: −0.008 [−0.069, +0.053]); kareli YOLO11s 0.89'da kalıyor.
 

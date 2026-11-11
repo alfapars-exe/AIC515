@@ -14,3 +14,11 @@ aiforge-tiles_geminionly-yolo11s-img1024-conserv-s43,tiles_geminionly,yolo11s,10
 aiforge-full-yolo11s-img1280-conserv-s43,full,yolo11s,1280,conserv,43,30,30,0.9629,0.9629,0.8791,27.0,7.54,18.3,9.43,False
 aiforge-tiles-yolo11s-img1024-default-s43,tiles,yolo11s,1024,default,43,30,27,0.9876,0.9865,0.9293,34.0,4.8,18.4,9.43,False
 aiforge-tiles_authneg-yolo11s-img1024-conserv-s43,tiles_authneg,yolo11s,1024,conserv,43,30,28,0.9869,0.986,0.918,48.8,4.8,18.4,9.43,False
+aiforge-tiles-yolo11n-img1024-conserv-s43,tiles,yolo11n,1024,conserv,43,30,30,0.9735,0.9735,0.8851,29.2,2.7,5.3,2.6,False
+aiforge-tiles-yolo11m-img1024-conserv-s43,tiles,yolo11m,1024,conserv,43,30,21,0.9716,0.9542,0.9143,66.7,5.0,38.7,20.05,False
+aiforge-tiles_geminionly-yolo11s-img1024-conserv-s44,tiles_geminionly,yolo11s,1024,conserv,44,30,26,0.9909,0.9902,0.9456,27.6,4.8,18.4,9.43,False
+aiforge-full-yolo11s-img1280-conserv-s44,full,yolo11s,1280,conserv,44,30,30,0.9648,0.9648,0.8869,25.3,7.54,18.3,9.43,False
+aiforge-tiles-yolo11s-img1024-default-s44,tiles,yolo11s,1024,default,44,30,25,0.9862,0.9848,0.93,32.4,4.8,18.4,9.43,False
+aiforge-tiles_authneg-yolo11s-img1024-conserv-s44,tiles_authneg,yolo11s,1024,conserv,44,30,24,0.9799,0.9789,0.9196,46.6,4.8,18.4,9.43,False
+aiforge-tiles-yolo11n-img1024-conserv-s44,tiles,yolo11n,1024,conserv,44,30,30,0.9651,0.9651,0.8749,29.7,2.7,5.3,2.6,False
+aiforge-tiles-yolo11m-img1024-conserv-s44,tiles,yolo11m,1024,conserv,44,30,22,0.967,0.9549,0.9076,72.1,5.0,38.7,20.05,False

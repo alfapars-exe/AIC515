@@ -3,13 +3,13 @@
 **Tarih:** 10 Kasım 2026 · **Yazar:** Harun Benli · **Donanım:** RTX 5080 16 GB · torch 2.11.0+cu128, smp 0.6.0, ultralytics 8.4.208
 **Bağlayıcı metin:** `paper/main.pdf` (IEEE bildirisi). Tüm sayılar `phase3/results/tables_p3.md` ve `phase3_yolo/results/*.csv`'den otomatik üretildi (`kod/phase3/synthesize_p3.py`).
 **Sonradan eklenen not (10 Kasım 2026, akşam):** Bu belge Faz 3'ün kapanış kaydıdır. Yazıldıktan sonra kaynak kod `kod/` çatısı altına taşındı (aşağıdaki betik yolları buna göre düzeltildi), Faz 4 tamamlandı (`reports/PHASE4_ResNet_Sonuclar.md`) ve bir tutarlılık denetimi yapıldı (`reports/inceleme/paper_check_2026-11-10_v2.md`). §5'teki test sayıları o günkü dağıtıma aittir; güncel değerler dönem içi raporunun §4.7'sindedir.
-**Tohum etiketi:** Aksi belirtilmedikçe Faz 3'teki tek-faktör deneyleri **tek tohumdur (42)** ve öncül kanıt sayılmalıdır. Üç tohumlu olanlar: Faz 2 U-Net ana ızgarası (3 GT × s42–44), Gemini-only held-out U-Net'ler (3 GT × s42–44), YOLO11s ana model (s42–44) ve 11 Kasım 2026 ekiyle işaretçisiz box U-Net ile birleşik kayıplı piksel U-Net (s42–44; bkz. §7).
+**Tohum etiketi:** Aksi belirtilmedikçe Faz 3'teki tek-faktör deneyleri **tek tohumdur (42)** ve öncül kanıt sayılmalıdır. *(12 Kasım 2026 notu: bütün tek-faktör deneyleri artık üç tohumludur; güncel değerler §8'de ve `phase3/results/tables_p3.md` içindedir.)* Üç tohumlu olanlar: Faz 2 U-Net ana ızgarası (3 GT × s42–44), Gemini-only held-out U-Net'ler (3 GT × s42–44), YOLO11s ana model (s42–44) ve 11 Kasım 2026 ekiyle işaretçisiz box U-Net ile birleşik kayıplı piksel U-Net (s42–44; bkz. §7).
 
 ## 1. Faz 2'den devralınan açık işler — kapanış tablosu
 
 | Açık iş | Durum | Sonuç (kısa) | Kanıt |
 |---|---|---|---|
-| W2 tek mimari | ✅ Kapandı | DeepLabV3+ H1'i tekrarlıyor: box modeli box-GT 0.939 → piksel-GT 0.382; her GT kendi modelini birinci sıralıyor (tek tohum) | T1 |
+| W2 tek mimari | ✅ Kapandı | DeepLabV3+ H1'i tekrarlıyor: box modeli box-GT 0.929 ± 0.009 → piksel-GT 0.382; her GT kendi modelini birinci sıralıyor (üç tohumun her birinde) | T1 |
 | W4 işaretçisiz yeniden eğitim | ✅ Kapandı | İşaretçi bağımlılığı kalkıyor (onarım Δ −0.222 [3 tohum] → +0.017 [3 tohum]); box skoru büyük ölçüde korunuyor (val 0.912 ± 0.006 vs 0.923, test 0.940 ± 0.003 vs 0.950). 11 Kasım ekiyle üç tohum; ilk sonuç (s42): +0.019, 0.916, 0.939 | T1–T3, §7 |
 | W5 piksel GT işaretçiyi içeriyor | ✅ Kapandı | `*_nm` GT varyantları üretildi ve eğitimde kullanıldı | `make_marker_repaired.py` |
 | W3 held-out tek tohum | ✅ Kapandı | 3 tohum: Gemini-only box U-Net Ideogram 0.412 vs Gemini 0.909; piksel denetimi açığı kapatmıyor (H3 reddi teyit) | T4 |
@@ -32,10 +32,10 @@
 | H5a kutu dedektörü box-GT'de U-Net'e eşit/üstün, ≥3× hızlı | AP50 ≥ 0.90; ±0.03 | Test box AUPRC 0.969±0.006 (U-Net 0.950), F1@τ* 0.946 (0.846), IoU 0.918 (0.789); AP50 0.880 (U-Net 0.873, s42/43). **Hız:** 98 ms vs U-Net 81 ms | **Doğruluk kısmı desteklendi; hız kısmı reddedildi** |
 | H5b piksel-GT'de belirgin düşük | pix AUPRC ≈ 0.35–0.45 | val 0.368±0.015 (U-Net box 0.374; U-Net pix 0.610) | **Desteklendi** (H1'in model-bağımsız teyidi) |
 | H5c küçük hedeflerde kare ≫ tam 1280 | <1 % alanda ΔAP ≥ 0.10 | Kare: AUPRC 0.969 vs 0.932, işaretçisiz AP 0.878 vs 0.756; **ama** kutu AP50 0.880 vs 0.960 (<1 %: 0.872 vs 0.933) — olası neden kare sınırında bölünen kutular (karesiz model de ~5 kutu/görüntü ürettiği için mekanizma kesin değil) | **Karışık** |
-| H5d held-out açığı YOLO'da daha küçük | ≤ 0.51 | Gemini-only YOLO Ideogram 0.752 vs Gemini 0.938 (açık 0.19; U-Net 0.50) — tek tohum | **Desteklendi (öncül)** |
+| H5d held-out açığı YOLO'da daha küçük | ≤ 0.51 | Gemini-only YOLO Ideogram 0.725 vs Gemini 0.938 (açık 0.21; U-Net 0.50) — üç tohum | **Desteklendi** |
 | H5e muhafazakâr aug ≥ varsayılan | conserv ≥ default | 0.969 vs 0.971 test AUPRC; AP50 0.882 vs 0.864 | **Desteklenmedi** (fark yok) |
 
-Ek: YOLO işaretçiye daha az bağımlı (onarım Δ −0.062 vs U-Net −0.222) ama "yalnız yeniden-render" girdisini authentic'ten AUROC 0.865 ile ayırıyor (U-Net 0.637, 3 tohum; YOLO tek tohum) → dedektör üreticinin alanı yeniden çizme dokusunu öğrenmiş; bu, üreticiler arası daha iyi aktarımı da açıklayabilir. JPEG Q75'e kırılgan (−49 %), blur/CLAHE/ölçeğe dayanıklı (≤1.4 %).
+Ek: YOLO işaretçiye daha az bağımlı (onarım Δ −0.058 vs U-Net −0.222) ama "yalnız yeniden-render" girdisini authentic'ten AUROC 0.890 ile ayırıyor (U-Net 0.637; ikisi de 3 tohum) → dedektör üreticinin alanı yeniden çizme dokusunu öğrenmiş; bu, üreticiler arası daha iyi aktarımı da açıklayabilir. JPEG Q75'e kırılgan (−49 %), blur/CLAHE/ölçeğe dayanıklı (≤1.4 %).
 
 ## 3. Ana mesaj (bildiri)
 1. **H1 (3 tohum):** Kutu GT, değişen pikselleri değil "düzenlenen alanı" ödüllendirir; aynı tahminler box-GT 0.923 → piksel-GT 0.374. İkinci mimaride ve kutu dedektöründe tekrarlanır.
@@ -111,3 +111,22 @@ Yöntem: `kod/phase3_v2/v2_eval.py` (prep → infer → eval; sızıntı kuralı
 | P6 birleşik piksel U-Net val pix-GT AUPRC ≥ 0.605; iyileşme iddiası için > 0.622 | 0.633 ± 0.013 (standart 0.610 ± 0.012); eşli AP +0.011 [+0.005, +0.017] | Tuttu |
 
 Daraltılan tek iddia: birleşik kaybın piksel-değişim ölçütündeki kazancı küçüktür ve doğrulamayla sınırlıdır; eşi bulunan 89 test görüntüsünde fark yoktur (0.652 ± 0.003 ve 0.654 ± 0.016; eşli AP +0.004 [−0.008, +0.015]). Yeniden eğitimin bedeli: işaretçisiz box U-Net, standart modele göre görüntü başı AP'de yaklaşık 0.04 kaybeder (val −0.038 [−0.054, −0.021], test −0.040 [−0.052, −0.029]). Bildiri, dönem içi raporu, README, hakem hazırlığı ve sunum üç tohumlu değerlerle güncellendi. İşaretçisiz piksel ve glif modelleri, birleşik kayıplı glif modeli, DeepLabV3+, 20 epok ve YOLO ablasyonları tek tohumlu kalmıştır.
+
+## 8. Ek (12 Kasım 2026): kalan tohumlar ve yalnız Gemini üzerinde işaretçisiz eğitim
+
+Kalan bütün tek etkenli deneyler (DeepLabV3+, işaretçisiz piksel ve glif modelleri, birleşik kayıplı glif modeli, 20 epok, altı YOLO ablasyonu, YOLO11s ana modelinin dayanıklılık ve sonda ölçümleri) 43 ve 44 tohumlarıyla yinelendi; yeni bir deney olarak yalnız Gemini modelleri işaretçisi onarılmış görüntülerle eğitildi (üç referans × 42–44). 21 öngörü ve yanlışlama ölçütü koşudan önce yazılıp gönderildi (commit `fb2c244`); kuyruk `kod/phase3/q5_kalan_tohumlar.ps1`, 11 Kasım 03:37–23:30, 99 adım, hata yok. Değerlendirme: `reports/inceleme/deney_plani_kalan_tohumlar_2026-11-11.md` (§8, §9).
+
+**Sonuç.** 21 öngörünün hiçbiri yanlışlanmadı; biri (işaretçisiz piksel U-Net doğrulama piksel AUPRC 0.507 ± 0.045) öngörülen aralığın (0.51–0.58) az altında kaldı.
+
+| Bulgu | Üç tohum |
+|---|---|
+| DeepLabV3+ kutu modeli: kutu-GT → piksel-GT | 0.929 ± 0.009 → 0.382 ± 0.002; her tohumda her GT kendi modelini birinci sıralıyor |
+| İşaretçisiz piksel / glif modeli: onarım ΔAP | +0.054 [+0.037, +0.072] / +0.009 [+0.002, +0.016] |
+| İşaretçisiz piksel / glif modeli: v2 kendi GT'sinde AUPRC | 0.422 ± 0.015 / 0.432 ± 0.015 (standart 0.246 / 0.304) |
+| 20 epok − 10 epok (kutu / piksel / glif, val) | −0.011 / −0.019 / −0.078 (glif ± 0.082) |
+| Birleşik kayıplı glif modeli, val glif-GT | 0.641 ± 0.063 (standart 0.676 ± 0.019) |
+| YOLO ablasyonları, test box AUPRC (n / s / m / varsayılan artırım / özgün negatif karo / tam 1280) | 0.966 / 0.969 / 0.966 / 0.973 / 0.969 / 0.936; tam 1280'de AP50 0.961 (karolu 0.880) |
+| Yalnız Gemini YOLO11s, Ideogram / eşlenmiş Gemini AP | 0.725 / 0.938 |
+| **Yalnız Gemini, işaretçisiz kutu U-Net**, Ideogram / eşlenmiş Gemini AP | **0.463 / 0.874** (standart yalnız Gemini 0.412 / 0.909); eşli fark Ideogram +0.051 [+0.004, +0.096], Gemini −0.035 [−0.047, −0.023] |
+
+**Yorum.** İşaretçi kalıntısı eğitimden kaldırıldığında yalnız Gemini modellerinin Ideogram'daki çöküşü yalnızca biraz azalıyor: açığın yaklaşık altıda biri işaretçiye, geri kalanı üreticiye özgü izlere bağlanabiliyor. Faz 3'te tek tohumlu satır kalmadı; tek tohumlu kalanlar dedektörün zararsız kontrolleri ve hız ölçümü.

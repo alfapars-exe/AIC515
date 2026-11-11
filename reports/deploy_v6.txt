@@ -1,0 +1,11 @@
+﻿[deploy] [space] kopya: hf_space\meta\image_tau.json  ←  kod\app\meta\image_tau.json
+[deploy] [space] kopya: hf_space\meta\phase3_tables.md  ←  kod\app\meta\phase3_tables.md
+[deploy] [space] kopya: hf_space\meta\tau.json  ←  kod\app\meta\tau.json
+[deploy] [space] kopya: hf_space\meta\v2_tables.md  ←  kod\app\meta\v2_tables.md
+[deploy] [space] 47 dosya · 4 güncellendi · 0 kaldırıldı → hf_space
+[deploy] oturum: argeinfina (orgs: ['infinayazilim'])
+[deploy] Space: infinayazilim/ai515 ← hf_space
+[deploy] donanım isteği: zero-a10g
+[deploy] runtime: RUNNING_BUILDING (zero-a10g)
+[deploy] runtime: RUNNING_APP_STARTING (zero-a10g)
+[deploy] bitti → https://huggingface.co/spaces/infinayazilim/ai515

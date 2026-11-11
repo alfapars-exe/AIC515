@@ -989,7 +989,7 @@ Table: Tablo 17. Kullanılan ve kullanılmayan yöntemler.
 | U-Net (ResNet-18 kodlayıcı) | Kullanıldı (ana model) | Küçük alanlar için atlama bağlantıları; düşük eğitim maliyeti |
 | DeepLabV3+ | Kullanıldı (Faz 3) | Bulguların kod çözücü mimarisinden bağımsızlığını sınamak |
 | YOLO11 kutu dedektörü | Kullanıldı (Faz 3) | Referansın geometrisine birebir uyan formülasyon; kutu ölçütünün ne ölçtüğünü göstermek |
-| Birleşik piksel ve kutu kaybı | Kullanıldı (Faz 3; piksel modeli üç tohum, glif modeli tek tohum) | İki denetim türünü birleştirmenin etkisi |
+| Birleşik piksel ve kutu kaybı | Kullanıldı (Faz 3; piksel ve glif modelleri üç tohum) | İki denetim türünü birleştirmenin etkisi |
 | TruFor, ADCD-Net | Yalnız sıfır-atış başvuru | Eşit koşul değildir; ayrı raporlanmıştır |
 | TruFor ince ayarı | Yapılamadı | Yayımlanan kodda eğitim betiği yok |
 | DTD, CAT-Net, FFDN (RGB ve DCT) | Kullanılmadı | Veri kayıpsız PNG; JPEG ve DCT ipucu bulunmuyor |
@@ -1160,7 +1160,7 @@ Kaynak: `phase2/stats/hypothesis_decisions.md`
 
 ### 4.3 Yeşil işaretçi artefaktı ve işaretçi-onarımlı eğitim
 
-**Kalıntı bir kısayoldur.** Bölüm 3.9'da tanımlanan sondalar, kalıntı taşıyan doğrulama çiftlerinde bütün model ailelerine uygulanmıştır (Tablo 27). Standart kutu modelinde yalnız kalıntı pikselleri özgün görüntüden geri kopyalandığında, yani hiçbir karakter değişmeden, görüntü başı AP 0.988'den 0.766'ya iner (fark −0.222; −0.256 ile −0.190). Tersine, özgün görüntüye yalnız kalıntı pikselleri aktarıldığında model kutunun %80'ini kalibre eşiğin üstünde işaretler (AP 0.905); aynı özgün görüntülerde işaretçi yokken AP 0.176, kapsama 0.04'tür. Piksel ve glif modelleri de ipucunu kullanır, çünkü çizgi piksel-değişim referansının parçasıdır. DeepLabV3+ aynı bağımlılığı gösterir (−0.174).
+**Kalıntı bir kısayoldur.** Bölüm 3.9'da tanımlanan sondalar, kalıntı taşıyan doğrulama çiftlerinde bütün model ailelerine uygulanmıştır (Tablo 27). Standart kutu modelinde yalnız kalıntı pikselleri özgün görüntüden geri kopyalandığında, yani hiçbir karakter değişmeden, görüntü başı AP 0.988'den 0.766'ya iner (fark −0.222; −0.256 ile −0.190). Tersine, özgün görüntüye yalnız kalıntı pikselleri aktarıldığında model kutunun %80'ini kalibre eşiğin üstünde işaretler (AP 0.905); aynı özgün görüntülerde işaretçi yokken AP 0.176, kapsama 0.04'tür. Piksel ve glif modelleri de ipucunu kullanır, çünkü çizgi piksel-değişim referansının parçasıdır. DeepLabV3+ aynı bağımlılığı gösterir (−0.173; üç tohum).
 
 İlk keşifsel sondada (Faz 2; 368 çift, dokuz model; Şekil 26) öğrenme içermeyen bir kural da sınanmıştır: görüntüdeki yeşil çizgi parçalarını bulup sınırlayıcı kutusunu tahmin eden kural yalnız 0.054 F1 verir. Kalıntı çoğunlukla alanın bir ya da iki kenarını işaretler; kutunun tamamı çizgiden okunamaz. Ağlar çizgiyi komşu metin alanının görünümüyle birleştirerek dikdörtgeni tamamlamaktadır; bu sığ bir piksel kuralı değil, öğrenilmiş bir kısayoldur. Önceden yazılan sınır ablasyonunun bu ipucunu kaçırmasının nedeni de bellidir: Gauss bulanıklığı 1–3 piksellik doygun çizgiyi yayar ama rengini silmez.
 
@@ -1171,12 +1171,14 @@ Table: Tablo 27. İşaretçi sondaları: kalıntı taşıyan 380 doğrulama çif
 | U-Net kutu | 3 | 0.988 | 0.939 | 0.766 | −0.222 [−0.256, −0.190] | 0.795 | 0.905 |
 | U-Net piksel-değişim | 3 | 0.747 | 0.538 | 0.500 | −0.247 [−0.279, −0.218] | 0.420 | 0.635 |
 | U-Net glif | 3 | 0.522 | 0.325 | 0.398 | −0.123 [−0.146, −0.103] | 0.283 | 0.461 |
-| DeepLabV3+ kutu | 1 | 0.982 | 0.920 | 0.807 | −0.174 [−0.206, −0.145] | 0.775 | 0.928 |
+| DeepLabV3+ kutu | 3 | 0.982 | 0.921 | 0.810 | −0.173 [−0.203, −0.146] | 0.785 | 0.931 |
 | U-Net birleşik kayıp (piksel) | 3 | 0.795 | 0.558 | 0.600 | −0.194 [−0.226, −0.164] | 0.457 | 0.700 |
-| YOLO11s | 1 | 0.956 | 0.958 | 0.894 | −0.062 [−0.075, −0.051] | 0.607 | 0.815 |
+| YOLO11s | 3 | 0.955 | 0.957 | 0.897 | −0.058 [−0.068, −0.049] | 0.553 | 0.808 |
 | U-Net kutu, işaretçisiz eğitim | 3 | 0.939 | 0.891 | 0.956 | +0.017 [+0.001, +0.033] | 0.442 | 0.617 |
-| U-Net piksel, işaretçisiz eğitim | 1 | 0.648 | 0.444 | 0.686 | +0.038 [+0.021, +0.057] | 0.108 | 0.256 |
-| U-Net glif, işaretçisiz eğitim | 1 | 0.510 | 0.321 | 0.510 | +0.001 [−0.008, +0.009] | 0.186 | 0.345 |
+| U-Net piksel, işaretçisiz eğitim | 3 | 0.647 | 0.419 | 0.700 | +0.054 [+0.037, +0.072] | 0.102 | 0.262 |
+| U-Net glif, işaretçisiz eğitim | 3 | 0.502 | 0.301 | 0.511 | +0.009 [+0.002, +0.016] | 0.167 | 0.338 |
+| U-Net kutu, yalnız Gemini | 3 | 0.990 | 0.961 | 0.715 | −0.275 [−0.313, −0.238] | 0.816 | 0.910 |
+| U-Net kutu, yalnız Gemini, işaretçisiz eğitim | 3 | 0.941 | 0.874 | 0.950 | +0.009 [−0.004, +0.023] | 0.434 | 0.636 |
 
 Kaynak: `phase3/results/tables_p3.md` (T3)
 
@@ -1189,18 +1191,18 @@ Table: Tablo 28. Resmî testte işaretçili ve işaretçisiz görüntülerde gö
 | Model | Tohum | İşaretçili (627 görüntü) | İşaretçisiz (185 görüntü) | İşaretçisiz Gemini (102 görüntü) |
 |---|---|---|---|---|
 | U-Net kutu | 3 | 0.972 [0.966, 0.977] | 0.690 [0.640, 0.739] | 0.722 [0.657, 0.788] |
-| DeepLabV3+ kutu | 1 | 0.962 [0.954, 0.969] | 0.702 [0.650, 0.750] | 0.743 [0.677, 0.806] |
+| DeepLabV3+ kutu | 3 | 0.962 [0.954, 0.968] | 0.702 [0.654, 0.746] | 0.751 [0.692, 0.807] |
 | U-Net piksel-değişim | 3 | 0.639 [0.624, 0.652] | 0.503 [0.455, 0.550] | 0.559 [0.504, 0.622] |
 | U-Net kutu, işaretçisiz eğitim | 3 | 0.914 [0.899, 0.927] | 0.711 [0.663, 0.758] | 0.762 [0.703, 0.821] |
 | YOLO11s | 3 | 0.954 [0.951, 0.957] | 0.878 [0.857, 0.895] | 0.886 [0.861, 0.907] |
 
 Kaynak: `phase3/results/tables_p3.md` (T3b)
 
-**İşaretçisiz yeniden eğitim.** Üç referans türü için U-Net, kalıntısı onarılmış eğitim görüntüleri ve işaretçisiz referanslarla yeniden eğitilmiştir: kutu modeli üç tohumla (42, 43, 44), piksel-değişim ve glif modelleri tek tohumla (42). Sonuç iki yönlüdür. Bağımlılık ortadan kalkar: onarılmış kutu modeli test anında kalıntı silindiğinde hiçbir şey kaybetmez (+0.017 [+0.001, +0.033]) ve yalnız kalıntı eklenmiş özgün görüntüde kutunun %44'ünü işaretler (önce %80; piksel modelinde %42 yerine %11). Kutu ölçütündeki başarı ise büyük ölçüde korunur: doğrulama AUPRC 0.912 ± 0.006 (önce 0.923 ± 0.015), resmî test AUPRC 0.940 ± 0.003 (önce 0.950 ± 0.011), kalibre eşikte F1 0.799 (önce 0.846). Aynı görüntüler eşlenerek bakıldığında yeniden eğitimin bedeli görüntü başı AP'de yaklaşık 0.04'tür (doğrulama −0.038 [−0.054, −0.021], test −0.040 [−0.052, −0.029]). İşaretçili test görüntülerinde AP 0.972'den 0.914'e inerken işaretçisiz Gemini görüntülerinde benzer kalır (0.762 ve 0.722; güven aralıkları örtüşür). Dolayısıyla kalıntı, sunulduğunda kullanılan bir kısayoldur; yüksek kutu puanı için zorunlu değildir.
+**İşaretçisiz yeniden eğitim.** Üç referans türü için U-Net, kalıntısı onarılmış eğitim görüntüleri ve işaretçisiz referanslarla yeniden eğitilmiştir: her biri üç tohumla (42, 43, 44). Sonuç iki yönlüdür. Bağımlılık ortadan kalkar: onarılmış kutu modeli test anında kalıntı silindiğinde hiçbir şey kaybetmez (+0.017 [+0.001, +0.033]) ve yalnız kalıntı eklenmiş özgün görüntüde kutunun %44'ünü işaretler (önce %80; piksel modelinde %42 yerine %10). Kutu ölçütündeki başarı ise büyük ölçüde korunur: doğrulama AUPRC 0.912 ± 0.006 (önce 0.923 ± 0.015), resmî test AUPRC 0.940 ± 0.003 (önce 0.950 ± 0.011), kalibre eşikte F1 0.799 (önce 0.846). Aynı görüntüler eşlenerek bakıldığında yeniden eğitimin bedeli görüntü başı AP'de yaklaşık 0.04'tür (doğrulama −0.038 [−0.054, −0.021], test −0.040 [−0.052, −0.029]). İşaretçili test görüntülerinde AP 0.972'den 0.914'e inerken işaretçisiz Gemini görüntülerinde benzer kalır (0.762 ve 0.722; güven aralıkları örtüşür). Dolayısıyla kalıntı, sunulduğunda kullanılan bir kısayoldur; yüksek kutu puanı için zorunlu değildir.
 
-Kutu modelinin sonucu üç tohumda tutarlıdır (tohum bazında doğrulama AUPRC 0.916, 0.916, 0.905). 43 ve 44 tohumları, öngörüleri ve yanlışlama ölçütleri koşudan önce yazılıp açık depoya gönderilen bir planla eklenmiştir (`reports/inceleme/deney_plani_ek_tohum_2026-11-10.md`); altı öngörünün altısı da tutmuştur (`phase3/results/extra_seed_stats.md`). İşaretçisiz piksel-değişim ve glif modelleri tek tohumludur ve öncül kanıt sayılmalıdır.
+Kutu modelinin sonucu üç tohumda tutarlıdır (tohum bazında doğrulama AUPRC 0.916, 0.916, 0.905). 43 ve 44 tohumları, öngörüleri ve yanlışlama ölçütleri koşudan önce yazılıp açık depoya gönderilen bir planla eklenmiştir (`reports/inceleme/deney_plani_ek_tohum_2026-11-10.md`); altı öngörünün altısı da tutmuştur (`phase3/results/extra_seed_stats.md`). İşaretçisiz piksel-değişim ve glif modellerinin 43 ve 44 tohumları da aynı biçimde, 21 öngörülü ikinci bir planla eklenmiştir (`reports/inceleme/deney_plani_kalan_tohumlar_2026-11-11.md`). Bu modeller de kalıntı silindiğinde AP kaybetmez (+0.054 [+0.037, +0.072] ve +0.009 [+0.002, +0.016]), ama bedelleri daha büyüktür: kendi referanslarındaki doğrulama AUPRC değerleri 0.507 ± 0.045 ve 0.644 ± 0.014'tür (standart modellerde 0.610 ve 0.676). Piksel modelinin 43 tohumu belirgin biçimde zayıftır (0.458); öngörülen aralığın (0.51–0.58) az altında kalan tek sonuç budur, yanlışlama eşiği (0.49) aşılmamıştır.
 
-**Yeniden çizim ve içerik ayrıştırması.** Üreticiler alanın tamamını yeniden çizdiğinden kutu içinde pek çok piksel eşiğin altında kalan küçük farklarla değişir. İki bileşeni ayırmak için yalnız yeniden çizimi ya da yalnız içerik değişimini taşıyan girdiler bütün doğrulama çiftlerinde sınanmıştır (Tablo 29, Şekil 27). Standart kutu modelinde kutu içi ortalama olasılık sahte girdide 0.86 iken yalnız yeniden çizimde 0.24'e, yalnız içerikte 0.35'e düşer; hiçbir bileşen tek başına gerçek sahteye verilen tepkiyi üretmez. Standart modeller yeniden çizim, değişen karakterler ve işaretçinin birlikteliğine tepki vermektedir. İşaretçi eğitimden çıkarıldığında modeller içeriğe kayar: yalnız içerik girdisinde AUROC kutu modelinde 0.733'ten 0.886'ya (üç tohum), piksel modelinde 0.681'den 0.834'e (tek tohum) yükselir.
+**Yeniden çizim ve içerik ayrıştırması.** Üreticiler alanın tamamını yeniden çizdiğinden kutu içinde pek çok piksel eşiğin altında kalan küçük farklarla değişir. İki bileşeni ayırmak için yalnız yeniden çizimi ya da yalnız içerik değişimini taşıyan girdiler bütün doğrulama çiftlerinde sınanmıştır (Tablo 29, Şekil 27). Standart kutu modelinde kutu içi ortalama olasılık sahte girdide 0.86 iken yalnız yeniden çizimde 0.24'e, yalnız içerikte 0.35'e düşer; hiçbir bileşen tek başına gerçek sahteye verilen tepkiyi üretmez. Standart modeller yeniden çizim, değişen karakterler ve işaretçinin birlikteliğine tepki vermektedir. İşaretçi eğitimden çıkarıldığında modeller içeriğe kayar: yalnız içerik girdisinde AUROC kutu modelinde 0.733'ten 0.886'ya (üç tohum), piksel modelinde 0.681'den 0.851'e yükselir (üç tohum).
 
 Table: Tablo 29. Yeniden çizim ve içerik ayrıştırması (bütün doğrulama çiftleri): kutu içi ortalama olasılık ve sahte türü girdiyi özgünden ayırma AUROC değeri.
 
@@ -1208,10 +1210,10 @@ Table: Tablo 29. Yeniden çizim ve içerik ayrıştırması (bütün doğrulama 
 |---|---|---|---|---|---|---|---|
 | U-Net kutu | 3 | 0.864 | 0.237 | 0.348 | 0.971 | 0.637 | 0.733 |
 | U-Net piksel-değişim | 3 | 0.406 | 0.045 | 0.150 | 0.942 | 0.554 | 0.681 |
-| DeepLabV3+ kutu | 1 | 0.869 | 0.281 | 0.416 | 0.972 | 0.644 | 0.755 |
-| YOLO11s | 1 | 0.864 | 0.446 | 0.383 | 0.996 | 0.865 | 0.858 |
+| DeepLabV3+ kutu | 3 | 0.868 | 0.279 | 0.408 | 0.974 | 0.656 | 0.762 |
+| YOLO11s | 3 | 0.867 | 0.448 | 0.390 | 0.998 | 0.890 | 0.884 |
 | U-Net kutu, işaretçisiz eğitim | 3 | 0.823 | 0.345 | 0.583 | 0.957 | 0.724 | 0.886 |
-| U-Net piksel, işaretçisiz eğitim | 1 | 0.338 | 0.096 | 0.289 | 0.869 | 0.638 | 0.834 |
+| U-Net piksel, işaretçisiz eğitim | 3 | 0.316 | 0.091 | 0.281 | 0.894 | 0.655 | 0.851 |
 
 Kaynak: `phase3/results/tables_p3.md` (T3)
 
@@ -1219,30 +1221,30 @@ Kaynak: `phase3/results/tables_p3.md` (T3)
 
 ### 4.4 İkinci mimari ve kutu formülasyonu
 
-**DeepLabV3+ H1'i yineler.** Tablo 30 ve Şekil 28, Faz 3'te eğitilen bütün model ailelerinin doğrulama kümesinde üç referansla puanlanmasını göstermektedir. DeepLabV3+ kutu modeli kendi ölçütünde 0.939, piksel-değişim ölçütünde 0.382 alır; her referans yine kendi modelini birinci sıraya koyar. Sayılar U-Net ile neredeyse aynıdır. Etki, U-Net kod çözücüsünün değil denetim türünün bir özelliğidir.
+**DeepLabV3+ H1'i yineler.** Tablo 30 ve Şekil 28, Faz 3'te eğitilen bütün model ailelerinin doğrulama kümesinde üç referansla puanlanmasını göstermektedir. DeepLabV3+ kutu modeli kendi ölçütünde 0.929 ± 0.009, piksel-değişim ölçütünde 0.382 ± 0.002 alır; her referans üç tohumun her birinde yine kendi modelini birinci sıraya koyar. Sayılar U-Net ile neredeyse aynıdır. Etki, U-Net kod çözücüsünün değil denetim türünün bir özelliğidir.
 
 Table: Tablo 30. Faz 3 model aileleri ve varyantları: doğrulama kümesinde üç referansa göre havuzlanmış piksel AUPRC (ana U-Net değerleri için bkz. Tablo 24).
 
 | Model | Eğitim referansı | Tohum | Kutu ile | Piksel-değişim ile | Glif ile |
 |---|---|---|---|---|---|
-| DeepLabV3+ | Kutu | 1 | 0.939 | 0.382 | 0.256 |
-| DeepLabV3+ | Piksel-değişim | 1 | 0.537 | 0.583 | 0.432 |
-| DeepLabV3+ | Glif | 1 | 0.345 | 0.401 | 0.549 |
+| DeepLabV3+ | Kutu | 3 | 0.929 ± 0.009 | 0.382 ± 0.002 | 0.260 ± 0.005 |
+| DeepLabV3+ | Piksel-değişim | 3 | 0.537 ± 0.027 | 0.596 ± 0.022 | 0.437 ± 0.011 |
+| DeepLabV3+ | Glif | 3 | 0.357 ± 0.011 | 0.409 ± 0.007 | 0.558 ± 0.010 |
 | YOLO11s, karolu | Kutu | 3 | 0.965 ± 0.003 | 0.368 ± 0.015 | 0.221 ± 0.003 |
 | U-Net, işaretçisiz eğitim | Kutu | 3 | 0.912 ± 0.006 | 0.373 ± 0.013 | 0.265 ± 0.001 |
-| U-Net, işaretçisiz eğitim | Piksel-değişim (işaretçisiz) | 1 | 0.513 | 0.544 | 0.455 |
-| U-Net, işaretçisiz eğitim | Glif (işaretçisiz) | 1 | 0.348 | 0.371 | 0.661 |
+| U-Net, işaretçisiz eğitim | Piksel-değişim (işaretçisiz) | 3 | 0.480 ± 0.053 | 0.507 ± 0.045 | 0.415 ± 0.044 |
+| U-Net, işaretçisiz eğitim | Glif (işaretçisiz) | 3 | 0.336 ± 0.026 | 0.353 ± 0.017 | 0.644 ± 0.014 |
 | U-Net, birleşik kayıp | Piksel-değişim + kutu yardımcı | 3 | 0.668 ± 0.019 | 0.633 ± 0.013 | 0.523 ± 0.009 |
-| U-Net, birleşik kayıp | Glif + kutu yardımcı | 1 | 0.370 | 0.391 | 0.636 |
-| U-Net, 20 epok | Kutu | 1 | 0.926 | 0.373 | 0.259 |
-| U-Net, 20 epok | Piksel-değişim | 1 | 0.568 | 0.594 | 0.488 |
-| U-Net, 20 epok | Glif | 1 | 0.398 | 0.390 | 0.645 |
+| U-Net, birleşik kayıp | Glif + kutu yardımcı | 3 | 0.395 ± 0.073 | 0.386 ± 0.051 | 0.641 ± 0.063 |
+| U-Net, 20 epok | Kutu | 3 | 0.912 ± 0.031 | 0.371 ± 0.003 | 0.261 ± 0.004 |
+| U-Net, 20 epok | Piksel-değişim | 3 | 0.597 ± 0.064 | 0.591 ± 0.015 | 0.485 ± 0.018 |
+| U-Net, 20 epok | Glif | 3 | 0.346 ± 0.063 | 0.342 ± 0.061 | 0.598 ± 0.082 |
 
 Kaynak: `phase3/results/tables_p3.md` (T1)
 
-![Şekil 28. Üç model ailesinde eğitim referansı (yatay eksen) ve puanlama referansı (renk) için doğrulama AUPRC değerleri: U-Net üç tohum, DeepLabV3+ tek tohum, YOLO11s üç tohum.](phase3/figures/fig_dual_gt_families.png)
+![Şekil 28. Üç model ailesinde eğitim referansı (yatay eksen) ve puanlama referansı (renk) için doğrulama AUPRC değerleri: her aile üç tohum; şekil 42 tohumlu ilk koşulardan üretilmiştir.](phase3/figures/fig_dual_gt_families.png)
 
-**Birleşik kayıp ve eğitim süresi.** Piksel-değişim maskesine kutu yardımcı kanalı eklemek, piksel modelini iyileştiren tek varyanttır ve bunu asıl olarak kutu ölçütünde yapar (üç tohum): doğrulamada kutu ölçütü 0.579 ± 0.014'ten 0.668 ± 0.019'a, resmî testte kutu AUPRC 0.638 ± 0.015'ten 0.702 ± 0.020'ye çıkar (eşli görüntü başı AP farkı +0.051 [+0.043, +0.058] ve +0.046 [+0.040, +0.052]). Piksel-değişim ölçütündeki kazanç küçüktür ve doğrulamayla sınırlıdır: 0.610 ± 0.012'den 0.633 ± 0.013'e (görüntü başı AP +0.011 [+0.005, +0.017]); eşi bulunan 89 test görüntüsünde fark yoktur (0.652 ± 0.003 ve 0.654 ± 0.016; +0.004 [−0.008, +0.015]). Birleşik model işaretçiye bağımlı kalır (onarım farkı −0.194; Tablo 27). Tek tohumla görülen kazanım böylece kutu ölçütünde doğrulanmış, piksel-değişim ölçütünde ise daraltılmıştır (`phase3/results/extra_seed_stats.md`). Epok sayısını 20'ye çıkarmak ise tabloyu değiştirmez (kutu 0.926, piksel-değişim 0.594, glif 0.645); "10 epok az olabilir" kaygısı desteklenmemiştir. 20 epok sonucu tek tohumludur.
+**Birleşik kayıp ve eğitim süresi.** Piksel-değişim maskesine kutu yardımcı kanalı eklemek, piksel modelini iyileştiren tek varyanttır ve bunu asıl olarak kutu ölçütünde yapar (üç tohum): doğrulamada kutu ölçütü 0.579 ± 0.014'ten 0.668 ± 0.019'a, resmî testte kutu AUPRC 0.638 ± 0.015'ten 0.702 ± 0.020'ye çıkar (eşli görüntü başı AP farkı +0.051 [+0.043, +0.058] ve +0.046 [+0.040, +0.052]). Piksel-değişim ölçütündeki kazanç küçüktür ve doğrulamayla sınırlıdır: 0.610 ± 0.012'den 0.633 ± 0.013'e (görüntü başı AP +0.011 [+0.005, +0.017]); eşi bulunan 89 test görüntüsünde fark yoktur (0.652 ± 0.003 ve 0.654 ± 0.016; +0.004 [−0.008, +0.015]). Birleşik model işaretçiye bağımlı kalır (onarım farkı −0.194; Tablo 27). Tek tohumla görülen kazanım böylece kutu ölçütünde doğrulanmış, piksel-değişim ölçütünde ise daraltılmıştır (`phase3/results/extra_seed_stats.md`). Glif modeline kutu yardımcı kanalı eklemek ise bir şey kazandırmaz (glif ölçütünde 0.641 ± 0.063; standart 0.676 ± 0.019). Epok sayısını 20'ye çıkarmak hiçbir referansta yarar sağlamaz (üç tohum): kutu 0.912 ± 0.031 (10 epokta 0.923), piksel-değişim 0.591 ± 0.015 (0.610), glif 0.598 ± 0.082 (0.676). Glif modeli 20 epokta tohumdan tohuma belirgin biçimde oynar. "10 epok az olabilir" kaygısı desteklenmemiştir.
 
 **Kutu dedektörü.** YOLO11s eğitimi düzenli yakınsar (Şekil 29); doğrulama karolarında mAP50 0.981'dir (Şekil 30). Karolu YOLO11s, kutu ölçütünde çalışmadaki en güçlü modeldir (Tablo 31): üç tohumda resmî test AUPRC 0.969 ± 0.006, kalibre eşikte F1 0.946 ve IoU 0.918'dir (U-Net: 0.950, 0.846, 0.789). Buna karşılık piksel-değişim ölçütünde doğrulama AUPRC değeri 0.368'dir; kutu U-Net'in 0.374'üyle aynı düzeydedir ve piksel modelinin 0.610'unun çok altındadır. Bu sonuç H1'in formülasyondan bağımsız teyididir: kutu ölçütü alan tespitini ölçmektedir ve bu işi en iyi yapan model, hangi piksellerin değiştiğini kutu U-Net'ten daha iyi bilmemektedir.
 
@@ -1255,43 +1257,43 @@ Table: Tablo 31. Resmî test (812 görüntü, kutu referansı): piksel ölçütl
 | Model | Tohum | AUPRC | F1 (kalibre eşik) | IoU (kalibre eşik) | AP50 | AP50-95 | Süre (ms / görüntü) |
 |---|---|---|---|---|---|---|---|
 | U-Net kutu | 3 | 0.950 ± 0.011 | 0.846 ± 0.015 | 0.789 ± 0.018 | 0.712 ± 0.279 | 0.453 ± 0.224 | 81 |
-| DeepLabV3+ kutu | 1 | 0.952 | 0.833 | 0.765 | 0.833 | 0.577 | 122 |
+| DeepLabV3+ kutu | 3 | 0.951 ± 0.001 | 0.830 ± 0.003 | 0.761 ± 0.005 | 0.849 ± 0.024 | 0.589 ± 0.010 | 122 |
 | U-Net kutu, işaretçisiz eğitim | 3 | 0.940 ± 0.003 | 0.799 ± 0.016 | 0.727 ± 0.015 | 0.804 ± 0.005 | 0.486 ± 0.007 | ölçülmedi |
 | U-Net piksel, birleşik kayıp | 3 | 0.702 ± 0.020 | 0.641 ± 0.012 | 0.506 ± 0.015 | 0.125 ± 0.020 | 0.064 ± 0.010 | 83 |
 | YOLO11s, karolu | 3 | 0.969 ± 0.006 | 0.946 ± 0.007 | 0.918 ± 0.006 | 0.880 ± 0.002 | 0.780 ± 0.003 | 98 |
-| YOLO11n, karolu | 1 | 0.963 | 0.926 | 0.891 | 0.871 | 0.738 | 81 |
-| YOLO11m, karolu | 1 | 0.969 | 0.947 | 0.920 | 0.897 | 0.800 | 76 |
-| YOLO11s, tam görüntü 1280 | 1 | 0.932 | 0.909 | 0.872 | 0.960 | 0.881 | 303 |
+| YOLO11n, karolu | 3 | 0.966 ± 0.003 | 0.928 ± 0.003 | 0.894 ± 0.005 | 0.871 ± 0.002 | 0.733 ± 0.004 | 81 |
+| YOLO11m, karolu | 3 | 0.966 ± 0.008 | 0.948 ± 0.002 | 0.920 ± 0.001 | 0.882 ± 0.015 | 0.785 ± 0.014 | 76 |
+| YOLO11s, tam görüntü 1280 | 3 | 0.936 ± 0.005 | 0.906 ± 0.004 | 0.872 ± 0.005 | 0.961 ± 0.003 | 0.879 ± 0.004 | 303 |
+| YOLO11s, varsayılan artırım | 3 | 0.973 ± 0.002 | 0.954 ± 0.003 | 0.926 ± 0.003 | 0.867 ± 0.004 | 0.769 ± 0.005 | ölçülmedi |
+| YOLO11s, özgün negatif karo | 3 | 0.969 ± 0.002 | 0.938 ± 0.006 | 0.907 ± 0.008 | 0.874 ± 0.003 | 0.770 ± 0.005 | ölçülmedi |
 
 Kaynak: `phase3/results/tables_p3.md` (T2, T5b), `phase3/results/speed_bench.csv`
 
 U-Net'in kutu düzeyi AP değerindeki büyük standart sapma tek bir tohumdan kaynaklanır: 42 ve 43 tohumlarında AP50 0.873 iken, kalibre eşiği 0.95 çıkan 44 tohumunda tahmin bölgesi parçalanır ve değer 0.391'e düşer. Dedektörde böyle bir kırılganlık yoktur; işaretçisiz eğitilen kutu U-Net'te de görülmez (üç tohumda AP50 0.804 ± 0.005).
 
-**Ablasyonlar ve H5 kararları.** Tek etkenli ablasyonların sonuçları Tablo 32'de, maliyet ve doğruluk ilişkisi Şekil 31'de verilmiştir. Beklentilerin yalnız bir kısmı tutmuştur.
+**Ablasyonlar ve H5 kararları.** Tek etkenli ablasyonların sonuçları (her biri üç tohum) Tablo 31 ve 32'de, maliyet ve doğruluk ilişkisi Şekil 31'de verilmiştir. Beklentilerin yalnız bir kısmı tutmuştur.
 
 - **H5a (doğruluk ve hız):** Doğruluk kısmı desteklenmiştir. Hız kısmı reddedilmiştir: tam görüntü çıkarımı karolu dedektörlerde 76–98 ms, U-Net'te 81 ms, DeepLabV3+'ta 122 ms, tam görüntü dedektöründe 303 ms sürer (ortalama 3.1 megapiksel). Karo başına ön ve son işleme maliyeti baskındır.
 - **H5b (piksel ölçütünde düşüş):** Desteklenmiştir (0.368).
-- **H5c (karolama):** Karışıktır. Görüntünün tamamını 1280 piksele küçültmek test AUPRC değerini 0.969'dan 0.932'ye, işaretçisiz görüntülerdeki AP değerini 0.878'den 0.756'ya indirir; ancak kutu AP50 değerini 0.880'den 0.960'a yükseltir (alanı %1'in altındaki hedeflerde 0.872'den 0.933'e). Olası neden, karo sınırında bölünen alanların parçalı kutular vermesidir; karosuz model de görüntü başına yaklaşık beş kutu ürettiğinden mekanizma kesinleşmemiştir.
-- **H5d (ayrı tutulan üretici):** Desteklenmiştir, tek tohumla (Bölüm 4.5).
-- **H5e (artırım):** Fark yoktur. Kütüphanenin varsayılan artırımı korumacı profil kadar iyidir (test AUPRC 0.971 ve 0.969); mozaik ve ölçek artırımının adli izi bozacağı beklentisi doğrulanmamıştır.
+- **H5c (karolama):** Karışıktır. Görüntünün tamamını 1280 piksele küçültmek test AUPRC değerini 0.969'dan 0.936'ya, işaretçisiz görüntülerdeki AP değerini 0.878'den 0.750'ye indirir; ancak kutu AP50 değerini 0.880'den 0.961'e yükseltir (alanı %1'in altındaki hedeflerde 0.864'ten 0.933'e). Olası neden, karo sınırında bölünen alanların parçalı kutular vermesidir; karosuz model de görüntü başına yaklaşık dört kutu ürettiğinden mekanizma kesinleşmemiştir.
+- **H5d (ayrı tutulan üretici):** Desteklenmiştir (üç tohum; Bölüm 4.5).
+- **H5e (artırım):** Fark yoktur. Kütüphanenin varsayılan artırımı korumacı profil kadar iyidir (test AUPRC 0.973 ve 0.969); mozaik ve ölçek artırımının adli izi bozacağı beklentisi doğrulanmamıştır.
 
-Model boyutunun etkisi küçüktür (n, s ve m için test AUPRC 0.963, 0.969 ve 0.969); görüntü başına boş etiketli bir özgün karo eklemek sonucu değiştirmez (0.971). Sondalar dedektörün farklı bir ipucu kullandığını düşündürmektedir: kalıntının silinmesi dedektöre yalnız 0.062 AP kaybettirir (U-Net 0.222), buna karşılık hiçbir karakterin değişmediği "yalnız yeniden çizim" girdisi özgün görüntüden 0.865 AUROC ile ayrılır (U-Net 0.637). Dedektör, üreticinin yeniden çizdiği bir alanın nasıl göründüğünü öğrenmiştir; bu ipucu iki üreticide de ortaktır ama hangi piksellerin değiştiği hakkında bilgi vermez.
+Model boyutunun etkisi yoktur (n, s ve m için test AUPRC 0.966, 0.969 ve 0.966); görüntü başına boş etiketli bir özgün karo eklemek sonucu değiştirmez (0.969). Sondalar dedektörün farklı bir ipucu kullandığını düşündürmektedir (üç tohum): kalıntının silinmesi dedektöre yalnız 0.058 AP kaybettirir (U-Net 0.222), buna karşılık hiçbir karakterin değişmediği "yalnız yeniden çizim" girdisi özgün görüntüden 0.890 AUROC ile ayrılır (U-Net 0.637). Dedektör, üreticinin yeniden çizdiği bir alanın nasıl göründüğünü öğrenmiştir; bu ipucu iki üreticide de ortaktır ama hangi piksellerin değiştiği hakkında bilgi vermez.
 
-Table: Tablo 32. YOLO11 koşuları: eğitim maliyeti, kutu düzeyi AP ve doğrulama kümesinde piksel AUPRC.
+Table: Tablo 32. YOLO11 varyantları (her biri 42–44 tohumları; ortalama ± standart sapma): eğitim maliyeti, kutu düzeyi AP ve doğrulama kümesinde piksel AUPRC.
 
-| Koşu | En iyi epok (30 üzerinden) | Eğitim (dk) | Parametre (milyon) | Doğrulama karo mAP50 | Test AP50 | Test AP50, alan %1 altı | Doğrulama AUPRC: kutu ve piksel-değişim |
+| Varyant | En iyi epok (30 üzerinden) | Eğitim (dk, ortalama) | Parametre (milyon) | Doğrulama karo mAP50 | Test AP50 | Test AP50, alan %1 altı | Doğrulama AUPRC: kutu ve piksel-değişim |
 |---|---|---|---|---|---|---|---|
-| YOLO11s, karolu, tohum 42 | 26 | 57.0 | 9.43 | 0.981 | 0.882 | 0.872 | 0.967 ve 0.384 |
-| YOLO11s, karolu, tohum 43 | 26 | 59.3 | 9.43 | 0.988 | 0.878 | 0.857 | 0.961 ve 0.365 |
-| YOLO11s, karolu, tohum 44 | 23 | 53.4 | 9.43 | 0.988 | 0.879 | 0.862 | 0.966 ve 0.355 |
-| YOLO11s, tam görüntü 1280 | 27 | 33.1 | 9.43 | 0.960 | 0.960 | 0.933 | 0.922 ve 0.334 |
-| YOLO11s, varsayılan artırım | 28 | 43.4 | 9.43 | 0.986 | 0.864 | 0.849 | 0.967 ve 0.373 |
-| YOLO11s, özgün negatif karo | 22 | 53.5 | 9.43 | 0.988 | 0.874 | 0.863 | 0.967 ve 0.361 |
-| YOLO11n, karolu | 28 | 31.6 | 2.60 | 0.960 | 0.871 | 0.846 | 0.944 ve 0.366 |
-| YOLO11m, karolu | 23 | 87.1 | 20.05 | 0.982 | 0.897 | 0.882 | 0.960 ve 0.356 |
-| YOLO11s, yalnız Gemini | 30 | 58.9 | 9.43 | 0.991 | 0.855 | 0.813 | 0.957 ve 0.344 |
+| YOLO11s, karolu (ana model) | 23–26 | 56.6 | 9.43 | 0.986 ± 0.004 | 0.880 ± 0.002 | 0.864 ± 0.008 | 0.965 ve 0.368 |
+| YOLO11s, tam görüntü 1280 | 27–30 | 28.5 | 9.43 | 0.963 ± 0.002 | 0.961 ± 0.003 | 0.933 ± 0.006 | 0.923 ve 0.341 |
+| YOLO11s, varsayılan artırım | 25–28 | 36.6 | 9.43 | 0.987 ± 0.001 | 0.867 ± 0.004 | 0.846 ± 0.007 | 0.968 ve 0.367 |
+| YOLO11s, özgün negatif karo | 22–28 | 49.6 | 9.43 | 0.985 ± 0.004 | 0.874 ± 0.003 | 0.859 ± 0.004 | 0.964 ve 0.382 |
+| YOLO11n, karolu | 28–30 | 30.2 | 2.60 | 0.966 ± 0.007 | 0.871 ± 0.002 | 0.844 ± 0.007 | 0.955 ve 0.371 |
+| YOLO11m, karolu | 21–23 | 75.3 | 20.05 | 0.974 ± 0.008 | 0.881 ± 0.015 | 0.877 ± 0.006 | 0.952 ve 0.373 |
+| YOLO11s, yalnız Gemini | 26–30 | 39.2 | 9.43 | 0.990 ± 0.002 | 0.857 ± 0.002 | 0.814 ± 0.007 | 0.958 ve 0.359 |
 
-Kaynak: `phase3/results/tables_p3.md` (T5)
+Kaynak: `phase3/results/T5_yolo_ablation.csv` (koşu bazında; 43 ve 44 tohumlarının eğitim süreleri 42 tohumundan kısadır, çünkü aynı makinede başka iş yoktu)
 
 ![Şekil 31. Maliyet ve doğruluk: resmî testte kutu AP50, tam görüntü çıkarım süresi (RTX 5080) ve parametre sayısı; her model için 42 tohumlu tek koşunun değerleridir (üç tohum ortalamaları Tablo 31'dedir); turuncu çubuklar kutu dedektörü, mavi çubuklar bölütleme modelleridir.](reports/figures/fig_maliyet_ap.png)
 
@@ -1299,7 +1301,9 @@ Kaynak: `phase3/results/tables_p3.md` (T5)
 
 **Ayrı tutulan üretici.** Modeller yalnız Gemini düzenlemeleriyle eğitilmiş ve doğrulama ile test bölümlerindeki Ideogram düzenlemelerinde sınanmıştır (kutu referansı için 126, piksel-değişim referansı için 41 görüntü). Karşılaştırma tabanı, Ideogram ile aynı kaynak veri tabanlarından gelen Gemini görüntüleridir. Tablo 33'e göre yalnız Gemini ile eğitilen bütün U-Net modelleri Ideogram üzerinde belirgin düşer: kutu modeli 0.909'dan 0.412'ye, piksel modeli 0.567'den 0.264'e iner. Piksel modelinin göreli düşüşü daha küçüktür ama mutlak Ideogram puanı daha düşüktür; kendi ölçütünde de kutu modelinden iyi değildir (0.279 ve 0.259). Piksel-değişim denetimi tek başına üretici aktarımı sağlamamaktadır; ilk kez tek tohumla varılan H3 reddi üç tohumla doğrulanmıştır.
 
-Kutu dedektörü belirgin biçimde daha iyi aktarılır: bütün üreticilerle eğitildiğinde Ideogram üzerinde 0.872 (U-Net 0.629), yalnız Gemini ile eğitildiğinde 0.752 AP verir (U-Net 0.412); açık 0.50 yerine 0.19'dur. Dedektörün bu sonucu tek tohumludur. Önemli bir kısıt şudur: Ideogram sahteleri hemen hiç işaretçi taşımadığından (%2.1; Gemini %85.9) bu açığın bir bölümü üretici farkı değil işaretçi farkı olabilir ve bu tasarım ikisini ayıramaz.
+Kutu dedektörü belirgin biçimde daha iyi aktarılır: bütün üreticilerle eğitildiğinde Ideogram üzerinde 0.872 (U-Net 0.629), yalnız Gemini ile eğitildiğinde 0.725 AP verir (U-Net 0.412); açık 0.50 yerine 0.21'dir (üç tohum).
+
+**İşaretçi mi, üretici mi?** Ideogram sahteleri hemen hiç işaretçi taşımadığından (%2.1; Gemini %85.9) bu açığın bir bölümü üretici farkı değil işaretçi farkı olabilirdi. İkisini ayırmak için yalnız Gemini modelleri işaretçisi onarılmış görüntülerle yeniden eğitilmiştir (üç referans, üç tohum; öngörüler koşudan önce depoya gönderildi). Onarılmış yalnız-Gemini kutu modeli kalıntıya artık bağımlı değildir (onarım farkı +0.009 [−0.004, +0.023]; standart yalnız-Gemini modelinde −0.275), ama Ideogram'da yine çöker: 0.463 [0.400, 0.528], eşlenmiş Gemini'de 0.874. Aynı görüntüler eşlenerek bakıldığında Ideogram'da 0.051 [0.004, 0.096] kazanır, Gemini'de 0.035 [0.023, 0.047] kaybeder; piksel ve glif modelleri de benzer davranır (Ideogram'da +0.053 ve +0.037). Kutu modelindeki açığın (0.497 → 0.412) yaklaşık altıda biri işaretçiye, geri kalanı üreticiye özgü izlere bağlanabilir. Bütün üreticilerle eğitilen modelde de onarım Ideogram puanını değiştirmez (0.629 ve 0.633).
 
 Table: Tablo 33. Ayrı tutulan üretici: Ideogram ve kaynak eşlemeli Gemini görüntülerinde görüntü başı AP (%95 güven aralığı).
 
@@ -1311,11 +1315,15 @@ Table: Tablo 33. Ayrı tutulan üretici: Ideogram ve kaynak eşlemeli Gemini gö
 | U-Net, yalnız Gemini | Kutu | Piksel-değişim | 3 | 0.259 [0.168, 0.350] | 0.349 [0.322, 0.377] | 0.090 |
 | U-Net, yalnız Gemini | Piksel-değişim | Piksel-değişim | 3 | 0.279 [0.182, 0.382] | 0.577 [0.546, 0.608] | 0.297 |
 | YOLO11s, bütün üreticiler | Kutu | Kutu | 3 | 0.872 [0.846, 0.895] | 0.945 [0.938, 0.951] | 0.073 |
-| YOLO11s, yalnız Gemini | Kutu | Kutu | 1 | 0.752 [0.703, 0.806] | 0.938 [0.929, 0.946] | 0.186 |
+| U-Net, bütün üreticiler, işaretçisiz eğitim | Kutu | Kutu | 3 | 0.633 [0.573, 0.695] | 0.898 [0.881, 0.915] | 0.265 |
+| U-Net, yalnız Gemini, işaretçisiz eğitim | Kutu | Kutu | 3 | 0.463 [0.400, 0.528] | 0.874 [0.856, 0.893] | 0.412 |
+| U-Net, yalnız Gemini, işaretçisiz eğitim | Piksel-değişim (işaretçisiz) | Kutu | 3 | 0.317 [0.267, 0.366] | 0.472 [0.453, 0.491] | 0.155 |
+| U-Net, yalnız Gemini, işaretçisiz eğitim | Glif (işaretçisiz) | Kutu | 3 | 0.203 [0.168, 0.240] | 0.315 [0.303, 0.327] | 0.112 |
+| YOLO11s, yalnız Gemini | Kutu | Kutu | 3 | 0.725 [0.675, 0.778] | 0.938 [0.930, 0.946] | 0.214 |
 
 Kaynak: `phase3/results/tables_p3.md` (T4)
 
-**Test zamanı bozulmaları.** Bölüm 3.3'te model girdisine uygulanmayan işlemlerin etkisi, eğitilmiş modellere test anında uygulanarak ölçülmüştür (Tablo 34, Şekil 32). Üç sonuç öne çıkar. Birincisi, piksel ve glif modelleri bulanıklık ve yeniden ölçeklemeye kutu modelinden daha kırılgandır (bulanıklıkta −%59 ve −%21): ince harf kenarlarına dayanan denetim, yüksek frekans bilgisine daha bağımlı modeller üretir. Birleşik kayıp bu kırılganlığı azaltır (−%46; üç tohum). İkincisi, kutu dedektörü bulanıklık, CLAHE ve yeniden ölçeklemeye neredeyse duyarsızdır (en çok %1.4) ama JPEG sıkıştırmasına kırılgandır (−%49). Üçüncüsü ve en önemlisi, girdinin gri düzeye çevrilmesi sınanan bütün modellerde AUPRC değerinin %47–67'sini götürür; işaretçisiz eğitilen modeller de buna dahildir. Renk, yeşil çizginin ötesinde kanıt taşımaktadır; "işaretçiden kurtulmak için gri düzeye çevirmek" bir çözüm değildir. CLAHE ise en çok %3 değişim yaratır.
+**Test zamanı bozulmaları.** Bölüm 3.3'te model girdisine uygulanmayan işlemlerin etkisi, eğitilmiş modellere test anında uygulanarak ölçülmüştür (Tablo 34, Şekil 32). Üç sonuç öne çıkar. Birincisi, piksel ve glif modelleri bulanıklık ve yeniden ölçeklemeye kutu modelinden daha kırılgandır (bulanıklıkta −%59 ve −%21): ince harf kenarlarına dayanan denetim, yüksek frekans bilgisine daha bağımlı modeller üretir. Birleşik kayıp bu kırılganlığı azaltır (−%46; üç tohum). İkincisi, kutu dedektörü bulanıklık, CLAHE ve yeniden ölçeklemeye neredeyse duyarsızdır (en çok %1.3) ama JPEG sıkıştırmasına kırılgandır (−%45; üç tohum). Üçüncüsü ve en önemlisi, girdinin gri düzeye çevrilmesi sınanan bütün modellerde AUPRC değerinin %50–67'sini götürür; işaretçisiz eğitilen modeller de buna dahildir. Renk, yeşil çizginin ötesinde kanıt taşımaktadır; "işaretçiden kurtulmak için gri düzeye çevirmek" bir çözüm değildir. CLAHE ise en çok %3 değişim yaratır.
 
 Table: Tablo 34. Test zamanı bozulmaları: her modelin kendi eğitim referansına göre havuzlanmış AUPRC değerindeki göreli değişim (doğrulama; üç tohumlu satırlarda ± standart sapma).
 
@@ -1324,12 +1332,13 @@ Table: Tablo 34. Test zamanı bozulmaları: her modelin kendi eğitim referansı
 | U-Net (3 tohum) | Kutu | −%16.6 ± 1.4 | −%12.2 ± 4.3 | −%20.7 ± 6.7 | ölçülmedi | ölçülmedi |
 | U-Net (3 tohum) | Piksel-değişim | −%22.5 ± 2.3 | −%40.3 ± 1.5 | −%59.1 ± 4.5 | ölçülmedi | ölçülmedi |
 | U-Net (3 tohum) | Glif | −%18.0 ± 0.8 | −%42.7 ± 5.4 | −%59.0 ± 6.8 | ölçülmedi | ölçülmedi |
-| DeepLabV3+ | Kutu | −%11.9 | −%7.1 | −%13.6 | −%1.3 | −%46.7 |
-| DeepLabV3+ | Piksel-değişim | −%20.2 | −%38.7 | −%53.6 | +%0.8 | −%58.5 |
+| DeepLabV3+ (3 tohum) | Kutu | −%13.5 ± 2.0 | −%8.3 ± 1.3 | −%14.4 ± 2.4 | −%0.6 ± 1.3 | −%52.7 ± 5.7 |
+| DeepLabV3+ (3 tohum) | Piksel-değişim | −%20.6 ± 2.7 | −%35.1 ± 8.6 | −%49.5 ± 10.3 | +%1.5 ± 2.0 | −%63.6 ± 4.7 |
 | U-Net, birleşik kayıp (3 tohum) | Piksel-değişim | −%20.7 ± 2.0 | −%30.8 ± 2.0 | −%46.0 ± 2.9 | −%0.8 ± 0.8 | −%66.3 ± 3.3 |
 | U-Net, işaretçisiz eğitim (3 tohum) | Kutu | −%32.6 ± 1.8 | −%14.0 ± 2.7 | −%25.9 ± 5.0 | −%2.1 ± 0.8 | −%59.6 ± 2.6 |
-| U-Net, işaretçisiz eğitim | Piksel-değişim | −%50.3 | −%51.5 | −%75.7 | −%0.7 | −%53.8 |
-| YOLO11s | Kutu | −%48.5 | −%0.7 | −%1.4 | −%1.2 | −%58.6 |
+| U-Net, işaretçisiz eğitim (3 tohum) | Piksel-değişim | −%50.4 ± 1.8 | −%50.2 ± 3.1 | −%73.6 ± 4.5 | −%0.3 ± 0.4 | −%50.3 ± 10.1 |
+| U-Net, işaretçisiz eğitim (3 tohum) | Glif | −%36.6 ± 4.2 | −%36.9 ± 6.9 | −%51.4 ± 6.0 | −%0.9 ± 2.1 | −%66.5 ± 2.6 |
+| YOLO11s (3 tohum) | Kutu | −%45.2 ± 4.0 | −%0.6 ± 0.2 | −%1.3 ± 0.1 | −%1.0 ± 0.2 | −%57.5 ± 3.0 |
 
 Kaynak: `phase3/results/tables_p3.md` (T6)
 
@@ -1346,18 +1355,19 @@ Table: Tablo 35. AIForge-Doc v2 birincil kümesi (567 çift), v1 üzerinde eğit
 | U-Net kutu | 3 | 0.520 ± 0.018 | 0.272 | 0.717 | −0.490 | −0.169 |
 | U-Net piksel-değişim | 3 | 0.227 | 0.246 | 0.693 | −0.398 | −0.172 |
 | U-Net glif | 3 | 0.147 | 0.192 | 0.688 | −0.171 | −0.112 |
-| DeepLabV3+ kutu | 1 | 0.539 | 0.280 | 0.724 | −0.375 | −0.141 |
+| DeepLabV3+ kutu | 3 | 0.532 | 0.282 | 0.725 | −0.371 | −0.137 |
 | U-Net kutu, işaretçisiz eğitim | 3 | 0.711 ± 0.007 | 0.391 | 0.840 | −0.188 | −0.008 |
-| U-Net piksel, işaretçisiz eğitim | 1 | 0.353 | 0.430 | 0.826 | −0.106 | −0.078 |
+| U-Net piksel, işaretçisiz eğitim | 3 | 0.346 | 0.422 | 0.816 | −0.103 | −0.077 |
+| U-Net glif, işaretçisiz eğitim | 3 | 0.205 | 0.274 | 0.754 | −0.058 | −0.061 |
 | U-Net kutu, yalnız Gemini | 1 | 0.449 | 0.248 | 0.742 | −0.540 | −0.189 |
 | YOLO11s, karolu | 3 | 0.887 ± 0.006 | 0.354 | 0.919 | −0.149 | −0.033 |
-| YOLO11s, tam görüntü 1280 | 1 | 0.697 | 0.328 | 0.800 | −0.202 | −0.083 |
-| YOLO11s, yalnız Gemini | 1 | 0.843 | 0.338 | 0.865 | −0.212 | −0.055 |
-| YOLO11s, özgün negatif karo | 1 | 0.863 | 0.345 | 0.937 | −0.191 | −0.055 |
+| YOLO11s, tam görüntü 1280 | 3 | 0.700 | 0.331 | 0.781 | −0.209 | −0.070 |
+| YOLO11s, yalnız Gemini | 3 | 0.819 | 0.334 | 0.864 | −0.225 | −0.046 |
+| YOLO11s, özgün negatif karo | 3 | 0.857 | 0.338 | 0.932 | −0.196 | −0.056 |
 
 Kaynak: `phase3_v2/results/v2_tables.md`, `phase3_v2/results/T_v2_marker_split_agg.csv`, `reports/PHASE3_Sonuclar_ve_Kapanis.md`
 
-v1 testinde 0.950 alan kutu U-Net v2 üzerinde 0.520'ye, görüntü AUROC değeri 0.717'ye düşer; karolu dedektör 0.887 ve 0.919 değerlerini korur. Kutu U-Net, v1 görüntüsü kalıntı taşıyan tariflerde 0.49, taşımayanlarda 0.17 AP kaybeder. İşaretçisiz eğitilen kutu U-Net ise kalıntısız tariflerde ölçülebilir bir kayıp göstermez (üç tohum ortalaması −0.008, %95 güven aralığı [−0.069, +0.053]; tohum bazında +0.003, −0.026, −0.002) ve toplamda 0.711 ± 0.007'ye ulaşır; v1 üzerinde standart modelin gerisindeyken v2 üzerinde belirgin biçimde önündedir. İşaretçisiz piksel ve glif modelleri de v2 üzerindeki en iyi piksel ve glif lokalizatörleridir (piksel-değişim 0.430; standart model 0.246). Bu sonuç, işaretçi bulgusunu veri tabanının dışından doğrulamaktadır: işaretçiyle eğitilen modeller en çok, tam da işaretçiyi taşıyan tariflerde kaybeder. Referans etkisi v2 üzerinde de sürer: bütün modeller piksel-değişim ölçütünde 0.13–0.43 aralığında kalır.
+v1 testinde 0.950 alan kutu U-Net v2 üzerinde 0.520'ye, görüntü AUROC değeri 0.717'ye düşer; karolu dedektör 0.887 ve 0.919 değerlerini korur. Kutu U-Net, v1 görüntüsü kalıntı taşıyan tariflerde 0.49, taşımayanlarda 0.17 AP kaybeder. İşaretçisiz eğitilen kutu U-Net ise kalıntısız tariflerde ölçülebilir bir kayıp göstermez (üç tohum ortalaması −0.008, %95 güven aralığı [−0.069, +0.053]; tohum bazında +0.003, −0.026, −0.002) ve toplamda 0.711 ± 0.007'ye ulaşır; v1 üzerinde standart modelin gerisindeyken v2 üzerinde belirgin biçimde önündedir. İşaretçisiz piksel ve glif modelleri de v2 üzerindeki en iyi piksel ve glif lokalizatörleridir (piksel-değişim 0.422 ± 0.015, standart model 0.246; glif 0.432 ± 0.015, standart model 0.304; üç tohum). Bu sonuç, işaretçi bulgusunu veri tabanının dışından doğrulamaktadır: işaretçiyle eğitilen modeller en çok, tam da işaretçiyi taşıyan tariflerde kaybeder. Referans etkisi v2 üzerinde de sürer: bütün modeller piksel-değişim ölçütünde 0.13–0.42 aralığında kalır.
 
 v2'nin 3.066 çiftinin tamamında dedektörün görüntü AUROC değeri 0.912'dir; kaynak belgesi v1 eğitiminde görülmüş çiftlerde 0.911, görülmemiş birincil kümede 0.915'tir, yani belge örtüşmesinin etkisi yok denecek kadar azdır. Veri tabanı yazarlarının sıfır-atış TruFor için bildirdiği değer 0.599, DocTamper için 0.585'tir; dedektör v1 üzerinde eğitildiği için bu bir başvuru değeridir, eşit koşullu karşılaştırma değildir.
 
@@ -1552,14 +1562,14 @@ Kaynak: `phase4_resnet/results/breakdown_test.csv`, `phase4_resnet/results/table
 
 1. Piksel-değişim referansı otomatik türetilmiştir. 100 çiftlik insan denetimi tek değerlendiricilidir ve değerlendirici çalışmanın yazarıdır; bağımsız ikinci bir değerlendirici ve değerlendiriciler arası uyum ölçümü yoktur. İnsan denetimi ile dil modeli destekli ilk denetim birbirleriyle zayıf uyumludur. İnsan denetimine göre referans değişimi kaçırmamakta, ancak alanın yeniden çizilen arka planını ve değişmeyen içeriğini de kapsayarak fazla işaretlemektedir.
 2. TruFor'un ince ayarı yapılamamıştır; yayımlanan kodda eğitim betiği bulunmamaktadır. Bu nedenle veri tabanında eğitilen modeller yalnız sıfır-atış başvuru modelleriyle karşılaştırılmıştır. Mimari bağımsızlık DeepLabV3+ ve YOLO11 ile gösterilmiştir.
-3. Faz 3'ün tek etkenli deneylerinin çoğu (DeepLabV3+, işaretçisiz piksel-değişim ve glif modelleri, birleşik kayıplı glif modeli, 20 epok, YOLO ablasyonları) tek tohumludur ve öncül kanıt sayılmalıdır. Üç tohumlu olanlar ana U-Net ızgarası, işaretçisiz kutu modeli, birleşik kayıplı piksel modeli, yalnız Gemini ile eğitilen U-Net modelleri, ana YOLO11s modeli ve ResNet-18 sınıflandırıcısıdır.
-4. Ayrı tutulan üretici deneyi 126 Ideogram görüntüsüne dayanır ve işaretçi ile üreticiyi ayıramaz; yalnız Gemini ile işaretçisiz eğitilmiş modeller eğitilmemiştir.
+3. Faz 3'te eğitilen bütün modeller üç tohumludur (42–44); tek etkenli deneylerin 43 ve 44 tohumları, öngörüleri koşudan önce açık depoya gönderilen iki planla eklenmiştir. Tek tohumlu kalanlar dedektörün zararsız kontrolleri ve hız ölçümüdür. Bazı varyantlar tohuma duyarlıdır (20 epoklu glif modeli ± 0.082, birleşik kayıplı glif modeli ± 0.063, işaretçisiz piksel modeli ± 0.045); bu satırlar ortalama ± standart sapma ile okunmalıdır.
+4. Ayrı tutulan üretici deneyi tek bir üreticinin 126 Ideogram görüntüsüne dayanır. İşaretçi ile üreticinin etkisi yalnız Gemini ile işaretçisiz eğitimle ayrıştırılmıştır (Bölüm 4.5): kutu modelindeki açığın yaklaşık altıda biri işaretçiye, geri kalanı üreticiye özgü izlere bağlanır. Bu ayrım başka üreticilerle sınanmamıştır.
 5. Görüntü düzeyi tespit, test bölümünün özgün görüntüleri eşli olmadığından yalnız doğrulama çiftlerinde ölçülmüştür. Uygulamadaki görüntü düzeyi eşikler tek tohumla seçilmiştir. ResNet-18 eşiği Faz 4'te doğrulama kümesinde kalibre edilmiştir; ancak eşikler doygunluğa yakındır (0.94–0.995) ve tohuma duyarlıdır, test bölümünde eşi bulunan özgün görüntü sayısı yalnız 89'dur. Kalibre sürüm 11 Kasım 2026'da canlı Space'e dağıtılmıştır.
 6. Karolu dedektörde kutu AP değeri tam görüntü dedektörünün altındadır; karolar arası kutu birleştirme uygulanmamıştır. Dedektörün hız üstünlüğü beklentisi doğrulanmamıştır.
-7. v2 harici testinde işaretçisiz piksel-değişim ve glif modelleri tek tohumludur (kutu modeli üç tohumludur); v2 hem üreticiyi hem geri yapıştırma yöntemini değiştirdiğinden iki etki yalnız v1 kalıntı ayrımı üzerinden ayrıştırılabilmiştir. Veri tabanı tek bir belge ailesini (çoğunlukla fiş) ve iki dili ağırlıklı olarak kapsar.
+7. v2 hem üreticiyi hem geri yapıştırma yöntemini değiştirdiğinden iki etki yalnız v1 kalıntı ayrımı üzerinden ayrıştırılabilmiştir. Veri tabanı tek bir belge ailesini (çoğunlukla fiş) ve iki dili ağırlıklı olarak kapsar.
 8. SHAP sadakat ölçümleri sekiz girdide ve düşük bütçeyle yapılmıştır; nitel destek olarak değerlendirilmelidir.
 
-**Dönem sonu planı.** Final aşamasında bu rapor bir konferans bildirisine dönüştürülecektir. İngilizce bildiri taslağı IEEE konferans biçiminde hazırdır (`paper/`, on sayfa) ve Faz 4 sonuçları dahil bu rapordaki bütün ana sonuçları içermektedir. Planlanan güçlendirmelerden biri tamamlanmıştır: işaretçisiz kutu modeli ve birleşik kayıplı piksel modeli için iki ek tohum (Bölüm 4.3 ve 4.4). Gönderimden önce kalanlar şunlardır: insan denetimine ikinci bir bağımsız değerlendirici eklenmesi; işaretçi ile üreticiyi ayırmak için yalnız Gemini üzerinde işaretçisiz eğitim; karolu dedektörde karolar arası kutu birleştirme. Hedef, IEEE kapsamındaki bir sinyal ve görüntü işleme ya da adli bilişim konferansıdır; son başvuru tarihleri çağrı metinlerinden doğrulanacaktır.
+**Dönem sonu planı.** Final aşamasında bu rapor bir konferans bildirisine dönüştürülecektir. İngilizce bildiri taslağı IEEE konferans biçiminde hazırdır (`paper/`, on sayfa) ve Faz 4 sonuçları dahil bu rapordaki bütün ana sonuçları içermektedir. Planlanan güçlendirmelerden ikisi tamamlanmıştır: bütün tek etkenli deneylere iki ek tohum (Bölüm 4.3–4.5) ve işaretçi ile üreticiyi ayırmak için yalnız Gemini üzerinde işaretçisiz eğitim (Bölüm 4.5). Gönderimden önce kalanlar şunlardır: insan denetimine ikinci bir bağımsız değerlendirici eklenmesi; karolu dedektörde karolar arası kutu birleştirme. Hedef, IEEE kapsamındaki bir sinyal ve görüntü işleme ya da adli bilişim konferansıdır; son başvuru tarihleri çağrı metinlerinden doğrulanacaktır.
 
 **Sonuç.** Yapay zekâ ile iç-boyama yapılmış finansal belgelerde resmî kutu maskeleri, değişen pikselleri bulan lokalizatörleri değil, düzenlenen alanı bulan dedektörleri eğitmekte ve ödüllendirmektedir. Yalnız eğitim maskesini değiştirmek model sıralamasını tersine çevirir; etki iki bölütleme mimarisinde ve bir kutu dedektöründe yinelenir. Gemini sahtelerinin çoğunda kalan düzenleme işaretçisi, mevcut olduğunda kısayol olarak kullanılır; onsuz yeniden eğitim kutu puanının çoğunu korur ve işaretçisiz v2 kümesine çok daha iyi aktarılır. Ders açısından proje, klasik görüntü işlemeden derin bölütleme ve tespite uzanan bütün yöntemleri tek bir veri tabanında, kısıtlı veriden tam ölçeğe, ölçülebilir ve yeniden üretilebilir biçimde bir araya getirmiştir.
 
@@ -1657,13 +1667,15 @@ Table: Tablo 46. Rapordaki ana sayılar ve alındıkları dosyalar.
 | İşaretçisiz kutu U-Net, doğrulama ve test AUPRC (üç tohum) | 0.912 ± 0.006 ve 0.940 ± 0.003 | `phase3/results/tables_p3.md` (T1, T2) |
 | Birleşik kayıplı piksel U-Net, doğrulama AUPRC (kutu ve piksel-değişim; üç tohum) | 0.668 ± 0.019 ve 0.633 ± 0.013 | `phase3/results/tables_p3.md` (T1) |
 | Ek tohum öngörüleri (P1–P6) | Altısı da tuttu | `reports/inceleme/deney_plani_ek_tohum_2026-11-10.md`, `phase3/results/extra_seed_stats.md` |
+| Kalan tohumlar ve yeni deney öngörüleri (K1–K21) | Yirmi biri de yanlışlama ölçütünü geçti; K2 öngörülen aralığın az altında | `reports/inceleme/deney_plani_kalan_tohumlar_2026-11-11.md` (§8, §9) |
 | Test AP, işaretçili ve işaretçisiz (U-Net kutu) | 0.972 ve 0.690 | `phase3/results/tables_p3.md` (T3b) |
 | DeepLabV3+ kutu modeli, kutu ve piksel-değişim AUPRC | 0.939 ve 0.382 | `phase3/results/tables_p3.md` (T1) |
 | YOLO11s test AUPRC, F1, IoU | 0.969 ± 0.006; 0.946; 0.918 | `phase3/results/tables_p3.md` (T2) |
 | YOLO11s doğrulama piksel-değişim AUPRC | 0.368 ± 0.015 | `phase3/results/tables_p3.md` (T1) |
 | U-Net AP50 tohum ayrıntısı | 0.873 (42 ve 43), 0.391 (44) | `paper/sec/results.tex` |
 | Çıkarım süreleri | U-Net 81 ms; DeepLabV3+ 122 ms; YOLO11s 98 ms; tam görüntü 303 ms | `phase3/results/speed_bench.csv` |
-| Ayrı tutulan üretici (yalnız Gemini, Ideogram AP) | U-Net 0.412; YOLO11s 0.752 | `phase3/results/tables_p3.md` (T4) |
+| Ayrı tutulan üretici (yalnız Gemini, Ideogram AP; üç tohum) | U-Net 0.412; işaretçisiz eğitimle 0.463; YOLO11s 0.725 | `phase3/results/tables_p3.md` (T4) |
+| Yalnız Gemini, işaretçisiz − standart (eşli görüntü başı AP, kutu modeli) | Ideogram +0.051 [+0.004, +0.096]; Gemini −0.035 [−0.047, −0.023] | `reports/inceleme/deney_plani_kalan_tohumlar_2026-11-11.md` (§9) |
 | Gri düzey etkisi | AUPRC değerinde −%47 ile −%67 | `phase3/results/tables_p3.md` (T6), `reports/PHASE3_Sonuclar_ve_Kapanis.md` |
 | v2 harici test (kutu AUPRC) | U-Net 0.520 ± 0.018; YOLO11s 0.887 ± 0.006; işaretçisiz U-Net 0.711 ± 0.007 | `phase3_v2/results/v2_tables.md` |
 | v2, v1 kalıntısız tariflerde AP değişimi (işaretçisiz kutu U-Net; üç tohum) | −0.008 [−0.069, +0.053] | `phase3_v2/results/T_v2_marker_split_agg.csv` |
