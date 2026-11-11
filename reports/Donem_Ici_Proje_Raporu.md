@@ -1403,7 +1403,7 @@ Table: Tablo 37. Tam görüntü SHAP ölçümleri: `testing:000000038` (864×129
 
 Kaynak: `reports/xai_fullimage/RAPOR_OLCUM.md`, `reports/xai_fullimage/RAPOR.md`
 
-**Katman filtreleri.** Kayıtlı 50 modelin tamamı (ek tohum ağırlıkları dahil) filtre denetimlerinden geçmiştir: kayıtlı çekirdek modül ağırlığına eşittir, bağımsız evrişim modelin kendi evrişim çıktısını verir (CPU üzerinde en kötü göreli fark $10^{-6}$ düzeyinde, YOLO modellerinde sıfır), kanal katkılarının toplamı evrişim çıktısına eşittir ve ağırlık özetleri değişmemiştir. Döşemeli tam görüntü hesabı tek geçişle birebir aynı sonucu verir. Görselleştirmeden üç gözlem çıkmaktadır.
+**Katman filtreleri.** Kayıtlı 89 modelin tamamı (üç tohumun ağırlıkları dahil) filtre denetimlerinden geçmiştir: kayıtlı çekirdek modül ağırlığına eşittir, bağımsız evrişim modelin kendi evrişim çıktısını verir (CPU üzerinde en kötü göreli fark $10^{-6}$ düzeyinde, YOLO modellerinde sıfır), kanal katkılarının toplamı evrişim çıktısına eşittir ve ağırlık özetleri değişmemiştir. Döşemeli tam görüntü hesabı tek geçişle birebir aynı sonucu verir. Görselleştirmeden üç gözlem çıkmaktadır.
 
 1. Bütün bölütleme ve sınıflandırma modelleri aynı ResNet-18 gövdesini paylaşır: ilk katman 64 adet 7×7 süzgeçtir. Şekil 33'teki çekirdekler, ImageNet ön eğitiminden gelen yönlü kenar, çizgi ve renk karşıtlığı örüntülerini göstermektedir; bunlar dersin kenar bulma ve frekans süzgeçleri konularının öğrenilmiş karşılıklarıdır. YOLO11s gövdesi farklıdır: ilk katmanı 32 adet 3×3 süzgeçtir.
 2. Belge görüntüsünde en güçlü yanıtlar metin kenarlarında oluşur (Şekil 34). Etkinleştirme sonrasında bazı haritalar tümüyle sıfırdır; bunlar renk karşıtlığı süzgeçleridir ve gri tonlu bir fiş üzerinde yanıt vermemeleri gerçek model davranışıdır.
@@ -1423,10 +1423,10 @@ Table: Tablo 38. Uygulama testlerinin özeti.
 
 | Test | Kapsam | Sonuç |
 |---|---|---|
-| `kod/tests/test_app.py` | Ön işleme işlemleri, hazır ayarlar, örnek süzgeçleri, senaryolar, bozulmalar, simülasyon çıktıları, hatalı girdiler, toplu test, kayıtlı sonuçlarla yeniden üretim (35 örnek, 36 model yüklü, GPU) | 289 kontrol, 0 hata, 144 s |
-| `kod/tests/test_app_p3.py` | Faz 3 modellerinin listelenmesi ve yüklenmesi, yeni senaryolar ve bozulmalar, uygulama içi harita ile değerlendirme hattının kaydettiği haritanın karşılaştırması (3 görüntü × 9 model, GPU) | 0 hata, 50 s |
-| `kod/tests/test_xai_filters.py` | Sentetik çekirdek denetimi, evrişimsiz model reddi, 50 kayıtlı model, YOLO ilk katman dışa aktarımı, GPU ve CPU uyumu, görsel üretimi, döşemeli tam görüntü | 91 kontrol, 0 hata, 134.0 s |
-| `kod/tests/test_xai.py` | SHAP adaptörleri, toplamsallık, ağırlık bütünlüğü, kayıt ve karşılaştırma (15 test) | GPU: 15 geçti (49.5 s); CPU: 15 geçti |
+| `kod/tests/test_app.py` | Ön işleme işlemleri, hazır ayarlar, örnek süzgeçleri, senaryolar, bozulmalar, simülasyon çıktıları, hatalı girdiler, toplu test, kayıtlı sonuçlarla yeniden üretim (35 örnek, 36 model yüklü, GPU) | 289 kontrol, 0 hata, 120 s |
+| `kod/tests/test_app_p3.py` | Faz 3 modellerinin listelenmesi ve yüklenmesi, yeni senaryolar ve bozulmalar, uygulama içi harita ile değerlendirme hattının kaydettiği haritanın karşılaştırması (3 görüntü × 9 model, GPU) | 0 hata, 39 s |
+| `kod/tests/test_xai_filters.py` | Sentetik çekirdek denetimi, evrişimsiz model reddi, 89 kayıtlı model, YOLO ilk katman dışa aktarımı, GPU ve CPU uyumu, görsel üretimi, döşemeli tam görüntü | 130 kontrol, 0 hata, 106.9 s |
+| `kod/tests/test_xai.py` | SHAP adaptörleri, toplamsallık, ağırlık bütünlüğü, kayıt ve karşılaştırma (15 test) | GPU: 15 geçti (36.2 s); CPU: 15 geçti |
 | `kod/tools/capture_screens.py` | Gerçek tarayıcıda (Chromium) güncel arayüzün uçtan uca yürütülmesi: örnek seçimi, simülasyon, sekmelere aktarım, hazır ön işleme hattı, U-Net, 8 örnekli toplu test, sonuçlar, SHAP ve katman filtreleri | 8 adımın tümü hatasız (11 Kasım 2026, Faz 4 modellerini içeren güncel arayüz); Şekil 10–16 bu koşunun çıktılarıdır. Görüntülerde kullanıcının ev dizini `~` olarak kısaltılmıştır |
 | `kod/hf_space/live_test.py` | Canlı Space üzerinde 6 senaryo × 6 model simülasyon ve 24 çiftli toplu test (ZeroGPU); ek koşuda Faz 4 sınıflandırıcılarıyla 6 senaryo × 8 model | Tamamlandı (11 Kasım 2026, Faz 4 sürümü): 393.4 s; ek koşu 380.9 s |
 
@@ -1682,7 +1682,7 @@ Table: Tablo 46. Rapordaki ana sayılar ve alındıkları dosyalar.
 | Referans denetimleri | İlk (dil modeli): 96 yanıt, 69 uygun, 26 kısmi, 1 hatalı; ikinci (insan, yazar): 36 uygun, 64 kısmi; κ 0.07 | `phase2/gt/vlm_verification_summary.json`, `phase2/gt/human_verification_summary.md`, `phase2/gt/partial_note_check.json` |
 | SHAP işaretçi yoğunlaşması | 4.3–15.1 kat | `docs/xai_test_report.md` |
 | Tam görüntü SHAP toplamsallık hatası | En çok 1.1e-04 | `reports/xai_fullimage/RAPOR_OLCUM.md` |
-| Katman filtresi testleri | 91 kontrol, 0 hata; 50 model | `tests/run_all_xai_filters.log`, `reports/xai_filters/test_results.json` |
+| Katman filtresi testleri | 130 kontrol, 0 hata; 89 model | `tests/run_all_xai_filters.log`, `reports/xai_filters/test_results.json` |
 | Uygulama testleri | 289 kontrol, 0 hata; 36 model | `tests/run_all_app.log` |
 | Canlı Space toplu testi (U-Net kutu) | F1 0.925; AP 0.964; yeniden üretim farkı 0.000 | `reports/canli_test_v4deploy_log.txt` |
 | Canlı Space, ResNet-18 tam veri (kalibre eşik; 24 çift): doğru tespit, yanlış alarm, AUROC | 0.917; 0.000; 0.998 | `reports/canli_test_v4deploy_faz4_log.txt` |
