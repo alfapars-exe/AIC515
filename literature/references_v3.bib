@@ -4,6 +4,12 @@
 % the publisher/venue page (NeurIPS, ICLR, AAAI OJS), Zenodo, DOAJ or the project's own
 % page/repository, as noted in the "% src:" comment above each entry.
 % Encoding: non-ASCII characters converted to LaTeX escapes for IEEEtran/BibTeX safety.
+% 2026-11-11: 81 entries. All 64 cited entries were re-checked with kod/tools/check_refs_dblp.py (Crossref for DOIs, arXiv API
+% for preprints, Crossref title search for published versions; DBLP could not be queried, its API is behind a bot check).
+% Nine entries changed: six preprints replaced by their published versions (shang2026maskspixels, dhouib2026diffnet, docqt2026,
+% zhang2026scrf, freqbias2025, mareen2026tgif2), gentextforensics2026 replaced by the ACM MM 2026 challenge paper,
+% song2024caftbnet year 2024 -> 2025 (issue year), nebioglu2026inpx title updated to arXiv v2. Among the 17 entries not cited
+% in the paper: cocoinpaint2025 replaced by its IEEE ICIP 2026 version, DOI and pages added to fsts2025.
 
 % =====================================================================
 % PART A -- EXISTING ENTRIES (keys unchanged)
@@ -167,26 +173,28 @@
   doi={10.1145/3746027.3754857}
 }
 
-% src: arXiv abs 2605.19688 (v1 19 May 2026)
-@misc{docqt2026,
+% src: Crossref 10.1007/978-3-032-36023-6_7 (ICDAR 2026, online 26 Aug 2026; Crossref print year 2027); preprint arXiv 2605.19688. Updated from the preprint on 2026-11-11.
+@inproceedings{docqt2026,
   title={{DocQT}: Improving Document Forgery Localization Robustness via Diverse {JPEG} Quantization Tables},
   author={Kylian Ronfleux-Corail and Guillaume Bernard and Micka{\"e}l Coustaty and Nicolas Sid{\`e}re},
+  booktitle={Document Analysis and Recognition -- ICDAR 2026},
+  series={Lecture Notes in Computer Science},
+  pages={109--126},
+  publisher={Springer},
   year={2026},
-  eprint={2605.19688},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2605.19688}
+  doi={10.1007/978-3-032-36023-6_7}
 }
 
-% src: arXiv abs 2606.22285 (v1 21 Jun 2026)
-@misc{dhouib2026diffnet,
-  title={Efficient Document Tampering Localization with Multi-Level Discrepancy Features and Unified {DCT}-Quantization Embedding},
+% src: Crossref 10.1007/978-3-032-37196-6_7 (ECCV 2026, online 11 Sep 2026); preprint arXiv 2606.22285. Updated from the preprint on 2026-11-11.
+@inproceedings{dhouib2026diffnet,
+  title={Efficient Document Tampering Localization with Multi-level Discrepancy Features and Unified {DCT}--Quantization Embedding},
   author={Mohamed Dhouib and Ye Zhu and Sonia Vanier and Aymen Shabou},
+  booktitle={Computer Vision -- ECCV 2026},
+  series={Lecture Notes in Computer Science},
+  pages={110--127},
+  publisher={Springer},
   year={2026},
-  eprint={2606.22285},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2606.22285}
+  doi={10.1007/978-3-032-37196-6_7}
 }
 
 % src: NeurIPS 2025 proceedings page (Datasets and Benchmarks Track); arXiv 2511.12658
@@ -196,7 +204,9 @@
   author={Zeqin Yu and Haotao Xie and Jian Jun Zhang and Jiangqun Ni and Wenkang Su and Jiwu Huang},
   booktitle={Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track},
   volume={38},
+  pages={168813--168845},
   year={2025},
+  doi={10.52202/085713-5085},
   note={arXiv:2511.12658},
   url={https://papers.neurips.cc/paper_files/paper/2025/hash/df34ea73a7e2108b816194200f1442be-Abstract-Datasets_and_Benchmarks_Track.html}
 }
@@ -348,15 +358,15 @@
   doi={10.1109/WIFS61860.2024.10810690}
 }
 
-% src: arXiv abs 2504.18361 (v2 15 May 2026; no journal-ref)
-@misc{cocoinpaint2025,
+% src: Crossref 10.1109/ICIP61757.2026.11629184 (IEEE ICIP 2026; nine authors); preprint arXiv 2504.18361 (eight authors).
+%      Updated from the preprint on 2026-11-11 (key kept).
+@inproceedings{cocoinpaint2025,
   title={{COCO-Inpaint}: A Benchmark for Detecting and Localizing Inpainting-Based Image Manipulations},
-  author={Haozhen Yan and Yan Hong and Jiahui Zhan and Suning Lang and Yikun Ji and Huijia Zhu and Jun Lan and Jianfu Zhang},
-  year={2025},
-  eprint={2504.18361},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2504.18361}
+  author={Haozhen Yan and Yan Hong and Jiahui Zhan and Suning Lang and Yikun Ji and Yujie Gao and Huijia Zhu and Jun Lan and Jianfu Zhang},
+  booktitle={IEEE International Conference on Image Processing (ICIP)},
+  pages={1--6},
+  year={2026},
+  doi={10.1109/ICIP61757.2026.11629184}
 }
 
 % src: Crossref 10.1038/s42256-020-00257-z
@@ -391,15 +401,16 @@
   doi={10.1109/CVPR52734.2025.01753}
 }
 
-% src: arXiv abs 2511.19886 (v1 25 Nov 2025; no journal-ref)
-@misc{freqbias2025,
-  title={Frequency Bias Matters: Diving into Robust and Generalized Deep Image Forgery Detection},
+% src: Crossref 10.1109/TDSC.2025.3639022 (IEEE TDSC 23(2), Mar 2026); preprint arXiv 2511.19886. Updated from the preprint on 2026-11-11 (key kept).
+@article{freqbias2025,
+  title={Frequency Bias Matters: Diving Into Robust and Generalized Deep Image Forgery Detection},
   author={Chi Liu and Tianqing Zhu and Wanlei Zhou and Wei Zhao},
-  year={2025},
-  eprint={2511.19886},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2511.19886}
+  journal={IEEE Transactions on Dependable and Secure Computing},
+  volume={23},
+  number={2},
+  pages={3636--3651},
+  year={2026},
+  doi={10.1109/TDSC.2025.3639022}
 }
 
 % src: arXiv abs 2610.01778 (v1 1 Oct 2026)
@@ -451,20 +462,21 @@
 % PART B -- NEW: document / text tampering, inpainting forensics, GT semantics
 % =====================================================================
 
-% src: arXiv abs 2603.28613 (v1 30 Mar 2026; no journal-ref)
-@misc{mareen2026tgif2,
-  title={{TGIF2}: Extended Text-Guided Inpainting Forgery Dataset \& Benchmark},
+% src: Crossref 10.1186/s13635-026-00235-9 (Journal on Information Security 2026(1), article 13, 10 Apr 2026); preprint arXiv 2603.28613. Updated from the preprint on 2026-11-11.
+@article{mareen2026tgif2,
+  title={{TGIF2}: Extended Text-Guided Inpainting Forgery Dataset and Benchmark},
   author={Hannes Mareen and Dimitrios Karageorgiou and Paschalis Giakoumoglou and Peter Lambert and Symeon Papadopoulos and Glenn {Van Wallendael}},
+  journal={Journal on Information Security},
+  volume={2026},
+  number={1},
   year={2026},
-  eprint={2603.28613},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2603.28613}
+  doi={10.1186/s13635-026-00235-9},
+  note={{Art. no.~13}}
 }
 
-% src: arXiv abs 2602.00192 (v1 30 Jan 2026; no journal-ref)
+% src: arXiv abs 2602.00192 (v1 30 Jan 2026, v2 4 Nov 2026 with the title below; no journal-ref)
 @misc{nebioglu2026inpx,
-  title={{AI}-Generated Image Detectors Overrely on Global Artifacts: Evidence from Inpainting Exchange},
+  title={{AI}-Generated Image Detectors Exploit Global Artifacts: Evidence from Inpainting Exchange},
   author={Elif Nebioglu and Emirhan Bilgi{\c{c}} and Adrian Popescu},
   year={2026},
   eprint={2602.00192},
@@ -518,15 +530,14 @@
   url={https://arxiv.org/abs/2604.02694}
 }
 
-% src: arXiv abs 2608.02258 (v1 3 Aug 2026; no journal-ref)
-@misc{zhang2026scrf,
+% src: Crossref 10.1145/3767308.3836003 (ACM MM 2026, 9 Nov 2026); preprint arXiv 2608.02258. Updated from the preprint on 2026-11-11.
+@inproceedings{zhang2026scrf,
   title={Open-Set Visual Text Forensics via Sparse-Constraint Rectified Flow},
   author={Jiangling Zhang and Shuxuan Gao and Zeyu Chen and Yichao Liu and Yu Zhou},
+  booktitle={Proceedings of the 34th ACM International Conference on Multimedia (MM)},
+  pages={14428--14437},
   year={2026},
-  eprint={2608.02258},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2608.02258}
+  doi={10.1145/3767308.3836003}
 }
 
 % src: arXiv abs 2605.14091 (v1 13 May 2026); arXiv author field is the corporate name "GuangJian Team"
@@ -561,7 +572,7 @@
   note={Accessed 9 November 2026}
 }
 
-% src: Crossref 10.1145/3686158 (named CAFTB-Net in ForensicHub / DOCFORGE-BENCH)
+% src: Crossref 10.1145/3686158 (online 30 Dec 2024; vol. 21 no. 2 printed 28 Feb 2025; key kept). Named CAFTB-Net in ForensicHub / DOCFORGE-BENCH.
 @article{song2024caftbnet,
   title={Cross-Attention Based Two-Branch Networks for Document Image Forgery Localization in the Metaverse},
   author={Yalin Song and Wenbin Jiang and Xiuli Chai and Zhihua Gan and Mengyuan Zhou and Lei Chen},
@@ -569,7 +580,7 @@
   volume={21},
   number={2},
   pages={1--24},
-  year={2024},
+  year={2025},
   doi={10.1145/3686158}
 }
 
@@ -600,26 +611,28 @@
   doi={10.1109/TIFS.2026.3705334}
 }
 
-% src: arXiv abs 2603.20193 (v1 20 Mar 2026; no journal-ref)
-@misc{shang2026maskspixels,
+% src: Crossref 10.1007/978-3-032-37314-4_32 (ECCV 2026, online 16 Sep 2026); preprint arXiv 2603.20193. Updated from the preprint on 2026-11-11.
+@inproceedings{shang2026maskspixels,
   title={From Masks to Pixels and Meaning: A New Taxonomy, Benchmark, and Metrics for {VLM} Image Tampering},
   author={Xinyi Shang and Yi Tang and Jiacheng Cui and Ahmed Elhagry and Salwa K. {Al Khatib} and Sondos Mahmoud Bsharat and Jiacheng Liu and Xiaohan Zhao and Jing-Hao Xue and Hao Li and Salman Khan and Zhiqiang Shen},
+  booktitle={Computer Vision -- ECCV 2026},
+  series={Lecture Notes in Computer Science},
+  pages={581--598},
+  publisher={Springer},
   year={2026},
-  eprint={2603.20193},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2603.20193}
+  doi={10.1007/978-3-032-37314-4_32}
 }
 
-% src: challenge website gentext-forensics-acm-mm-2026.github.io (checked 2026-11-09) and HF dataset
-%      vankey/RealText-V2 (CC BY-NC 4.0). NON-ARCHIVAL: no overview paper / BibTeX published; organisers not named on landing page.
-@misc{gentextforensics2026,
+% src: Crossref 10.1145/3767308.3837698 (ACM MM 2026 grand-challenge paper, published 9 Nov 2026). Replaces, on 2026-11-11, the earlier
+%      non-archival entry that cited the challenge website gentext-forensics-acm-mm-2026.github.io and the HF dataset
+%      vankey/RealText-V2 (CC BY-NC 4.0), checked 2026-11-09, when no overview paper existed.
+@inproceedings{gentextforensics2026,
   title={{GenText-Forensics}: Challenge on Explainable Forensics and Adversarial Generation for Text-Centric Images},
-  author={{GenText-Forensics Challenge Organizers}},
+  author={Fanwei Zeng and Jianshu Li and Changtao Miao and Youru Li and Zhi Cai and Chenqi Kong and Haiyan Yin and Joey Tianyi Zhou and Ran He and Anderson Rocha and Alex Kot},
+  booktitle={Proceedings of the 34th ACM International Conference on Multimedia (MM)},
+  pages={17457--17463},
   year={2026},
-  howpublished={ACM Multimedia 2026 Grand Challenge},
-  url={https://gentext-forensics-acm-mm-2026.github.io/},
-  note={Benchmark: RealText-V2, https://huggingface.co/datasets/vankey/RealText-V2. Accessed 9 November 2026}
+  doi={10.1145/3767308.3837698}
 }
 
 % src: Crossref 10.1109/CVPR.2018.00116 (RGB-N: Faster R-CNN based manipulation detection)

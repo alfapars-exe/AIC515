@@ -107,3 +107,5 @@ Altı öngörünün altısı da tuttu; hiçbir yanlışlama ölçütü aşılmad
 **Güncellenen belgeler.** Bildiri (özet, giriş, yöntem, Tablo I–III ve VI, §V-B, §V-C, §V-D, §V-F, §V-G, §V-H, tartışma), dönem içi raporu (Tablo 16, 17, 27–31, 34, 35, Bölüm 4.3–4.6, sınırlamalar, Ek A), README, `reports/Hakem_Hazirligi_Faz3.md`, `reports/PHASE3_Sonuclar_ve_Kapanis.md` (§7), sunum (slayt 9, 11 ve 14 ile notları), `kod/app/meta/phase3_tables.md`.
 
 **Tek tohumlu kalanlar.** İşaretçisiz piksel-değişim ve glif modelleri, birleşik kayıplı glif modeli, DeepLabV3+, 20 epok koşuları ve YOLO ablasyonları.
+
+**Düzeltme notu (11 Kasım 2026).** Bölüm 2'deki "2.762 eğitim görüntüsü" eğitim bölmesinin boyutudur; dışlanan 14 çiftten sonra eğitimde 2.748 görüntü kullanılır (`phase2/experiments/results/train_*.json`, `n_train`). Koşular ve sonuçlar bundan etkilenmez.

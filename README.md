@@ -44,7 +44,7 @@ Vize Proje/
 | `reports/Vize_Sunumu.pptx` | Dönem içi sunumu |
 | `reports/PHASE1_Arastirma_Raporu`, `PHASE2_Metodoloji_ve_Sonuclar`, `PHASE3_Sonuclar_ve_Kapanis` | Faz raporları (literatür ve yön seçimi; GT türetimi, kontroller, H1–H4; Faz 3 kapanış) |
 | `paper/` | IEEE bildirisi (LaTeX + `main.pdf`) |
-| `literature/` | literatür matrisi (38 çalışma), `references_v3.bib` (79 kayıt; `paper/refs.bib` ile aynı), arama stratejisi, seed makale incelemeleri |
+| `literature/` | literatür matrisi (38 çalışma), `references_v3.bib` (81 kayıt; `paper/refs.bib` ile aynı), arama stratejisi, seed makale incelemeleri |
 | `dataset_audit/` | `audit_report.md`, `audit_stats.json`, `splits.json` (grup-farkında train/val + küçük veri alt kümesi), örnek tabloları, şekiller |
 | `data/AIForge-Doc-v1/` | Hugging Face'ten indirilen veri seti (**CC BY-NC-SA 4.0 + kapılı — yeniden dağıtmayın**) |
 | `baselines/` | Faz 1 sonuçları: `results/`, `figures/`, `logs/`, `README.md` (tüm tablolar), `ENV_SETUP.md` |
@@ -152,7 +152,7 @@ Ağırlıklar ve tahmin haritaları repoda yoktur (boyut/lisans); yukarıdaki ko
 | §6.4 "test edilmedi" (CLAHE, gri) | Test-zamanı koşulları tüm modellerde | `kod/phase3/p3ext.py` |
 | W6 Faz 1 AUPRC şişkin | Kesin AUPRC: 0.947 → **0.805** (rgb), 0.939 → **0.792** (rgbfreq) | `kod/phase3/phase1_exact_auprc.py` |
 | Veri bias analizi | işaretçi × üretici Cramér's V 0.61; split χ² p ≥ 0.30 | `kod/phase3/dataset_curation.py` |
-| Literatür | 77 doğrulanmış kaynak (38 yeni); bildiride ek 2 yöntem kaynağı (Holm 1979, AdamW) ile 79 kayıt | `literature/references_v3.bib`, `lit_update_phase3.md` |
+| Literatür | 77 doğrulanmış kaynak (38 yeni); bildirideki ek 2 yöntem kaynağı (Holm 1979, AdamW) ve 2 açıklanabilirlik kaynağıyla (SHAP, Samek vd.) 81 kayıt. 11 Kasım 2026'da atıf yapılan 64 kaynağın künyesi Crossref ve arXiv ile yeniden denetlendi; dokuz kayıt güncellendi | `literature/references_v3.bib`, `lit_update_phase3.md`, `reports/inceleme/atif_kunye_denetimi_2026-11-11.md` |
 | W1 100 çift GT doğrulaması | **Kapandı (tek değerlendirici)** — insan denetimi yazar tarafından yapıldı: kutu 99/100 uygun; piksel GT 36 uygun / 64 kısmi (hepsi fazla kapsama) / 0 hatalı; VLM denetimiyle uyum zayıf (κ = 0.07). Açık kalan güçlendirme: ikinci bağımsız değerlendirici (form ve yönerge: `phase2/gt/verification_human.xlsx`) | `phase2/gt/human_verification_summary.md` |
 | W7 TruFor ince ayar | **Yapılamadı** — yayımlanan kodda eğitim betiği yok; mimari bağımsızlık DeepLabV3+/YOLO ile | — |
 

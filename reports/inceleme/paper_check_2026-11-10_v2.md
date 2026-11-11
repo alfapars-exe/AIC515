@@ -154,3 +154,31 @@ Bu bölüm denetimden sonra eklendi; yukarıdaki tablolar 10 Kasım akşamındak
 **Yöntem cümlesi.** "Seeds 43 and 44 ... were run last, after six predictions with falsification thresholds had been committed to the public repository; all six held" ifadesi doğrulandı: plan dosyası ve kuyruk betiği 4668b08 numaralı commit'tedir (10 Kasım 21:55:51), kuyruk 21:57:21'de başlamıştır (`phase3/logs/queue.log`); değerlendirme planın 7. bölümündedir.
 
 **Derleme.** `paper/main.pdf`: 10 sayfa, 64 atıflı kaynak, taşan kutu ve uyarı yok (11 Kasım 2026).
+
+## Ek — 11 Kasım 2026 (2): atıf künyeleri, insan GT denetimi, depo ve ekran görüntüleri
+
+**Atıf künyeleri (Lab Rat `paper-check`, 5. denetim).** `kod/tools/check_refs_dblp.py` ile `paper/refs.bib` dosyasındaki 81 kaydın tamamı (64'ü bildiride atıf yapılan) yeniden denetlendi: DOI'li kayıtlar Crossref kaydıyla (Crossref dışı DOI'ler DataCite ile), arXiv kayıtları arXiv API'siyle karşılaştırıldı (başlık, yazar soyadları ve sırası, yıl); ön baskıların hakemli sürümü Crossref başlık aramasıyla arandı. DBLP sorgulanamadı: arama API'si bot denetimi ve istek sınırı arkasındadır (betik sorgusu yanıt almadı; tarayıcı oturumundan yapılan sorgular üçüncü istekten sonra 429 döndürdü ve bağlantı sıfırlandı; denemeye son verildi). Sonuç `reports/inceleme/atif_kunye_denetimi_2026-11-11.md` dosyasındadır: 81 kaydın 74'ü uyumlu, fark yok, 7'si bu kaynaklarla doğrulanamadı (atıf yapılan 64 kayıtta 58 uyumlu, 6 doğrulanamadı). Doğrulanamayanlar DOI vermeyen yayın yerleri (ICLR 2019 ve 2026, NeurIPS 2017, Scandinavian Journal of Statistics 1979), bir yazılım, bir GitHub deposu ve Crossref ile DataCite dışında kayıtlı bir DOI'dir; her birinin kaynağı bib dosyasındaki `% src:` notunda yazılıdır.
+
+Denetimin değiştirdiği kayıtlar:
+
+| Anahtar | Değişiklik | Kaynak |
+|---|---|---|
+| `shang2026maskspixels` | arXiv ön baskısı yerine ECCV 2026 (LNCS, s. 581–598) | Crossref 10.1007/978-3-032-37314-4_32 |
+| `dhouib2026diffnet` | arXiv ön baskısı yerine ECCV 2026 (LNCS, s. 110–127) | Crossref 10.1007/978-3-032-37196-6_7 |
+| `docqt2026` | arXiv ön baskısı yerine ICDAR 2026 (LNCS, s. 109–126) | Crossref 10.1007/978-3-032-36023-6_7 |
+| `zhang2026scrf` | arXiv ön baskısı yerine ACM MM 2026 (s. 14428–14437) | Crossref 10.1145/3767308.3836003 |
+| `freqbias2025` | arXiv ön baskısı yerine IEEE TDSC 23(2), 3636–3651, 2026 | Crossref 10.1109/TDSC.2025.3639022 |
+| `mareen2026tgif2` | arXiv ön baskısı yerine Journal on Information Security 2026(1), makale no. 13 | Crossref 10.1186/s13635-026-00235-9 |
+| `gentextforensics2026` | Yarışma sayfası yerine ACM MM 2026 bildirisi (11 yazar, s. 17457–17463) | Crossref 10.1145/3767308.3837698 |
+| `song2024caftbnet` | Yıl 2024 → 2025 (cilt 21, sayı 2'nin basım yılı; çevrimiçi 30 Aralık 2024) | Crossref 10.1145/3686158 |
+| `nebioglu2026inpx` | Başlık arXiv v2'ye göre güncellendi ("Exploit Global Artifacts") | arXiv 2602.00192v2 (4 Kasım 2026) |
+| `cocoinpaint2025` (atıf yapılmıyor) | arXiv ön baskısı yerine IEEE ICIP 2026 (dokuz yazar) | Crossref 10.1109/ICIP61757.2026.11629184 |
+| `fsts2025` (atıf yapılmıyor) | DOI ve sayfa aralığı eklendi | Crossref 10.52202/085713-5085 |
+
+Bildiri yeniden derlendi (10 sayfa, 64 atıflı kaynak, taşan kutu yok). Metinde bu kaynaklar için "ön baskı" nitelemesi bulunmadığından cümleler değişmedi. Dönem içi raporunun kaynak listesindeki altı kayıt (19, 20, 26, 28, 31, 32) aynı biçimde güncellendi. `literature/references_v3.bib` ile `paper/refs.bib` özdeştir.
+
+**İnsan GT denetimi.** 100 çiftlik ikinci denetim yazarın kendi yaptığı, tek değerlendiricili bir insan denetimi olarak kaydedildi (`phase2/gt/human_verification_summary.{md,json}`; sayılar değişmedi). Bildirinin sınırlamalar paragrafı, rapor, sunum (slayt 14 ve notlar), hakem hazırlığı ve README buna göre düzeltildi.
+
+**Depo.** `kod/phase3/sync_repo.ps1` artık çalışma ağacında bulunmayan izlenen dosyaları depodan kaldırıyor ve yayımlanan kopyalarda kişisel klasör yollarını göreli yola çeviriyor (çalışma ağacı değişmez). `fb2c244` numaralı commit ile 28 eski dosya kaldırıldı ve 68 dosyada yol temizlendi; depoda `Users\<kullanıcı>` geçen dosya kalmadı (metin ve ikili dosyalar tarandı). Git geçmişi yeniden yazılmadı; eski sürümler geçmişte durmaktadır.
+
+**Ekran görüntüleri.** Şekil 10–16, Faz 4 modellerini içeren güncel arayüzle yeniden alındı; görüntülerde kullanıcının ev dizini `~` olarak kısaltılır (`kod/tools/capture_screens.py`). Sunumun 13. slaytındaki kırpıntı da yenilendi.
