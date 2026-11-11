@@ -1,0 +1,23 @@
+{
+ "run": "unet_pixel_eps8_morph_nm_geminionly_mr_s42",
+ "arch": "unet",
+ "gt": "pixel_eps8_morph_nm",
+ "seed": 42,
+ "marker_repair": true,
+ "aux_bbox": 0.0,
+ "train_filter": "gemini_only",
+ "n_train": 2454,
+ "n_val": 446,
+ "n_val_crops": 892,
+ "best_epoch": 8,
+ "best_val_auprc": 0.9195659225634105,
+ "epochs_run": 10,
+ "epochs_planned": 10,
+ "train_time_s": 484.9158525466919,
+ "peak_gpu_mem_gib": 4.658321380615234,
+ "n_params": 14328209,
+ "ckpt": "models\\phase2\\unet_pixel_eps8_morph_nm_geminionly_mr_s42.pt",
+ "ckpt_mb": 54.770514488220215,
+ "torch": "2.11.0+cu128",
+ "gpu": "NVIDIA GeForce RTX 5080"
+}

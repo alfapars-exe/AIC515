@@ -137,3 +137,15 @@ unetjoint_pixel_eps8_morph_s44,unet,area_1-5%,381,0.0408,0.02,0.1811,14.48
 unetjoint_pixel_eps8_morph_s44,unet,area_5-20%,2,0.0,0.0,0.0,24.0
 unetjoint_pixel_eps8_morph_s44,unet,tool_gemini,727,0.126,0.0671,0.2916,11.79
 unetjoint_pixel_eps8_morph_s44,unet,tool_ideogram,85,0.2563,0.0916,0.4353,9.66
+dlv3p_bbox_s43,unet,all,812,0.8381,0.5963,0.9015,2.51
+dlv3p_bbox_s43,unet,area_<1%,429,0.786,0.5313,0.8438,2.98
+dlv3p_bbox_s43,unet,area_1-5%,381,0.9102,0.6898,0.9659,1.99
+dlv3p_bbox_s43,unet,area_5-20%,2,1.0,0.901,1.0,1.0
+dlv3p_bbox_s43,unet,tool_gemini,727,0.8717,0.6371,0.9354,2.37
+dlv3p_bbox_s43,unet,tool_ideogram,85,0.5347,0.2759,0.6118,3.69
+dlv3p_bbox_s44,unet,all,812,0.8762,0.5935,0.8953,3.3
+dlv3p_bbox_s44,unet,area_<1%,429,0.8266,0.5353,0.8298,4.36
+dlv3p_bbox_s44,unet,area_1-5%,381,0.9375,0.6748,0.9685,2.11
+dlv3p_bbox_s44,unet,area_5-20%,2,1.0,0.9,1.0,2.0
+dlv3p_bbox_s44,unet,tool_gemini,727,0.908,0.6337,0.9436,2.91
+dlv3p_bbox_s44,unet,tool_ideogram,85,0.565,0.2722,0.5059,6.62

@@ -1,0 +1,23 @@
+{
+ "run": "unet_glyph_v2_nm_geminionly_mr_s43",
+ "arch": "unet",
+ "gt": "glyph_v2_nm",
+ "seed": 43,
+ "marker_repair": true,
+ "aux_bbox": 0.0,
+ "train_filter": "gemini_only",
+ "n_train": 2454,
+ "n_val": 446,
+ "n_val_crops": 892,
+ "best_epoch": 6,
+ "best_val_auprc": 0.9136329897395031,
+ "epochs_run": 10,
+ "epochs_planned": 10,
+ "train_time_s": 481.98364210128784,
+ "peak_gpu_mem_gib": 4.658321380615234,
+ "n_params": 14328209,
+ "ckpt": "models\\phase2\\unet_glyph_v2_nm_geminionly_mr_s43.pt",
+ "ckpt_mb": 54.76908016204834,
+ "torch": "2.11.0+cu128",
+ "gpu": "NVIDIA GeForce RTX 5080"
+}

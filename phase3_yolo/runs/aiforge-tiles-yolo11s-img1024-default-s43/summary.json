@@ -1,0 +1,18 @@
+{
+  "run": "aiforge-tiles-yolo11s-img1024-default-s43",
+  "data": "tiles",
+  "model": "yolo11s",
+  "imgsz": 1024,
+  "aug": "default",
+  "seed": 43,
+  "epochs": 30,
+  "best_epoch": 27,
+  "best_val_tile_map50": 0.9876,
+  "last_val_tile_map50": 0.9865,
+  "best_val_tile_map5095": 0.9293,
+  "time_min": 34.0,
+  "peak_gib": 4.8,
+  "ckpt_mb": 18.4,
+  "params_M": 9.43,
+  "dry_run": false
+}

@@ -4,7 +4,7 @@
 > 1. **Faz 1 Pixel-AUPRC şişkin:** crop başına ≤20k negatif alt-örneklemeyle hesaplanmıştı (0.947 / 0.939). Tüm piksellerle kesin değer **0.805 / 0.792** (`phase3/results/phase1_exact_auprc.csv`). Faz 2 sayıları zaten kesindir.
 > 2. **Tek tohum etiketleri:** "box modeli authentic val görüntülerinin %44'ünü işaretler" değeri yalnız s44'e aittir; 3 tohum ortalaması **%26** (>0.1 % piksel @0.5). Görüntü-düzeyi AUROC'lar (0.892 / 0.892 / 0.799) 3 tohum ortalamasıdır ve doğrudur. Tablo 9d'deki değerler 3 tohum ortalamasıyla değiştirilmelidir.
 > 3. **GenD (Yermakov ve ark., WACV 2026):** iddianın yönü ters aktarılmıştı; 56.8 → 90.0 sayıları kaynağa yer gösterilerek doğrulanamadığı için kullanılmamalıdır.
-> 4. **"İnsan doğrulaması":** GT denetimi VLM destekli tutarlılık denetimidir; insan doğrulaması **yapılmamıştır**.
+> 4. **"İnsan doğrulaması":** İlk GT denetimi VLM destekli tutarlılık denetimidir. 10 Kasım 2026'da aynı 100 çift yazar tarafından elle denetlenmiştir (tek değerlendirici): piksel-değişim GT 36 uygun / 64 kısmen uygun / 0 hatalı, resmî kutu 99/100 uygun (`phase2/gt/human_verification_summary.md`). Bu belgedeki "insan doğrulaması bekliyor / yapılmadı" ifadeleri bu tarihten öncesine aittir.
 > 5. **Kaynakça:** doğrulanmış güncel liste `literature/references_v3.bib` (77 kayıt; Helali 2026, DocDet, Shang ve ark. 2026 ve klasik kaynaklar eklendi; 5 kayıt düzeltildi).
 > 6. **İşaretçi atfı:** AIForge-Doc v1 makalesi §3.4 (Gemini: 3 px parlak yeşil dikdörtgen) — doğrulandı.
 

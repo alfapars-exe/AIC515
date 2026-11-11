@@ -1,0 +1,11 @@
+﻿[deploy] [space] kopya: hf_space\appcore\models.py  ←  kod\app\appcore\models.py
+[deploy] [space] kopya: hf_space\appcore\simulation.py  ←  kod\app\appcore\simulation.py
+[deploy] [space] kopya: hf_space\phase2\experiments\results\tau.json  ←  phase2\experiments\results\tau.json
+[deploy] [space] 47 dosya · 3 güncellendi · 0 kaldırıldı → hf_space
+[deploy] oturum: argeinfina (orgs: ['infinayazilim'])
+[deploy] Space: infinayazilim/ai515 ← hf_space
+[deploy] donanım isteği: zero-a10g
+[deploy] runtime: RUNNING_BUILDING (zero-a10g)
+[deploy] runtime: RUNNING_BUILDING (zero-a10g)
+[deploy] runtime: RUNNING_APP_STARTING (zero-a10g)
+[deploy] bitti → https://huggingface.co/spaces/infinayazilim/ai515

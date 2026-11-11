@@ -201,7 +201,7 @@ def insights(df, label, input_type, n_ring, gt_note, degradation, has_auth, clea
     if gt_note:
         out.append(f"- **GT analizi:** {gt_note}.")
     if n_ring >= 20:
-        out.append(f"- **Yeşil işaretçi:** kutu kenarında {n_ring} px kalıntı var. 'Sahte, yeşil işaretçi onarılmış' senaryosuyla tekrar çalıştırıp skorun ne kadar düştüğüne bakın (PHASE 2 Ek-C: AP 0,988 → 0,763).")
+        out.append(f"- **Yeşil işaretçi:** kutu kenarında {n_ring} px kalıntı var. 'Sahte, yeşil işaretçi onarılmış' senaryosuyla tekrar çalıştırıp skorun ne kadar düştüğüne bakın (Faz 3, 3 tohum ortalaması, rapor Tablo 27: AP 0,988 → 0,766).")
     if input_type == INPUT_TYPES[3]:
         cov = get("bbox-GT (s", "Kutu kapsama")
         if cov is not None:

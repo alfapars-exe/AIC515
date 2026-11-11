@@ -161,7 +161,7 @@ Table: Tablo 6. AIForge-Doc v1 veri tabanının yerel denetimle doğrulanan öze
 | Doğrulanan sahte–özgün çifti | 3.336 (eğitim 3.247, test 89) |
 | Kaynak veri tabanı | WildReceipt 1.696; CORD 1.000; SROIE 946; XFUND 419 |
 | Belge türü ve dil | Fiş %89.7, form %10.3; 9 dil (İngilizce 2.642, Endonezce 1.000) |
-| Üretici | Gemini 2.5 Flash Image 3.639 (%89.6); Ideogram v2 Edit 422 (%10.4) |
+| Üretici | Gemini 2.5 Flash Image 3.639 (%89.6); Ideogram v2 Edit 422 (%10.4). Meta veride iç anahtarlarla kodlanır: `gemini-nano` = Gemini 2.5 Flash Image, `qwen-inpaint` = Ideogram v2 Edit |
 | Çözünürlük | 150×168 ile 6016×7016 piksel arası; medyan 750×1296; 0.03–34.81 megapiksel |
 | Değiştirilen alan oranı | Medyan %0.975; görüntülerin %50.7'sinde %1'in altında |
 | Maske kutusu boyutu | Yükseklik medyan 33 piksel; genişlik medyan 191 piksel |
@@ -174,7 +174,7 @@ Kaynak: `dataset_audit/audit_report.md`
 
 **Ölçek.** Şekil 2, değiştirilen alanın görüntüye oranının dağılımını, Şekil 3 ise çözünürlük dağılımını göstermektedir. Alanların yarısı görüntünün yüzde birinden küçüktür ve tipik bir alan yalnız 33 piksel yüksekliğindedir. Görüntü sabit bir boyuta küçültülürse alan birkaç piksele iner; bu nedenle bütün modeller görüntüyü doğal çözünürlükte, kırpıntı ya da karo temelli işler. Piksel düzeyinde sınıf dengesizliği yaklaşık 1:100'dür.
 
-![Şekil 2. Değiştirilen alanın görüntü alanına oranı: üreticiye göre histogram (solda) ve alan dilimlerine göre görüntü sayısı (sağda).](dataset_audit/fig_tamper_ratio.png)
+![Şekil 2. Değiştirilen alanın görüntü alanına oranı: üreticiye göre histogram (solda) ve alan dilimlerine göre görüntü sayısı (sağda). Şekildeki üretici etiketleri veri setinin iç anahtarlarıdır: gemini-nano = Gemini 2.5 Flash Image, qwen-inpaint = Ideogram v2 Edit.](dataset_audit/fig_tamper_ratio.png)
 
 ![Şekil 3. Görüntü boyutlarının kaynak veri tabanına göre dağılımı (solda) ve en-boy oranı histogramı (sağda).](dataset_audit/fig_resolution.png)
 

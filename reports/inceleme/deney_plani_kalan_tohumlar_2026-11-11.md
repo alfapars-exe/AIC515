@@ -125,3 +125,32 @@ s42 koşularının `.done` sürelerinden (`phase3/logs/`): U-Net eğitimi 502–
 6. **Raporlama.** Her öngörü için sonuç ve karar (tuttu, tutmadı) bu dosyanın sonuna eklenir; öngörülerin kapsamadığı bulgular ayrıca yazılır. Yukarıdaki bölümlere koşudan sonra dokunulmaz.
 
 Koşu sonrası tek tohumlu kalanlar: YOLO kontrol kaynakları (özgün, yapıştır-geri, yeniden örnekleme) ve hız ölçümü (tohuma bağlı değil).
+
+## 8. Sonuç (ara, U-Net blokları ve D bloğu; 11 Kasım 2026, 14:45'te yazıldı; yukarıdaki bölümlere dokunulmadı)
+
+**Koşu.** A1, B, A2, A3 ve D blokları hatasız bitti (`phase3/logs/queue.log`: `FAIL` yok). Eski modellerin satırları yedekle karşılaştırıldı (`summary_val.csv`, `summary_test.csv`, `robustness.csv`, `probes_boundary.csv`, `probes_rectfit.csv`, `per_image_rectfit.csv`, `tau.json`); değişen yok, yalnız yeni satırlar eklendi. C bloğu (YOLO ablasyonları) sürüyor; K17–K21 ve YOLO tarafı kuyruk bitince değerlendirilecek. Bu ara sentez depoya gönderilmedi.
+
+Kaynaklar: `phase3/results/T1_dual_gt_val.csv`, `T2_test.csv`, `T3_probes.csv`, `T4_heldout.csv`, `T6_robustness.csv`, `phase3_v2/results/T_v2.csv` (üç tohum ortalaması ± standart sapma; sondalarda tohum ortalaması ve grup bootstrap).
+
+| # | Sonuç | Karar |
+|---|---|---|
+| K1 | İşaretçisiz piksel U-Net onarım ΔAP +0.054 [+0.037, +0.072] | Tuttu |
+| K2 | Doğrulama piksel AUPRC 0.507 ± 0.045 (0.544, 0.458, 0.521) | Öngörülen aralığın (0.51–0.58) az altında; yanlışlama eşiği (< 0.49) aşılmadı. Bedel tek tohumda görülenden büyük |
+| K3 | v2 piksel AUPRC 0.422 ± 0.015; tablonun en iyisi (işaretçisiz kutu U-Net 0.391) | Tuttu |
+| K4 | İşaretçisiz glif U-Net: ΔAP +0.009 [+0.002, +0.016]; doğrulama glif 0.644 ± 0.014; v2 glif 0.432 ± 0.015 (işaretçisiz piksel modeli 0.397) | Tuttu |
+| K5 | Birleşik glif U-Net: glif 0.641 ± 0.063, kutu 0.395 ± 0.073 | Tuttu; tohumlar arası fark büyük (glif 0.636, 0.581, 0.707) |
+| K10 | DeepLabV3+ kutu: 0.939, 0.925, 0.923; piksel ölçütünde 0.382 ± 0.002 | Tuttu |
+| K11 | Üç tohumda da her referans kendi modelini birinci sıraya koyuyor | Tuttu |
+| K12 | DeepLabV3+ kutu onarım ΔAP −0.173 [−0.203, −0.146] | Tuttu |
+| K13 | DeepLabV3+ kutu v2 AUPRC 0.532 ± 0.009 | Tuttu |
+| K14 | 20 epok − 10 epok: kutu 0.912 − 0.923 = −0.011; piksel 0.591 − 0.610 = −0.019; glif 0.598 − 0.676 = −0.078 | Tuttu; 20 epok hiçbir referansta yararlı değil, glifte belirgin biçimde kötü ve kararsız (± 0.082) |
+| K15 | YOLO11s onarım ΔAP −0.058 [−0.068, −0.049] (üç tohum) | Tuttu |
+| K16 | YOLO11s göreli kayıp: gri −%57,5, JPEG 75 −%45,2, bulanıklık −%1,3, yeniden ölçekleme −%0,6 | Tuttu |
+| **K6** | Yalnız Gemini + işaretçisiz kutu U-Net: Ideogram 0.463 [0.400, 0.528], kaynak-eşlenmiş Gemini 0.874; fark 0.412 (standart yalnız-Gemini: 0.412 ve 0.909, fark 0.497) | Tuttu |
+| **K7** | Piksel modeli (kutu ölçütü): Ideogram 0.317, Gemini 0.472 (standart: 0.264 ve 0.567) | Tuttu |
+| **K8** | Glif modeli (kutu ölçütü): Ideogram 0.203 (standart 0.166) | Tuttu |
+| **K9** | Onarım ΔAP: yalnız-Gemini standart kutu −0.275 [−0.313, −0.238]; işaretçisiz sürüm +0.009 [−0.004, +0.023] | Tuttu (denetim geçerli: onarım bağımlılığı kaldırıyor) |
+
+**Yeni deneyin yorumu.** İşaretçi kalıntısını eğitimden kaldırmak yalnız-Gemini modellerinin Ideogram'daki çöküşünü yalnızca biraz azaltıyor: kutu modelinde Ideogram AP 0.412'den 0.463'e çıkıyor, Gemini ile fark 0.497'den 0.412'ye iniyor. Farkın yaklaşık altıda biri işaretçiye, kalanı üreticiye özgü izlere bağlanabilir. Tüm üreticilerle eğitilen modelde de onarım Ideogram puanını değiştirmiyordu (0.629 ve 0.633). Bildirideki "ayrı tutulan üreticide çöküş" bulgusu güçleniyor: çöküş işaretçi kısayolundan bağımsız.
+
+**Not (öngörülerin kapsamadığı).** İşaretçisiz piksel U-Net'in tohum 43'ü belirgin biçimde zayıf (doğrulama piksel AUPRC 0.458); 20 epoklu glif ve birleşik glif modelleri de tohuma duyarlı. Bildiride bu satırlar ortalama ± standart sapma ile verilecek.

@@ -1,0 +1,23 @@
+{
+ "run": "unetjoint_glyph_v2_s43",
+ "arch": "unetjoint",
+ "gt": "glyph_v2",
+ "seed": 43,
+ "marker_repair": false,
+ "aux_bbox": 0.5,
+ "train_filter": null,
+ "n_train": 2748,
+ "n_val": 487,
+ "n_val_crops": 974,
+ "best_epoch": 5,
+ "best_val_auprc": 0.9115079793522831,
+ "epochs_run": 9,
+ "epochs_planned": 10,
+ "train_time_s": 457.52768325805664,
+ "peak_gpu_mem_gib": 4.689572334289551,
+ "n_params": 14328354,
+ "ckpt": "models\\phase2\\unetjoint_glyph_v2_s43.pt",
+ "ckpt_mb": 54.76747798919678,
+ "torch": "2.11.0+cu128",
+ "gpu": "NVIDIA GeForce RTX 5080"
+}
